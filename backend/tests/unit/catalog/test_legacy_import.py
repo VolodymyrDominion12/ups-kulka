@@ -57,3 +57,22 @@ def test_prices_in_kopecks_and_order_by_old_id() -> None:
 
     assert [c.slug for c in plan.products] == ["drakon-10", "drakon-20", "lev"]
     assert [c.price_kopecks for c in plan.products] == [50000, 55000, 35000]
+
+
+def test_plan_has_a_photo_per_product_with_matching_slugs() -> None:
+    plan = plan_legacy_import(_catalog())
+    product_slugs = {cmd.slug for cmd in plan.products}
+    assert len(plan.photos) == 211
+    assert {p.product_slug for p in plan.photos} == product_slugs
+    assert all(p.image_url.startswith("https://oops.kylka.shop/img/p/") for p in plan.photos)
+
+
+def test_only_real_discounts_become_old_prices() -> None:
+    plan = plan_legacy_import(_catalog())
+    on_sale = {cmd.name: (cmd.price_kopecks, cmd.old_price_kopecks) for cmd in plan.products
+               if cmd.old_price_kopecks is not None}  # fmt: skip
+    # Old site: two real discounts; "Happy" and "Зебра" had old price == price.
+    assert on_sale == {
+        "Набір повітряних кульок «Сяйво»": (390000, 430000),
+        "Композиція «Love you»": (690100, 695000),
+    }

@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: { params: Params }) {
 
       <div className="grid gap-8 md:grid-cols-2">
         <div className="grid gap-3">
-          <div className="aspect-square overflow-hidden rounded-panel bg-accent-soft">
+          <div className="aspect-[4/5] overflow-hidden rounded-panel bg-accent-soft">
             <ProductImage
               image={cover}
               alt={product.name}
@@ -81,7 +81,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           {rest.length > 0 && (
             <ul className="grid grid-cols-4 gap-2">
               {rest.slice(0, 4).map((image) => (
-                <li key={image.media_id} className="aspect-square overflow-hidden rounded-2xl bg-accent-soft">
+                <li key={image.media_id} className="aspect-[4/5] overflow-hidden rounded-2xl bg-accent-soft">
                   <ProductImage image={image} alt="" seed={product.slug} sizes="120px" />
                 </li>
               ))}

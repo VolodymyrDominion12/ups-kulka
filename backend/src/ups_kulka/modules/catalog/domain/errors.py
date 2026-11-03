@@ -48,3 +48,9 @@ class UnknownMediaAssets(ValidationError):
     def __init__(self, ids: list[str]) -> None:
         super().__init__(f"Unknown media assets: {', '.join(ids)}")
         self.ids = ids
+
+
+class PhotoUnavailable(ValidationError):
+    """An external photo could not be fetched (missing, too big, not an image)."""
+
+    code = "photo_unavailable"

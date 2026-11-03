@@ -37,4 +37,11 @@ class MediaContainer(containers.DeclarativeContainer):
         uow_factory=uow.provider,
         auth=auth_adapter,
     )
-    facade = providers.Factory(MediaFacade, uow_factory=uow.provider)
+    # Same pipeline without the admin check: for other modules and server scripts only.
+    trusted_upload = providers.Factory(
+        UploadMedia,
+        uow_factory=uow.provider,
+        processor=processor,
+        storage=storage,
+    )
+    facade = providers.Factory(MediaFacade, uow_factory=uow.provider, upload=trusted_upload)

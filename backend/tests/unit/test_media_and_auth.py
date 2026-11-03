@@ -176,3 +176,24 @@ async def test_upload_media_validation_errors(tmp_path: Path) -> None:
             height=1250,
             blur_data_url="data:image/webp;base64,AA",
         )
+
+
+async def test_facade_import_photo_uses_the_pipeline_without_a_token(tmp_path: Path) -> None:
+    uow = _FakeMediaUoW()
+    upload = UploadMedia(
+        uow_factory=uow,
+        processor=PillowImageProcessor(),
+        storage=LocalFileMediaStorage(str(tmp_path)),
+    )
+    facade = MediaFacade(uow_factory=uow, upload=upload)
+
+    dto = await facade.import_photo("old.jpg", _make_image_bytes(width=600, height=600))
+
+    assert (dto.width, dto.height) == (480, 600)  # cropped to 4:5
+    assert (tmp_path / str(dto.id) / "320w.webp").is_file()
+    assert dto.id in await facade.get_assets([dto.id])
+
+
+async def test_facade_without_uploader_refuses_import() -> None:
+    with pytest.raises(RuntimeError):
+        await MediaFacade(uow_factory=_FakeMediaUoW()).import_photo("a.jpg", b"x")

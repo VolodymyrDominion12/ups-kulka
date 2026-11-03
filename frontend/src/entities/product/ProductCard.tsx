@@ -23,7 +23,7 @@ export function ProductCard({ product, priority = false, action }: Props) {
         href={href}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative block aspect-square overflow-hidden rounded-photo bg-accent-soft"
+        className="relative block aspect-[4/5] overflow-hidden rounded-photo bg-accent-soft"
       >
         <ProductImage
           image={product.images[0]}

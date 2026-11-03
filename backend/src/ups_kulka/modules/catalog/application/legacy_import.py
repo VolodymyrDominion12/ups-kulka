@@ -33,9 +33,16 @@ class LegacyCatalog(TypedDict):
 
 
 @dataclass(frozen=True, slots=True)
+class LegacyPhoto:
+    product_slug: str
+    image_url: str
+
+
+@dataclass(frozen=True, slots=True)
 class LegacyImportPlan:
     tags: tuple[CreateTagCommand, ...]
     products: tuple[CreateProductCommand, ...]
+    photos: tuple[LegacyPhoto, ...] = ()
 
 
 def plan_legacy_import(catalog: LegacyCatalog) -> LegacyImportPlan:
@@ -49,17 +56,24 @@ def plan_legacy_import(catalog: LegacyCatalog) -> LegacyImportPlan:
     base_slugs = Counter(to_slug(p["name"]) for p in products)
 
     commands = []
+    photos = []
     for product in products:
         slug = to_slug(product["name"])
         if base_slugs[slug] > 1 or len(slug) < 3:
             slug = f"{slug}-{product['old_id']}".strip("-")
+        price = product["price_uah"] * 100
+        old_price = (product["old_price_uah"] or 0) * 100
         commands.append(
             CreateProductCommand(
                 slug=slug,
                 name=product["name"],
                 description="",
-                price_kopecks=product["price_uah"] * 100,
+                price_kopecks=price,
                 tag_slugs=(product["tag"],),
+                # Only a real discount becomes a crossed-out price on the storefront.
+                old_price_kopecks=old_price if old_price > price else None,
             )
         )
-    return LegacyImportPlan(tags=tags, products=tuple(commands))
+        if product["image_url"]:
+            photos.append(LegacyPhoto(product_slug=slug, image_url=product["image_url"]))
+    return LegacyImportPlan(tags=tags, products=tuple(commands), photos=tuple(photos))

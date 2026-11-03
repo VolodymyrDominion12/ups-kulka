@@ -10,11 +10,16 @@ from ups_kulka.modules.catalog.application.use_cases.admin_products import (
 from ups_kulka.modules.catalog.application.use_cases.create_product import CreateProduct
 from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
+from ups_kulka.modules.catalog.application.use_cases.import_legacy_photos import (
+    ImportLegacyPhotos,
+)
 from ups_kulka.modules.catalog.application.use_cases.list_products import ListProducts
 from ups_kulka.modules.catalog.application.use_cases.list_tags import ListTags
 from ups_kulka.modules.catalog.infrastructure.adapters import (
     CatalogAdminAuthAdapter,
+    HttpPhotoDownloader,
     MediaCatalogAdapter,
+    MediaPhotoUploader,
 )
 from ups_kulka.modules.catalog.infrastructure.uow import SqlAlchemyCatalogUnitOfWork
 
@@ -61,3 +66,14 @@ class CatalogContainer(containers.DeclarativeContainer):
 
     # Public facade for other modules (orders reads prices through it).
     facade = providers.Factory(CatalogFacade, uow_factory=uow.provider)
+
+    # One-off migration of the old site's photos (scripts/import_old_site.py, specs/010).
+    photo_downloader = providers.Factory(HttpPhotoDownloader)
+    photo_uploader = providers.Factory(MediaPhotoUploader, media=media)
+    import_legacy_photos = providers.Factory(
+        ImportLegacyPhotos,
+        uow_factory=uow.provider,
+        media_lookup=media_lookup,
+        downloader=photo_downloader,
+        uploader=photo_uploader,
+    )

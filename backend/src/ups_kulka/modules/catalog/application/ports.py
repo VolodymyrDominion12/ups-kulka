@@ -86,3 +86,15 @@ class CatalogUnitOfWork(UnitOfWork, Protocol):
 
 
 type CatalogUnitOfWorkFactory = Callable[[], CatalogUnitOfWork]
+
+
+class PhotoDownloader(Protocol):
+    """Fetches an image file by URL (the old site's product photos)."""
+
+    async def fetch(self, url: str) -> bytes: ...
+
+
+class PhotoUploader(Protocol):
+    """Runs a photo through the media pipeline and returns the new media id."""
+
+    async def upload(self, filename: str, content: bytes) -> uuid.UUID: ...
