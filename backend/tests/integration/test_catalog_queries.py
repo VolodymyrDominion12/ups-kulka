@@ -12,8 +12,8 @@ from ups_kulka.modules.catalog.application.dto import (
 
 pytestmark = pytest.mark.integration
 
-LIST_QUERIES = 3  # count + page + selectinload(tags)
-GET_QUERIES = 2  # product + selectinload(tags)
+LIST_QUERIES = 4  # count + page + selectinload(tags) + selectinload(media)
+GET_QUERIES = 3  # product + selectinload(tags) + selectinload(media)
 
 
 async def _seed(container: Container, products: int, tags_per_product: int) -> None:

@@ -14,6 +14,8 @@ dependencies = [
     "psycopg[binary]>=3.2",  # sync driver for Alembic migrations
     "dependency-injector>=4.46",
     "httpx>=0.28",  # monobank and Telegram adapters
+    "pillow>=11.0",  # EXIF transpose, 4:5 crop and WebP/AVIF media pipeline
+    "python-multipart>=0.0.18",  # multipart file uploads for camera photos
 ]
 
 [dependency-groups]

@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #e6b3b3;
+  --accent-dark: #d99999;
+  --accent-soft: #f5dede;
+  --rose: #c06f6f;
+  --rose-deep: #8a4f4f;
+  --text: #111111;
+  --muted: #6f6f6f;
+  --line: #eadada;
+  --bg: #ffffff;
+  --surface: #fff8f8;
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}

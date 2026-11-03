@@ -40,3 +40,11 @@ class SlugAlreadyTaken(ConflictError):
 
     def __init__(self, slug: str) -> None:
         super().__init__(f"Slug '{slug}' is already taken")
+
+
+class UnknownMediaAssets(ValidationError):
+    code = "unknown_media_assets"
+
+    def __init__(self, ids: list[str]) -> None:
+        super().__init__(f"Unknown media assets: {', '.join(ids)}")
+        self.ids = ids

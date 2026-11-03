@@ -11,10 +11,12 @@ from ups_kulka.shared.domain.errors import (
     ConflictError,
     DomainError,
     NotFoundError,
+    UnauthorizedError,
     ValidationError,
 )
 
 _STATUS_BY_ERROR: tuple[tuple[type[DomainError], int], ...] = (
+    (UnauthorizedError, status.HTTP_401_UNAUTHORIZED),
     (NotFoundError, status.HTTP_404_NOT_FOUND),
     (ConflictError, status.HTTP_409_CONFLICT),
     (ValidationError, 422),

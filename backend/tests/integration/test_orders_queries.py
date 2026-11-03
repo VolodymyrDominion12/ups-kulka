@@ -14,8 +14,8 @@ from ups_kulka.modules.orders.application.dto import OrderLineInput, PlaceOrderC
 pytestmark = pytest.mark.integration
 
 # catalog: SELECT prices (+ BEGIN/ROLLBACK noise);
-# orders: INSERT order RETURNING number + batch INSERT items (+ BEGIN/COMMIT noise).
-PLACE_ORDER_QUERIES = 6
+# orders: INSERT order RETURNING number + batch INSERT items + batch INSERT history.
+PLACE_ORDER_QUERIES = 7
 
 
 async def _products(container: Container, count: int) -> list[uuid.UUID]:

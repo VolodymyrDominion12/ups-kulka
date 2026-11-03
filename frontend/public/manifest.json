@@ -1,0 +1,10 @@
+{
+  "name": "УПС! Кулька — Адмін Салону",
+  "short_name": "УПС! Адмін",
+  "description": "Мобільна адмін-панель салону повітряних кульок УПС! Кулька: експрес-фото товарів, замовлення та маркетинг.",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#fff8f8",
+  "theme_color": "#8a4f4f",
+  "orientation": "portrait"
+}

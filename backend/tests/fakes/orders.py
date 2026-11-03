@@ -2,13 +2,18 @@
 
 import uuid
 from collections.abc import Mapping, Sequence
+from datetime import date
 from types import TracebackType
 from typing import Self
 
-from ups_kulka.modules.orders.application.dto import CatalogProduct
-from ups_kulka.modules.orders.domain.entities import Order
+from ups_kulka.modules.orders.application.dto import (
+    CatalogProduct,
+    CatalogProductAnalytics,
+)
+from ups_kulka.modules.orders.domain.entities import Order, OrderStatusEntry
 from ups_kulka.modules.payments.application.dto import Invoice
 from ups_kulka.modules.payments.domain.entities import Payment, PaymentStatus
+from ups_kulka.shared.application.pagination import Page, PageRequest
 
 
 class _FakeUoW:
@@ -43,6 +48,57 @@ class InMemoryOrderRepository:
         self.saved.append(order)
         return 1000 + len(self.saved)
 
+    async def get_by_number(self, number: int) -> Order | None:
+        for o in self.saved:
+            if o.number == number:
+                return o
+        return None
+
+    async def save(self, order: Order, new_status_entry: OrderStatusEntry | None) -> None:
+        for idx, existing in enumerate(self.saved):
+            if existing.id == order.id:
+                self.saved[idx] = order
+                return
+
+    async def list_for_admin(
+        self,
+        *,
+        status: str | None,
+        delivery_date: date | None,
+        delivery_method: str | None,
+        order_source: str | None,
+        q: str | None,
+        page: PageRequest,
+    ) -> Page[Order]:
+        items = list(self.saved)
+        if status:
+            items = [o for o in items if o.status.value == status]
+        if delivery_date is not None:
+            items = [o for o in items if o.delivery.date == delivery_date]
+        if delivery_method:
+            items = [o for o in items if o.delivery.method.value == delivery_method]
+        if order_source:
+            items = [o for o in items if o.marketing.order_source.value == order_source]
+        if q and q.strip():
+            needle = q.strip().lower()
+            items = [
+                o
+                for o in items
+                if needle in o.customer.name.lower()
+                or needle in o.customer.phone.value.lower()
+                or (o.number is not None and needle == str(o.number))
+            ]
+        items.sort(key=lambda o: (o.created_at, o.number or 0), reverse=True)
+        return Page(
+            items=tuple(items[page.offset : page.offset + page.limit]),
+            total=len(items),
+            limit=page.limit,
+            offset=page.offset,
+        )
+
+    async def list_all_for_analytics(self) -> list[Order]:
+        return list(self.saved)
+
 
 class FakeOrdersUnitOfWork(_FakeUoW):
     def __init__(self) -> None:
@@ -50,8 +106,13 @@ class FakeOrdersUnitOfWork(_FakeUoW):
 
 
 class FakeProductCatalog:
-    def __init__(self, *products: CatalogProduct) -> None:
+    def __init__(
+        self,
+        *products: CatalogProduct,
+        analytics_products: list[CatalogProductAnalytics] | None = None,
+    ) -> None:
         self.products = {p.id: p for p in products}
+        self.analytics_products = analytics_products or []
         self.calls = 0
 
     async def products_for_order(
@@ -59,6 +120,9 @@ class FakeProductCatalog:
     ) -> Mapping[uuid.UUID, CatalogProduct]:
         self.calls += 1
         return {i: self.products[i] for i in ids if i in self.products}
+
+    async def products_for_analytics(self) -> list[CatalogProductAnalytics]:
+        return list(self.analytics_products)
 
 
 class FakePaymentStarter:

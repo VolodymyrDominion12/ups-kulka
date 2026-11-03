@@ -1,6 +1,13 @@
 import uuid
 
-from ups_kulka.shared.domain.errors import ValidationError
+from ups_kulka.shared.domain.errors import NotFoundError, ValidationError
+
+
+class OrderNotFound(NotFoundError):
+    code = "order_not_found"
+
+    def __init__(self, number: int) -> None:
+        super().__init__(f"Замовлення №{number} не знайдено")
 
 
 class InvalidPhone(ValidationError):

@@ -1,6 +1,450 @@
 {
   "components": {
     "schemas": {
+      "AdminLoginIn": {
+        "properties": {
+          "password": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "password"
+        ],
+        "title": "AdminLoginIn",
+        "type": "object"
+      },
+      "AdminOrderOut": {
+        "properties": {
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "customer_name": {
+            "title": "Customer Name",
+            "type": "string"
+          },
+          "customer_phone": {
+            "title": "Customer Phone",
+            "type": "string"
+          },
+          "delivery_address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Address"
+          },
+          "delivery_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Date"
+          },
+          "delivery_method": {
+            "title": "Delivery Method",
+            "type": "string"
+          },
+          "delivery_slot": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Slot"
+          },
+          "discount_kopecks": {
+            "title": "Discount Kopecks",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "internal_note": {
+            "title": "Internal Note",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlacedOrderItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "landing_page": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landing Page"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "order_source": {
+            "title": "Order Source",
+            "type": "string"
+          },
+          "payment_method": {
+            "title": "Payment Method",
+            "type": "string"
+          },
+          "promo_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promo Code"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "status_history": {
+            "items": {
+              "$ref": "#/components/schemas/OrderStatusEntryOut"
+            },
+            "title": "Status History",
+            "type": "array"
+          },
+          "subtotal_kopecks": {
+            "title": "Subtotal Kopecks",
+            "type": "integer"
+          },
+          "total_kopecks": {
+            "title": "Total Kopecks",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "utm_campaign": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Campaign"
+          },
+          "utm_medium": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Medium"
+          },
+          "utm_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Source"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "status",
+          "customer_name",
+          "customer_phone",
+          "comment",
+          "delivery_method",
+          "delivery_address",
+          "delivery_date",
+          "delivery_slot",
+          "payment_method",
+          "subtotal_kopecks",
+          "discount_kopecks",
+          "total_kopecks",
+          "order_source",
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "landing_page",
+          "promo_code",
+          "internal_note",
+          "created_at",
+          "updated_at",
+          "items",
+          "status_history"
+        ],
+        "title": "AdminOrderOut",
+        "type": "object"
+      },
+      "AdminOrderPageOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminOrderOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "AdminOrderPageOut",
+        "type": "object"
+      },
+      "AdminSessionOut": {
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "token",
+          "expires_at"
+        ],
+        "title": "AdminSessionOut",
+        "type": "object"
+      },
+      "AnalyticsDashboardOut": {
+        "properties": {
+          "by_delivery_method": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Delivery Method",
+            "type": "array"
+          },
+          "by_landing_page": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Landing Page",
+            "type": "array"
+          },
+          "by_order_source": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Order Source",
+            "type": "array"
+          },
+          "by_payment_method": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Payment Method",
+            "type": "array"
+          },
+          "by_status": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Status",
+            "type": "array"
+          },
+          "by_tag_group": {
+            "items": {
+              "$ref": "#/components/schemas/TagGroupPerformanceOut"
+            },
+            "title": "By Tag Group",
+            "type": "array"
+          },
+          "by_utm_campaign": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Utm Campaign",
+            "type": "array"
+          },
+          "by_utm_source": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownItemOut"
+            },
+            "title": "By Utm Source",
+            "type": "array"
+          },
+          "daily_series": {
+            "items": {
+              "$ref": "#/components/schemas/DailySalesPointOut"
+            },
+            "title": "Daily Series",
+            "type": "array"
+          },
+          "date_from": {
+            "format": "date",
+            "title": "Date From",
+            "type": "string"
+          },
+          "date_to": {
+            "format": "date",
+            "title": "Date To",
+            "type": "string"
+          },
+          "hourly_heatmap": {
+            "items": {
+              "$ref": "#/components/schemas/HourlyBucketOut"
+            },
+            "title": "Hourly Heatmap",
+            "type": "array"
+          },
+          "kpi": {
+            "$ref": "#/components/schemas/SalesKpiOut"
+          },
+          "promo_codes": {
+            "items": {
+              "$ref": "#/components/schemas/PromoPerformanceOut"
+            },
+            "title": "Promo Codes",
+            "type": "array"
+          },
+          "top_products": {
+            "items": {
+              "$ref": "#/components/schemas/ProductPerformanceOut"
+            },
+            "title": "Top Products",
+            "type": "array"
+          },
+          "zero_sales_products": {
+            "items": {
+              "$ref": "#/components/schemas/ProductPerformanceOut"
+            },
+            "title": "Zero Sales Products",
+            "type": "array"
+          }
+        },
+        "required": [
+          "date_from",
+          "date_to",
+          "kpi",
+          "daily_series",
+          "by_status",
+          "by_delivery_method",
+          "by_payment_method",
+          "by_order_source",
+          "by_utm_source",
+          "by_utm_campaign",
+          "by_landing_page",
+          "promo_codes",
+          "top_products",
+          "zero_sales_products",
+          "by_tag_group",
+          "hourly_heatmap"
+        ],
+        "title": "AnalyticsDashboardOut",
+        "type": "object"
+      },
+      "Body_upload_media_api_v1_admin_media_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_media_api_v1_admin_media_post",
+        "type": "object"
+      },
+      "BreakdownItemOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          },
+          "share_percent": {
+            "title": "Share Percent",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "orders_count",
+          "revenue_kopecks",
+          "share_percent"
+        ],
+        "title": "BreakdownItemOut",
+        "type": "object"
+      },
       "CheckoutOptionsOut": {
         "properties": {
           "delivery_methods": {
@@ -23,6 +467,171 @@
           "payment_methods"
         ],
         "title": "CheckoutOptionsOut",
+        "type": "object"
+      },
+      "CreateAdminOrderIn": {
+        "properties": {
+          "customer": {
+            "$ref": "#/components/schemas/CustomerIn"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/DeliveryIn"
+          },
+          "discount_kopecks": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Discount Kopecks",
+            "type": "integer"
+          },
+          "internal_note": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Internal Note",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderLineIn"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "order_source": {
+            "default": "walk_in",
+            "enum": [
+              "storefront",
+              "instagram",
+              "telegram",
+              "phone",
+              "walk_in"
+            ],
+            "title": "Order Source",
+            "type": "string"
+          },
+          "payment_method": {
+            "default": "on_delivery",
+            "enum": [
+              "on_delivery",
+              "online"
+            ],
+            "title": "Payment Method",
+            "type": "string"
+          },
+          "promo_code": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promo Code"
+          }
+        },
+        "required": [
+          "customer",
+          "delivery",
+          "items"
+        ],
+        "title": "CreateAdminOrderIn",
+        "type": "object"
+      },
+      "CustomerCrmOut": {
+        "properties": {
+          "avg_order_value_kopecks": {
+            "title": "Avg Order Value Kopecks",
+            "type": "integer"
+          },
+          "days_since_last_order": {
+            "title": "Days Since Last Order",
+            "type": "integer"
+          },
+          "favorite_items": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Favorite Items",
+            "type": "array"
+          },
+          "first_order_at": {
+            "format": "date-time",
+            "title": "First Order At",
+            "type": "string"
+          },
+          "last_order_at": {
+            "format": "date-time",
+            "title": "Last Order At",
+            "type": "string"
+          },
+          "ltv_kopecks": {
+            "title": "Ltv Kopecks",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "phone": {
+            "title": "Phone",
+            "type": "string"
+          },
+          "segment": {
+            "title": "Segment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "phone",
+          "name",
+          "orders_count",
+          "ltv_kopecks",
+          "avg_order_value_kopecks",
+          "first_order_at",
+          "last_order_at",
+          "days_since_last_order",
+          "segment",
+          "favorite_items"
+        ],
+        "title": "CustomerCrmOut",
+        "type": "object"
+      },
+      "CustomerCrmPageOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CustomerCrmOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "CustomerCrmPageOut",
         "type": "object"
       },
       "CustomerIn": {
@@ -60,6 +669,30 @@
           "phone"
         ],
         "title": "CustomerIn",
+        "type": "object"
+      },
+      "DailySalesPointOut": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date",
+          "revenue_kopecks",
+          "orders_count"
+        ],
+        "title": "DailySalesPointOut",
         "type": "object"
       },
       "DeliveryIn": {
@@ -153,6 +786,189 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HourlyBucketOut": {
+        "properties": {
+          "day_of_week": {
+            "title": "Day Of Week",
+            "type": "integer"
+          },
+          "hour": {
+            "title": "Hour",
+            "type": "integer"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day_of_week",
+          "hour",
+          "orders_count"
+        ],
+        "title": "HourlyBucketOut",
+        "type": "object"
+      },
+      "MarketingAttributionIn": {
+        "properties": {
+          "landing_page": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Landing Page"
+          },
+          "promo_code": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promo Code"
+          },
+          "utm_campaign": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Campaign"
+          },
+          "utm_medium": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Medium"
+          },
+          "utm_source": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utm Source"
+          }
+        },
+        "title": "MarketingAttributionIn",
+        "type": "object"
+      },
+      "MediaAssetOut": {
+        "properties": {
+          "blur_data_url": {
+            "title": "Blur Data Url",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "file_size_bytes": {
+            "title": "File Size Bytes",
+            "type": "integer"
+          },
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "mime_type": {
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "original_filename": {
+            "title": "Original Filename",
+            "type": "string"
+          },
+          "url_prefix": {
+            "title": "Url Prefix",
+            "type": "string"
+          },
+          "variants": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Variants",
+            "type": "object"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "original_filename",
+          "mime_type",
+          "file_size_bytes",
+          "width",
+          "height",
+          "url_prefix",
+          "blur_data_url",
+          "variants",
+          "created_at"
+        ],
+        "title": "MediaAssetOut",
+        "type": "object"
+      },
+      "MediaAssetPageOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MediaAssetOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "MediaAssetPageOut",
+        "type": "object"
+      },
       "MonobankWebhookIn": {
         "description": "Only the invoice id is read; the status is re-checked with the bank.",
         "properties": {
@@ -167,6 +983,61 @@
           "invoiceId"
         ],
         "title": "MonobankWebhookIn",
+        "type": "object"
+      },
+      "OrderAnniversaryOut": {
+        "properties": {
+          "anniversary_date": {
+            "format": "date",
+            "title": "Anniversary Date",
+            "type": "string"
+          },
+          "customer_name": {
+            "title": "Customer Name",
+            "type": "string"
+          },
+          "customer_phone": {
+            "title": "Customer Phone",
+            "type": "string"
+          },
+          "days_until": {
+            "title": "Days Until",
+            "type": "integer"
+          },
+          "items_summary": {
+            "title": "Items Summary",
+            "type": "string"
+          },
+          "order_number": {
+            "title": "Order Number",
+            "type": "integer"
+          },
+          "original_date": {
+            "format": "date",
+            "title": "Original Date",
+            "type": "string"
+          },
+          "total_kopecks": {
+            "title": "Total Kopecks",
+            "type": "integer"
+          },
+          "years_ago": {
+            "title": "Years Ago",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "order_number",
+          "customer_name",
+          "customer_phone",
+          "original_date",
+          "anniversary_date",
+          "days_until",
+          "years_ago",
+          "total_kopecks",
+          "items_summary"
+        ],
+        "title": "OrderAnniversaryOut",
         "type": "object"
       },
       "OrderLineIn": {
@@ -190,6 +1061,48 @@
         "title": "OrderLineIn",
         "type": "object"
       },
+      "OrderStatusEntryOut": {
+        "properties": {
+          "changed_at": {
+            "format": "date-time",
+            "title": "Changed At",
+            "type": "string"
+          },
+          "from_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Status"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "to_status": {
+            "title": "To Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "from_status",
+          "to_status",
+          "note",
+          "changed_at"
+        ],
+        "title": "OrderStatusEntryOut",
+        "type": "object"
+      },
       "PlaceOrderIn": {
         "properties": {
           "customer": {
@@ -206,6 +1119,16 @@
             "minItems": 1,
             "title": "Items",
             "type": "array"
+          },
+          "marketing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MarketingAttributionIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "payment_method": {
             "default": "on_delivery",
@@ -315,6 +1238,53 @@
         "title": "PlacedOrderOut",
         "type": "object"
       },
+      "ProductImageOut": {
+        "properties": {
+          "blur_data_url": {
+            "title": "Blur Data Url",
+            "type": "string"
+          },
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "media_id": {
+            "format": "uuid",
+            "title": "Media Id",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "url_prefix": {
+            "title": "Url Prefix",
+            "type": "string"
+          },
+          "variants": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Variants",
+            "type": "object"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "media_id",
+          "position",
+          "url_prefix",
+          "blur_data_url",
+          "width",
+          "height",
+          "variants"
+        ],
+        "title": "ProductImageOut",
+        "type": "object"
+      },
       "ProductIn": {
         "properties": {
           "description": {
@@ -322,6 +1292,15 @@
             "maxLength": 5000,
             "title": "Description",
             "type": "string"
+          },
+          "media_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Media Ids",
+            "type": "array"
           },
           "name": {
             "examples": [
@@ -331,6 +1310,18 @@
             "minLength": 1,
             "title": "Name",
             "type": "string"
+          },
+          "old_price_kopecks": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Old Price Kopecks"
           },
           "price_kopecks": {
             "examples": [
@@ -382,9 +1373,32 @@
             "title": "Id",
             "type": "string"
           },
+          "images": {
+            "items": {
+              "$ref": "#/components/schemas/ProductImageOut"
+            },
+            "title": "Images",
+            "type": "array"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
           "name": {
             "title": "Name",
             "type": "string"
+          },
+          "old_price_kopecks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Old Price Kopecks"
           },
           "price_kopecks": {
             "title": "Price Kopecks",
@@ -443,6 +1457,291 @@
           "offset"
         ],
         "title": "ProductPageOut",
+        "type": "object"
+      },
+      "ProductPerformanceOut": {
+        "properties": {
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "product_id": {
+            "format": "uuid",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "product_name": {
+            "title": "Product Name",
+            "type": "string"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "units_sold": {
+            "title": "Units Sold",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product_id",
+          "product_name",
+          "slug",
+          "units_sold",
+          "orders_count",
+          "revenue_kopecks"
+        ],
+        "title": "ProductPerformanceOut",
+        "type": "object"
+      },
+      "PromoPerformanceOut": {
+        "properties": {
+          "discount_kopecks": {
+            "title": "Discount Kopecks",
+            "type": "integer"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "promo_code": {
+            "title": "Promo Code",
+            "type": "string"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "promo_code",
+          "orders_count",
+          "revenue_kopecks",
+          "discount_kopecks"
+        ],
+        "title": "PromoPerformanceOut",
+        "type": "object"
+      },
+      "QuickProductIn": {
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 5000,
+            "title": "Description",
+            "type": "string"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "media_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Media Ids",
+            "type": "array"
+          },
+          "name": {
+            "examples": [
+              "Рожевий шик з цифрою"
+            ],
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "old_price_kopecks": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Old Price Kopecks"
+          },
+          "price_kopecks": {
+            "examples": [
+              145000
+            ],
+            "exclusiveMinimum": 0.0,
+            "title": "Price Kopecks",
+            "type": "integer"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "tag_slugs": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30,
+            "title": "Tag Slugs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "price_kopecks"
+        ],
+        "title": "QuickProductIn",
+        "type": "object"
+      },
+      "SalesKpiOut": {
+        "properties": {
+          "avg_order_change_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Order Change Percent"
+          },
+          "avg_order_value_kopecks": {
+            "title": "Avg Order Value Kopecks",
+            "type": "integer"
+          },
+          "cancelled_orders_count": {
+            "title": "Cancelled Orders Count",
+            "type": "integer"
+          },
+          "orders_change_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Orders Change Percent"
+          },
+          "orders_count": {
+            "title": "Orders Count",
+            "type": "integer"
+          },
+          "previous_avg_order_value_kopecks": {
+            "title": "Previous Avg Order Value Kopecks",
+            "type": "integer"
+          },
+          "previous_orders_count": {
+            "title": "Previous Orders Count",
+            "type": "integer"
+          },
+          "previous_revenue_kopecks": {
+            "title": "Previous Revenue Kopecks",
+            "type": "integer"
+          },
+          "repeat_customers_count": {
+            "title": "Repeat Customers Count",
+            "type": "integer"
+          },
+          "repeat_customers_rate_percent": {
+            "title": "Repeat Customers Rate Percent",
+            "type": "number"
+          },
+          "revenue_change_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revenue Change Percent"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          },
+          "unique_customers_count": {
+            "title": "Unique Customers Count",
+            "type": "integer"
+          },
+          "units_sold": {
+            "title": "Units Sold",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "revenue_kopecks",
+          "previous_revenue_kopecks",
+          "revenue_change_percent",
+          "orders_count",
+          "previous_orders_count",
+          "orders_change_percent",
+          "cancelled_orders_count",
+          "avg_order_value_kopecks",
+          "previous_avg_order_value_kopecks",
+          "avg_order_change_percent",
+          "units_sold",
+          "unique_customers_count",
+          "repeat_customers_count",
+          "repeat_customers_rate_percent"
+        ],
+        "title": "SalesKpiOut",
+        "type": "object"
+      },
+      "TagGroupPerformanceOut": {
+        "properties": {
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "revenue_kopecks": {
+            "title": "Revenue Kopecks",
+            "type": "integer"
+          },
+          "tag_name": {
+            "title": "Tag Name",
+            "type": "string"
+          },
+          "tag_slug": {
+            "title": "Tag Slug",
+            "type": "string"
+          },
+          "units_sold": {
+            "title": "Units Sold",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "group",
+          "tag_slug",
+          "tag_name",
+          "units_sold",
+          "revenue_kopecks"
+        ],
+        "title": "TagGroupPerformanceOut",
         "type": "object"
       },
       "TagIn": {
@@ -515,6 +1814,187 @@
         "title": "TagOut",
         "type": "object"
       },
+      "UpdateAdminOrderIn": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "delivery_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivery Date"
+          },
+          "internal_note": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Internal Note"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "new",
+                  "confirmed",
+                  "assembled",
+                  "shipped",
+                  "completed",
+                  "cancelled"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "status_note": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Status Note",
+            "type": "string"
+          },
+          "time_slot": {
+            "anyOf": [
+              {
+                "maxLength": 20,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Slot"
+          }
+        },
+        "title": "UpdateAdminOrderIn",
+        "type": "object"
+      },
+      "UpdateProductIn": {
+        "properties": {
+          "clear_old_price": {
+            "default": false,
+            "title": "Clear Old Price",
+            "type": "boolean"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "media_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Ids"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "old_price_kopecks": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Old Price Kopecks"
+          },
+          "price_kopecks": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Kopecks"
+          },
+          "tag_slugs": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 30,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tag Slugs"
+          }
+        },
+        "title": "UpdateProductIn",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -574,6 +2054,1345 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/admin/analytics/anniversaries": {
+      "get": {
+        "operationId": "get_order_anniversaries_api_v1_admin_analytics_anniversaries_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days_ahead",
+            "required": false,
+            "schema": {
+              "default": 14,
+              "maximum": 60,
+              "minimum": 1,
+              "title": "Days Ahead",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrderAnniversaryOut"
+                  },
+                  "title": "Response Get Order Anniversaries Api V1 Admin Analytics Anniversaries Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get Order Anniversaries",
+        "tags": [
+          "orders",
+          "admin-analytics"
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/customers": {
+      "get": {
+        "operationId": "list_customers_crm_api_v1_admin_analytics_customers_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "segment",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Segment"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerCrmPageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Customers Crm",
+        "tags": [
+          "orders",
+          "admin-analytics"
+        ]
+      }
+    },
+    "/api/v1/admin/analytics/dashboard": {
+      "get": {
+        "operationId": "get_analytics_dashboard_api_v1_admin_analytics_dashboard_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date To"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsDashboardOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get Analytics Dashboard",
+        "tags": [
+          "orders",
+          "admin-analytics"
+        ]
+      }
+    },
+    "/api/v1/admin/auth/login": {
+      "post": {
+        "operationId": "login_admin_api_v1_admin_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminLoginIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Login Admin",
+        "tags": [
+          "admin-auth"
+        ]
+      }
+    },
+    "/api/v1/admin/auth/me": {
+      "get": {
+        "operationId": "get_admin_session_api_v1_admin_auth_me_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get Admin Session",
+        "tags": [
+          "admin-auth"
+        ]
+      }
+    },
+    "/api/v1/admin/catalog/products": {
+      "get": {
+        "operationId": "list_admin_products_api_v1_admin_catalog_products_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          },
+          {
+            "in": "query",
+            "name": "is_active",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Is Active"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductPageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Admin Products",
+        "tags": [
+          "catalog",
+          "admin-catalog"
+        ]
+      },
+      "post": {
+        "operationId": "quick_create_product_api_v1_admin_catalog_products_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuickProductIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Quick Create Product",
+        "tags": [
+          "catalog",
+          "admin-catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/catalog/products/{product_id}": {
+      "patch": {
+        "operationId": "update_product_api_v1_admin_catalog_products__product_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Product Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Update Product",
+        "tags": [
+          "catalog",
+          "admin-catalog"
+        ]
+      }
+    },
+    "/api/v1/admin/media": {
+      "get": {
+        "operationId": "list_media_api_v1_admin_media_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaAssetPageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Media",
+        "tags": [
+          "admin-media"
+        ]
+      },
+      "post": {
+        "operationId": "upload_media_api_v1_admin_media_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_media_api_v1_admin_media_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Upload Media",
+        "tags": [
+          "admin-media"
+        ]
+      }
+    },
+    "/api/v1/admin/orders": {
+      "get": {
+        "operationId": "list_admin_orders_api_v1_admin_orders_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 16,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "delivery_date",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Delivery Date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "delivery_method",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 16,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Delivery Method"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order_source",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 32,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Order Source"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOrderPageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Admin Orders",
+        "tags": [
+          "orders",
+          "admin-orders"
+        ]
+      },
+      "post": {
+        "operationId": "create_admin_order_api_v1_admin_orders_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdminOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Create Admin Order",
+        "tags": [
+          "orders",
+          "admin-orders"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{number}": {
+      "get": {
+        "operationId": "get_admin_order_api_v1_admin_orders__number__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "title": "Number",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get Admin Order",
+        "tags": [
+          "orders",
+          "admin-orders"
+        ]
+      },
+      "patch": {
+        "operationId": "update_admin_order_api_v1_admin_orders__number__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "title": "Number",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdminOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Update Admin Order",
+        "tags": [
+          "orders",
+          "admin-orders"
+        ]
+      }
+    },
     "/api/v1/catalog/products": {
       "get": {
         "operationId": "list_products_api_v1_catalog_products_get",
@@ -629,6 +3448,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "content": {
@@ -688,6 +3517,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "content": {
@@ -751,6 +3590,16 @@
             },
             "description": "Successful Response"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -789,6 +3638,69 @@
       }
     },
     "/api/v1/catalog/tags": {
+      "get": {
+        "operationId": "list_tags_api_v1_catalog_tags_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TagOut"
+                  },
+                  "title": "Response List Tags Api V1 Catalog Tags Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Tags",
+        "tags": [
+          "catalog"
+        ]
+      },
       "post": {
         "operationId": "create_tag_api_v1_catalog_tags_post",
         "requestBody": {
@@ -811,6 +3723,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "content": {

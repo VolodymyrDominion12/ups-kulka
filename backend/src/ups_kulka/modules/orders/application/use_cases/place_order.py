@@ -14,8 +14,10 @@ from ups_kulka.modules.orders.domain.entities import (
     Customer,
     Delivery,
     DeliveryMethod,
+    MarketingAttribution,
     Order,
     OrderItem,
+    OrderSource,
     PaymentMethod,
 )
 from ups_kulka.modules.orders.domain.errors import (
@@ -54,13 +56,14 @@ class PlaceOrder:
     async def __call__(self, cmd: PlaceOrderCommand) -> PlacedOrderDTO:
         customer = Customer.create(name=cmd.customer_name, phone=cmd.phone, comment=cmd.comment)
         delivery = Delivery.create(
-            method=_parse(DeliveryMethod, cmd.delivery_method, "спосіб отримання"),
+            method=parse_enum(DeliveryMethod, cmd.delivery_method, "спосіб отримання"),
             today=self._today(),
             address=cmd.address,
             on_date=cmd.delivery_date,
             time_slot=cmd.time_slot,
         )
-        payment_method = _parse(PaymentMethod, cmd.payment_method, "спосіб оплати")
+        payment_method = parse_enum(PaymentMethod, cmd.payment_method, "спосіб оплати")
+        order_source = parse_enum(OrderSource, cmd.order_source, "канал замовлення")
         if payment_method is PaymentMethod.ONLINE and not self._payments.is_enabled:
             raise OnlinePaymentUnavailable
 
@@ -73,10 +76,21 @@ class PlaceOrder:
         if unavailable:
             raise ProductUnavailable(list(dict.fromkeys(unavailable)))
 
+        marketing = MarketingAttribution.create(
+            order_source=order_source,
+            utm_source=cmd.utm_source,
+            utm_medium=cmd.utm_medium,
+            utm_campaign=cmd.utm_campaign,
+            landing_page=cmd.landing_page,
+            promo_code=cmd.promo_code,
+            discount_kopecks=cmd.discount_kopecks,
+        )
         order = Order.place(
             customer=customer,
             delivery=delivery,
             payment_method=payment_method,
+            marketing=marketing,
+            internal_note=cmd.internal_note,
             items=[
                 OrderItem(
                     product_id=line.product_id,
@@ -111,7 +125,9 @@ class PlaceOrder:
             logger.exception("order notification failed for order %s", order.number)
 
 
-def _parse[E: (DeliveryMethod, PaymentMethod)](enum: type[E], value: str, what: str) -> E:
+def parse_enum[E: (DeliveryMethod, PaymentMethod, OrderSource)](
+    enum: type[E], value: str, what: str
+) -> E:
     try:
         return enum(value)
     except ValueError as exc:

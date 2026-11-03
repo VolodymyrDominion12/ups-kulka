@@ -2,7 +2,9 @@
 
 from dependency_injector import containers, providers
 
+from ups_kulka.modules.admin_auth.container import AdminAuthContainer
 from ups_kulka.modules.catalog.container import CatalogContainer
+from ups_kulka.modules.media.container import MediaContainer
 from ups_kulka.modules.notifications.container import NotificationsContainer
 from ups_kulka.modules.orders.container import OrdersContainer
 from ups_kulka.modules.payments.container import PaymentsContainer
@@ -21,7 +23,23 @@ class Container(containers.DeclarativeContainer):
     session_factory = providers.Singleton(create_session_factory, engine=engine)
 
     # One sub-container per module; add new modules here.
-    catalog = providers.Container(CatalogContainer, session_factory=session_factory)
+    admin_auth = providers.Container(
+        AdminAuthContainer,
+        admin_password=settings.provided.admin_password,
+        admin_secret_key=settings.provided.admin_secret_key,
+    )
+    media = providers.Container(
+        MediaContainer,
+        session_factory=session_factory,
+        media_root=settings.provided.media_root,
+        admin_auth=admin_auth.facade,
+    )
+    catalog = providers.Container(
+        CatalogContainer,
+        session_factory=session_factory,
+        media=media.facade,
+        admin_auth=admin_auth.facade,
+    )
     notifications = providers.Container(
         NotificationsContainer,
         telegram_bot_token=settings.provided.telegram_bot_token,
@@ -41,4 +59,5 @@ class Container(containers.DeclarativeContainer):
         catalog=catalog.facade,
         payments=payments.facade,
         notifications=notifications.facade,
+        admin_auth=admin_auth.facade,
     )

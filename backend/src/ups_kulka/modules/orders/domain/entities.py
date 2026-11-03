@@ -1,7 +1,7 @@
 import datetime as dt
 import re
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 
 from ups_kulka.modules.orders.domain.errors import (
@@ -60,6 +60,70 @@ class PaymentMethod(StrEnum):
 
 class OrderStatus(StrEnum):
     NEW = "new"
+    CONFIRMED = "confirmed"
+    ASSEMBLED = "assembled"
+    SHIPPED = "shipped"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
+
+class OrderSource(StrEnum):
+    STOREFRONT = "storefront"
+    INSTAGRAM = "instagram"
+    TELEGRAM = "telegram"
+    PHONE = "phone"
+    WALK_IN = "walk_in"
+
+
+@dataclass(frozen=True, slots=True)
+class MarketingAttribution:
+    order_source: OrderSource = OrderSource.STOREFRONT
+    utm_source: str | None = None
+    utm_medium: str | None = None
+    utm_campaign: str | None = None
+    landing_page: str | None = None
+    promo_code: str | None = None
+    discount_kopecks: int = 0
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        order_source: OrderSource = OrderSource.STOREFRONT,
+        utm_source: str | None = None,
+        utm_medium: str | None = None,
+        utm_campaign: str | None = None,
+        landing_page: str | None = None,
+        promo_code: str | None = None,
+        discount_kopecks: int = 0,
+    ) -> "MarketingAttribution":
+        if discount_kopecks < 0:
+            raise InvalidOrder("Знижка не може бути відʼємною")
+        return cls(
+            order_source=order_source,
+            utm_source=_clean_str(utm_source, 120),
+            utm_medium=_clean_str(utm_medium, 120),
+            utm_campaign=_clean_str(utm_campaign, 160),
+            landing_page=_clean_str(landing_page, 300),
+            promo_code=_clean_str(promo_code, 64),
+            discount_kopecks=discount_kopecks,
+        )
+
+
+def _clean_str(value: str | None, max_len: int) -> str | None:
+    if value is None:
+        return None
+    cleaned = value.strip()
+    return cleaned[:max_len] if cleaned else None
+
+
+@dataclass(frozen=True, slots=True)
+class OrderStatusEntry:
+    id: uuid.UUID
+    from_status: OrderStatus | None
+    to_status: OrderStatus
+    note: str
+    changed_at: dt.datetime
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,6 +184,10 @@ class Order:
     status: OrderStatus
     created_at: dt.datetime
     number: int | None = None
+    marketing: MarketingAttribution = field(default_factory=MarketingAttribution)
+    internal_note: str = ""
+    updated_at: dt.datetime | None = None
+    status_history: tuple[OrderStatusEntry, ...] = field(default_factory=tuple)
 
     @classmethod
     def place(
@@ -129,6 +197,8 @@ class Order:
         delivery: Delivery,
         items: list[OrderItem],
         payment_method: PaymentMethod,
+        marketing: MarketingAttribution | None = None,
+        internal_note: str = "",
     ) -> "Order":
         merged: dict[uuid.UUID, OrderItem] = {}
         for item in items:
@@ -144,6 +214,14 @@ class Order:
             raise InvalidOrder("Кошик порожній")
         if len(merged) > MAX_LINES:
             raise InvalidOrder(f"В одному замовленні — до {MAX_LINES} різних товарів")
+        now = dt.datetime.now(dt.UTC)
+        initial_entry = OrderStatusEntry(
+            id=uuid.uuid4(),
+            from_status=None,
+            to_status=OrderStatus.NEW,
+            note="Замовлення створено",
+            changed_at=now,
+        )
         return cls(
             id=uuid.uuid4(),
             customer=customer,
@@ -151,7 +229,11 @@ class Order:
             items=tuple(merged.values()),
             payment_method=payment_method,
             status=OrderStatus.NEW,
-            created_at=dt.datetime.now(dt.UTC),
+            created_at=now,
+            updated_at=now,
+            marketing=marketing or MarketingAttribution(),
+            internal_note=internal_note.strip(),
+            status_history=(initial_entry,),
         )
 
     def assign_number(self, number: int) -> None:
@@ -159,9 +241,62 @@ class Order:
             raise InvalidOrder("Order number is already assigned")
         self.number = number
 
+    def change_status(self, new_status: OrderStatus, *, note: str = "") -> OrderStatusEntry | None:
+        if new_status == self.status:
+            return None
+        now = dt.datetime.now(dt.UTC)
+        entry = OrderStatusEntry(
+            id=uuid.uuid4(),
+            from_status=self.status,
+            to_status=new_status,
+            note=note.strip()[:300],
+            changed_at=now,
+        )
+        self.status = new_status
+        self.updated_at = now
+        self.status_history = (*self.status_history, entry)
+        return entry
+
+    def update_salon_details(
+        self,
+        *,
+        internal_note: str | None = None,
+        delivery_date: dt.date | None = None,
+        time_slot: str | None = None,
+        address: str | None = None,
+    ) -> None:
+        if internal_note is not None:
+            self.internal_note = internal_note.strip()
+        new_date = self.delivery.date if delivery_date is None else delivery_date
+        new_slot = (
+            self.delivery.time_slot
+            if time_slot is None
+            else ((time_slot.strip() or None) if time_slot is not None else None)
+        )
+        new_addr = (
+            self.delivery.address
+            if address is None
+            else ((address.strip() or None) if address is not None else None)
+        )
+        if self.delivery.method is DeliveryMethod.TAXI and new_addr is None:
+            raise AddressRequired
+        self.delivery = Delivery(
+            method=self.delivery.method,
+            address=new_addr if self.delivery.method is DeliveryMethod.TAXI else None,
+            date=new_date,
+            time_slot=new_slot,
+        )
+        self.updated_at = dt.datetime.now(dt.UTC)
+
     @property
-    def total(self) -> Money:
+    def subtotal(self) -> Money:
         total = Money(0)
         for item in self.items:
             total = total + item.total
         return total
+
+    @property
+    def total(self) -> Money:
+        sub = self.subtotal.kopecks
+        disc = min(sub, self.marketing.discount_kopecks)
+        return Money(max(0, sub - disc))

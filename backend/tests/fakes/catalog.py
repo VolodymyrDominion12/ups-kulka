@@ -6,6 +6,7 @@ from types import TracebackType
 from typing import Self
 
 from ups_kulka.modules.catalog.application.dto import ProductForOrder
+from ups_kulka.modules.catalog.application.ports import MediaSnapshot
 from ups_kulka.modules.catalog.domain.entities import Product, Tag
 from ups_kulka.shared.application.pagination import Page, PageRequest
 
@@ -23,6 +24,9 @@ class InMemoryTagRepository:
     async def get_by_slugs(self, slugs: Sequence[str]) -> list[Tag]:
         return [self._store[slug] for slug in slugs if slug in self._store]
 
+    async def list_all(self) -> list[Tag]:
+        return sorted(self._store.values(), key=lambda t: (t.group.value, t.name))
+
 
 class InMemoryProductRepository:
     def __init__(self, store: dict[str, Product]) -> None:
@@ -31,8 +35,17 @@ class InMemoryProductRepository:
     async def add(self, product: Product) -> None:
         self._store[product.slug.value] = product
 
+    async def save(self, product: Product) -> None:
+        self._store[product.slug.value] = product
+
     async def slug_exists(self, slug: str) -> bool:
         return slug in self._store
+
+    async def get_by_id(self, product_id: uuid.UUID) -> Product | None:
+        for p in self._store.values():
+            if p.id == product_id:
+                return p
+        return None
 
     async def get_by_slug(self, slug: str, *, active_only: bool = True) -> Product | None:
         product = self._store.get(slug)
@@ -54,6 +67,33 @@ class InMemoryProductRepository:
             offset=page.offset,
         )
 
+    async def list_for_admin(
+        self,
+        *,
+        q: str | None,
+        tag_slug: str | None,
+        is_active: bool | None,
+        page: PageRequest,
+    ) -> Page[Product]:
+        items = list(self._store.values())
+        if is_active is not None:
+            items = [p for p in items if p.is_active == is_active]
+        if tag_slug is not None:
+            items = [p for p in items if any(t.slug.value == tag_slug for t in p.tags)]
+        if q and q.strip():
+            needle = q.strip().lower()
+            items = [p for p in items if needle in p.name.lower() or needle in p.slug.value.lower()]
+        items.sort(key=lambda p: (p.created_at, p.id), reverse=True)
+        return Page(
+            items=tuple(items[page.offset : page.offset + page.limit]),
+            total=len(items),
+            limit=page.limit,
+            offset=page.offset,
+        )
+
+    async def list_all_for_analytics(self) -> list[Product]:
+        return list(self._store.values())
+
     async def get_for_order(self, ids: Sequence[uuid.UUID]) -> list[ProductForOrder]:
         wanted = set(ids)
         return [
@@ -63,6 +103,23 @@ class InMemoryProductRepository:
             for p in self._store.values()
             if p.id in wanted
         ]
+
+
+class FakeMediaLookup:
+    def __init__(self, *media_ids: uuid.UUID) -> None:
+        self.snapshots: dict[uuid.UUID, MediaSnapshot] = {
+            mid: MediaSnapshot(
+                media_id=mid,
+                url_prefix=f"/media/{mid}",
+                blur_data_url="data:image/webp;base64,AAA",
+                width=800,
+                height=1000,
+            )
+            for mid in media_ids
+        }
+
+    async def get_media_snapshots(self, ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, MediaSnapshot]:
+        return {mid: self.snapshots[mid] for mid in ids if mid in self.snapshots}
 
 
 class FakeCatalogUnitOfWork:

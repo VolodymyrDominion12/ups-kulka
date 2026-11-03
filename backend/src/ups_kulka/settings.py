@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # Shop notifications (specs/008). Empty = messages go to the log.
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""
+    # Admin panel (specs/007) and media pipeline (specs/009).
+    admin_password: str = "admin123"  # noqa: S105 - local dev default
+    admin_secret_key: str = "local-dev-secret-change-in-production"  # noqa: S105
+    media_root: str = "./var/media"
 
     @property
     def sync_database_url(self) -> str:

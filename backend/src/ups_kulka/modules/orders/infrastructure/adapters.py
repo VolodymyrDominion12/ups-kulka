@@ -3,15 +3,28 @@
 import uuid
 from collections.abc import Mapping, Sequence
 
+from ups_kulka.modules.admin_auth.application.public import AdminAuthFacade
 from ups_kulka.modules.catalog.application.public import CatalogFacade
 from ups_kulka.modules.notifications.application.public import (
     NoticeLine,
     NotificationsFacade,
     OrderPlacedNotice,
 )
-from ups_kulka.modules.orders.application.dto import CatalogProduct
+from ups_kulka.modules.orders.application.dto import (
+    CatalogProduct,
+    CatalogProductAnalytics,
+    CatalogProductTag,
+)
 from ups_kulka.modules.orders.domain.entities import Order
 from ups_kulka.modules.payments.application.public import PaymentsFacade, StartPaymentCommand
+
+
+class OrdersAdminAuthAdapter:
+    def __init__(self, auth: AdminAuthFacade) -> None:
+        self._auth = auth
+
+    def require_admin(self, token: str | None) -> None:
+        self._auth.verify_token(token)
 
 
 class CatalogProductCatalog:
@@ -28,6 +41,23 @@ class CatalogProductCatalog:
             )
             for product_id, p in found.items()
         }
+
+    async def products_for_analytics(self) -> list[CatalogProductAnalytics]:
+        found = await self._catalog.products_for_analytics()
+        return [
+            CatalogProductAnalytics(
+                id=p.id,
+                slug=p.slug,
+                name=p.name,
+                price_kopecks=p.price_kopecks,
+                is_active=p.is_active,
+                created_at=p.created_at,
+                tags=tuple(
+                    CatalogProductTag(group=t.group, slug=t.slug, name=t.name) for t in p.tags
+                ),
+            )
+            for p in found
+        ]
 
 
 class FacadePaymentStarter:

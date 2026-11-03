@@ -54,10 +54,37 @@ class TagRow(Base):
     name: Mapped[str] = mapped_column(String(120))
 
 
+class ProductMediaRow(Base):
+    __tablename__ = "catalog_product_media"
+    __table_args__ = (
+        CheckConstraint("position >= 0", name="product_media_position_non_negative"),
+        CheckConstraint("width > 0 AND height > 0", name="product_media_dimensions_positive"),
+        # The composite PK (product_id, position) indexes the FK product_id.
+        Index("ix_catalog_product_media_media_id", "media_id"),
+    )
+
+    product_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        ForeignKey("catalog_products.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    position: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # No FK to media_assets (belongs to another module, see AGENTS.md section 3).
+    media_id: Mapped[uuid.UUID] = mapped_column(Uuid)
+    url_prefix: Mapped[str] = mapped_column(String(255))
+    blur_data_url: Mapped[str] = mapped_column(Text)
+    width: Mapped[int] = mapped_column(Integer)
+    height: Mapped[int] = mapped_column(Integer)
+
+
 class ProductRow(Base):
     __tablename__ = "catalog_products"
     __table_args__ = (
         CheckConstraint("price_kopecks > 0", name="price_positive"),
+        CheckConstraint(
+            "old_price_kopecks IS NULL OR old_price_kopecks > price_kopecks",
+            name="old_price_greater_than_price",
+        ),
         # Storefront list: WHERE is_active ORDER BY created_at DESC, id DESC
         Index(
             "ix_catalog_products_active_created",
@@ -72,7 +99,14 @@ class ProductRow(Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
     price_kopecks: Mapped[int] = mapped_column(Integer)
+    old_price_kopecks: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     tags: Mapped[list[TagRow]] = relationship(secondary=product_tags, lazy="raise")
+    media: Mapped[list[ProductMediaRow]] = relationship(
+        lazy="raise",
+        order_by=ProductMediaRow.position,
+        cascade="all, delete-orphan",
+    )

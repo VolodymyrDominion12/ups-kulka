@@ -1,4 +1,4 @@
-"""ORM tables of the orders module (specs/004-checkout/plan.md).
+"""ORM tables of the orders module (specs/004-checkout, specs/007-admin, specs/011-analytics).
 
 Every FK has an index; relationships are lazy="raise".
 """
@@ -42,9 +42,30 @@ class OrderItemRow(Base):
     quantity: Mapped[int] = mapped_column(Integer)
 
 
+class OrderStatusHistoryRow(Base):
+    __tablename__ = "orders_status_history"
+    __table_args__ = (Index("ix_orders_status_history_order_id", "order_id", "changed_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True)
+    order_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("orders_orders.id", ondelete="CASCADE")
+    )
+    from_status: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    to_status: Mapped[str] = mapped_column(String(16))
+    note: Mapped[str] = mapped_column(String(300), default="")
+    changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class OrderRow(Base):
     __tablename__ = "orders_orders"
-    __table_args__ = (CheckConstraint("total_kopecks >= 0", name="total_not_negative"),)
+    __table_args__ = (
+        CheckConstraint("total_kopecks >= 0", name="total_not_negative"),
+        CheckConstraint("discount_kopecks >= 0", name="discount_not_negative"),
+        Index("ix_orders_orders_status_created", "status", "created_at"),
+        Index("ix_orders_orders_delivery_date", "delivery_date", "created_at"),
+        Index("ix_orders_orders_created_at", "created_at"),
+        Index("ix_orders_orders_customer_phone", "customer_phone", "created_at"),
+    )
     # Fetch the IDENTITY number in the INSERT ... RETURNING, no extra SELECT.
     __mapper_args__ = {"eager_defaults": True}  # noqa: RUF012 - SQLAlchemy API
 
@@ -60,7 +81,20 @@ class OrderRow(Base):
     delivery_date: Mapped[date | None] = mapped_column(Date)
     delivery_slot: Mapped[str | None] = mapped_column(String(20))
     payment_method: Mapped[str] = mapped_column(String(16))
+    order_source: Mapped[str] = mapped_column(String(32), default="storefront")
+    utm_source: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    utm_medium: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    utm_campaign: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    landing_page: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    promo_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    discount_kopecks: Mapped[int] = mapped_column(Integer, default=0)
     total_kopecks: Mapped[int] = mapped_column(Integer)
+    internal_note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     items: Mapped[list[OrderItemRow]] = relationship(lazy="raise")
+    status_history: Mapped[list[OrderStatusHistoryRow]] = relationship(
+        lazy="raise",
+        order_by=OrderStatusHistoryRow.changed_at,
+    )
