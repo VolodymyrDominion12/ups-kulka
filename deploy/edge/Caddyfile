@@ -1,0 +1,17 @@
+{
+	email {$ACME_EMAIL}
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	log
+}
+
+# Enabled sites are copied here from sites-available by deploy.sh (EDGE_SITES in env/edge.env).
+import sites/*.caddy

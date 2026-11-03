@@ -1,0 +1,20 @@
+{$SITE_DOMAIN} {
+	import common
+
+	# Photo variants never change after upload (new upload = new id), so cache them for a year.
+	handle /media/* {
+		root * /srv/ups-kulka/production
+		header Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+	handle /api/* {
+		reverse_proxy production-api:8000
+	}
+	handle {
+		reverse_proxy production-web:3000
+	}
+}
+
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}

@@ -5,8 +5,15 @@ export const SHOP = {
   phoneLabel: "093 642 40 49",
   instagramUrl: "https://www.instagram.com/oops_kulka",
   instagramHandle: "@oops_kulka",
-  /** Absolute site URL for canonical links, sitemap and schema.org. */
-  siteUrl: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
+  /**
+   * Absolute site URL for canonical links, sitemap and schema.org. SITE_URL is
+   * read when the server starts, so one image serves staging and production.
+   */
+  siteUrl: (
+    process.env.SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "http://localhost:3000"
+  ).replace(/\/$/, ""),
 } as const;
 
 export const PAGE_SIZE = 24;

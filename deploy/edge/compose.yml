@@ -1,0 +1,33 @@
+# Caddy in front of every environment: HTTPS, compression, media files with a long cache.
+# Started by deploy.sh with --env-file ../../env/edge.env
+name: ups-kulka-edge
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?}
+      SITE_DOMAIN: ${SITE_DOMAIN:-}
+      STAGING_DOMAIN: ${STAGING_DOMAIN:-}
+      OLD_DOMAIN: ${OLD_DOMAIN:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      # Media of each environment, served without going through the API.
+      - ${DATA_ROOT:-/srv/ups-kulka}:/srv/ups-kulka:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [edge]
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+    external: true

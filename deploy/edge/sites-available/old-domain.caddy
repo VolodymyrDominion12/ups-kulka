@@ -1,0 +1,5 @@
+# The old site's address sends visitors to the new shop (specs/010).
+# Works only after the old domain's DNS points to this server.
+{$OLD_DOMAIN} {
+	redir https://{$SITE_DOMAIN}/ permanent
+}

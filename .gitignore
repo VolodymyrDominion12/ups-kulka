@@ -13,3 +13,7 @@ node_modules/
 dist/
 .env*.local
 next-env.d.ts
+
+# Server-only files (deploy/deploy.sh)
+deploy/edge/sites/
+deploy/env/*.env
