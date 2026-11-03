@@ -1,0 +1,88 @@
+"""N+1 guard: query count must not grow with the number of rows (AGENTS.md, section 5)."""
+
+import pytest
+
+from tests.conftest import QueryCounter
+from ups_kulka.container import Container
+from ups_kulka.modules.catalog.application.dto import (
+    CreateProductCommand,
+    CreateTagCommand,
+    ListProductsQuery,
+)
+
+pytestmark = pytest.mark.integration
+
+LIST_QUERIES = 3  # count + page + selectinload(tags)
+GET_QUERIES = 2  # product + selectinload(tags)
+
+
+async def _seed(container: Container, products: int, tags_per_product: int) -> None:
+    create_tag = container.catalog.create_tag()
+    create_product = container.catalog.create_product()
+    tag_slugs = [f"tag-{i}" for i in range(tags_per_product)]
+    for slug in tag_slugs:
+        await create_tag(CreateTagCommand(group="theme", slug=slug, name=slug))
+    for i in range(products):
+        await create_product(
+            CreateProductCommand(
+                slug=f"product-{i}",
+                name=f"Product {i}",
+                description="",
+                price_kopecks=10000,
+                tag_slugs=tuple(tag_slugs),
+            )
+        )
+
+
+@pytest.mark.parametrize(("products", "tags"), [(1, 1), (30, 5)])
+async def test_list_products_query_count_is_constant(
+    container: Container, query_counter: QueryCounter, products: int, tags: int
+) -> None:
+    await _seed(container, products, tags)
+    list_products = container.catalog.list_products()
+
+    with query_counter.assert_max_queries(LIST_QUERIES):
+        page = await list_products(ListProductsQuery(limit=50))
+
+    assert len(page.items) == products
+    assert all(len(item.tags) == tags for item in page.items)
+
+
+@pytest.mark.parametrize(("products", "tags"), [(1, 1), (30, 5)])
+async def test_list_by_tag_query_count_is_constant(
+    container: Container, query_counter: QueryCounter, products: int, tags: int
+) -> None:
+    await _seed(container, products, tags)
+    list_products = container.catalog.list_products()
+
+    with query_counter.assert_max_queries(LIST_QUERIES):
+        page = await list_products(ListProductsQuery(tag_slug="tag-0", limit=50))
+
+    assert page.total == products
+
+
+async def test_get_product_query_count(container: Container, query_counter: QueryCounter) -> None:
+    await _seed(container, products=1, tags_per_product=10)
+    get_product = container.catalog.get_product()
+
+    with query_counter.assert_max_queries(GET_QUERIES):
+        product = await get_product("product-0")
+
+    assert len(product.tags) == 10
+
+
+async def test_create_product_links_tags_in_one_batch(
+    container: Container, query_counter: QueryCounter
+) -> None:
+    await _seed(container, products=0, tags_per_product=20)
+    create_product = container.catalog.create_product()
+    command = CreateProductCommand(
+        slug="many-tags",
+        name="Many tags",
+        description="",
+        price_kopecks=100,
+        tag_slugs=tuple(f"tag-{i}" for i in range(20)),
+    )
+    # exists check + tags lookup + insert product + batch insert links (+ BEGIN/COMMIT noise)
+    with query_counter.assert_max_queries(6):
+        await create_product(command)
