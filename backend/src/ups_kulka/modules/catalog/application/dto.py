@@ -63,3 +63,13 @@ class ProductDTO:
             created_at=product.created_at,
             tags=tuple(TagDTO.from_entity(tag) for tag in product.tags),
         )
+
+
+@dataclass(frozen=True, slots=True)
+class ProductForOrder:
+    """Lightweight read model for checkout: no tags, no description."""
+
+    id: uuid.UUID
+    name: str
+    price_kopecks: int
+    is_active: bool

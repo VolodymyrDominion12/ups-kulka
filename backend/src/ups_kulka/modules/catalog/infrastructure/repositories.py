@@ -1,9 +1,11 @@
+import uuid
 from collections.abc import Sequence
 
-from sqlalchemy import exists, func, insert, select
+from sqlalchemy import ColumnElement, exists, func, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from ups_kulka.modules.catalog.application.dto import ProductForOrder
 from ups_kulka.modules.catalog.domain.entities import Product, Tag
 from ups_kulka.modules.catalog.infrastructure.mappers import product_to_domain, tag_to_domain
 from ups_kulka.modules.catalog.infrastructure.tables import ProductRow, TagRow, product_tags
@@ -61,9 +63,7 @@ class SqlAlchemyProductRepository:
 
     async def get_by_slug(self, slug: str, *, active_only: bool = True) -> Product | None:
         stmt = (
-            select(ProductRow)
-            .options(selectinload(ProductRow.tags))
-            .where(ProductRow.slug == slug)
+            select(ProductRow).options(selectinload(ProductRow.tags)).where(ProductRow.slug == slug)
         )
         if active_only:
             stmt = stmt.where(ProductRow.is_active.is_(True))
@@ -72,7 +72,7 @@ class SqlAlchemyProductRepository:
 
     async def list_active(self, *, tag_slug: str | None, page: PageRequest) -> Page[Product]:
         """3 queries total: count, page of products, tags of the page (selectinload)."""
-        conditions = [ProductRow.is_active.is_(True)]
+        conditions: list[ColumnElement[bool]] = [ProductRow.is_active.is_(True)]
         if tag_slug is not None:
             conditions.append(
                 exists()
@@ -98,3 +98,18 @@ class SqlAlchemyProductRepository:
             limit=page.limit,
             offset=page.offset,
         )
+
+    async def get_for_order(self, ids: Sequence[uuid.UUID]) -> list[ProductForOrder]:
+        if not ids:
+            return []
+        rows = await self._session.execute(
+            select(
+                ProductRow.id, ProductRow.name, ProductRow.price_kopecks, ProductRow.is_active
+            ).where(ProductRow.id.in_(ids))
+        )
+        return [
+            ProductForOrder(
+                id=r.id, name=r.name, price_kopecks=r.price_kopecks, is_active=r.is_active
+            )
+            for r in rows
+        ]

@@ -1,9 +1,11 @@
 """In-memory fakes of catalog ports for fast unit tests (no DB)."""
 
+import uuid
 from collections.abc import Sequence
 from types import TracebackType
 from typing import Self
 
+from ups_kulka.modules.catalog.application.dto import ProductForOrder
 from ups_kulka.modules.catalog.domain.entities import Product, Tag
 from ups_kulka.shared.application.pagination import Page, PageRequest
 
@@ -51,6 +53,16 @@ class InMemoryProductRepository:
             limit=page.limit,
             offset=page.offset,
         )
+
+    async def get_for_order(self, ids: Sequence[uuid.UUID]) -> list[ProductForOrder]:
+        wanted = set(ids)
+        return [
+            ProductForOrder(
+                id=p.id, name=p.name, price_kopecks=p.price.kopecks, is_active=p.is_active
+            )
+            for p in self._store.values()
+            if p.id in wanted
+        ]
 
 
 class FakeCatalogUnitOfWork:

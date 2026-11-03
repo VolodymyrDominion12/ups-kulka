@@ -17,7 +17,13 @@ make up           # PostgreSQL + Redis у Docker
 make migrate      # міграції
 make run          # http://localhost:8000/docs
 make check        # усе, що перевіряє CI
+
+# каталог зі старого сайту (211 товарів, specs/010-import-old-site)
+uv run python scripts/import_old_site.py
 ```
+
+Онлайн-оплата (monobank) і сповіщення в Telegram вмикаються змінними в
+`backend/.env` — див. `.env.example`, specs/006 і specs/008.
 
 Інтеграційні тести самі піднімають PostgreSQL через testcontainers (потрібен
 запущений Docker) або використовують `TEST_DATABASE_URL`.
@@ -28,3 +34,4 @@ make check        # усе, що перевіряє CI
 - [docs/architecture.md](docs/architecture.md), [docs/adr/](docs/adr/) — архітектура
 - [.specify/memory/constitution.md](.specify/memory/constitution.md) — принципи
 - [specs/](specs/) — специфікації функцій
+- [docs/design/](docs/design/) — дизайн вітрини: токени, демо `preview.html`

@@ -3,9 +3,11 @@
 Implementations live in ``infrastructure``; tests use in-memory fakes.
 """
 
+import uuid
 from collections.abc import Callable, Sequence
 from typing import Protocol
 
+from ups_kulka.modules.catalog.application.dto import ProductForOrder
 from ups_kulka.modules.catalog.domain.entities import Product, Tag
 from ups_kulka.shared.application.pagination import Page, PageRequest
 from ups_kulka.shared.application.uow import UnitOfWork
@@ -20,6 +22,10 @@ class ProductRepository(Protocol):
 
     async def list_active(self, *, tag_slug: str | None, page: PageRequest) -> Page[Product]:
         """Must run a constant number of queries regardless of page size (no N+1)."""
+        ...
+
+    async def get_for_order(self, ids: Sequence[uuid.UUID]) -> list[ProductForOrder]:
+        """Batch lookup for checkout: ONE query for any number of ids."""
         ...
 
 

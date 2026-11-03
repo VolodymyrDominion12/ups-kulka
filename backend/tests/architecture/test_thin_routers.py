@@ -10,8 +10,17 @@ ROUTER_FILES = sorted((SRC / "modules").glob("*/presentation/*.py"))
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
 
 MAX_STATEMENTS = 3
-FORBIDDEN_NODES = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.Try, ast.With, ast.AsyncWith,
-                   ast.Match, ast.Raise)
+FORBIDDEN_NODES = (
+    ast.If,
+    ast.For,
+    ast.AsyncFor,
+    ast.While,
+    ast.Try,
+    ast.With,
+    ast.AsyncWith,
+    ast.Match,
+    ast.Raise,
+)
 FORBIDDEN_NAMES = {"session", "AsyncSession", "select", "commit", "execute", "uow"}
 
 
@@ -37,7 +46,9 @@ def test_routers_found() -> None:
 @pytest.mark.parametrize(("path", "fn"), ENDPOINTS, ids=lambda v: getattr(v, "name", v.name))
 def test_endpoint_is_thin(path: Path, fn: ast.AsyncFunctionDef | ast.FunctionDef) -> None:
     where = f"{path.relative_to(SRC.parent)}::{fn.name}"
-    body = [s for s in fn.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
+    body = [
+        s for s in fn.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))
+    ]
 
     assert len(body) <= MAX_STATEMENTS, (
         f"{where}: {len(body)} statements; move logic into a use case (max {MAX_STATEMENTS})"

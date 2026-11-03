@@ -81,7 +81,7 @@ class CreateProduct:
         async with self._uow_factory() as uow:
             if await uow.products.exists_slug(cmd.slug):
                 raise SlugAlreadyTaken(cmd.slug)
-            product = Product.create(...)   # правила — в домені
+            product = Product.create(...)  # правила — в домені
             await uow.products.add(product)
             await uow.commit()
         return ProductDTO.from_entity(product)

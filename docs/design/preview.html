@@ -1,0 +1,563 @@
+<title>УПС! Кулька</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* УПС! Кулька — design tokens keep the palette of oops.kylka.shop */
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Manrope:wght@400;500;600;700&display=swap");
+
+:root {
+  --accent: #e6b3b3;
+  --accent-dark: #d99999;
+  --accent-soft: #f5dede;
+  --rose: #c06f6f;
+  --rose-deep: #8a4f4f;
+  --text: #111111;
+  --muted: #6f6f6f; /* old #8b8b8b darkened to pass 4.5:1 on white */
+  --line: #eadada;
+  --bg: #ffffff;
+  --surface: #fff8f8;
+
+  --font-display: "Comfortaa", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --r-photo: 22px;
+  --r-panel: 28px;
+  --pill: 999px;
+  --wrap: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --shadow-pop: 0 18px 40px -18px rgba(138, 79, 79, 0.45);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 16px/1.55 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; border-radius: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 24px; border-radius: var(--pill);
+  border: 0; font-weight: 700; text-decoration: none;
+  transition: background-color .15s, transform .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--text); color: #fff; }
+.btn-primary:hover { background: var(--rose-deep); }
+.btn-soft { background: var(--accent-soft); color: var(--rose-deep); }
+.btn-soft:hover { background: var(--accent); }
+.btn-block { width: 100%; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; background: var(--accent-soft); color: var(--rose-deep);
+}
+
+/* ---------- header ---------- */
+.header { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.header-row { display: flex; align-items: center; gap: 16px; height: 68px; }
+.logo { font: 700 22px/1 var(--font-display); text-decoration: none; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.logo-dot { width: 22px; height: 26px; border-radius: 50% 50% 48% 48%; background: radial-gradient(circle at 35% 30%, #fff6 0 18%, transparent 19%), var(--accent); position: relative; }
+.logo-dot::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 6px; height: 5px; transform: translateX(-50%); background: var(--accent-dark); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.header-nav { display: flex; gap: 22px; margin-left: 24px; }
+.header-nav a { text-decoration: none; font-weight: 600; color: var(--muted); }
+.header-nav a:hover { color: var(--text); }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.header-phone { font-weight: 700; text-decoration: none; }
+.cart-btn { position: relative; }
+.cart-count {
+  position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px;
+  border-radius: var(--pill); background: var(--rose); color: #fff; font: 700 12px/20px var(--font-body); text-align: center;
+}
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; background: linear-gradient(180deg, var(--accent-soft) 0%, #fff 100%); }
+.hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 24px; min-height: 560px; padding-block: 48px 72px; }
+.hero h1 {
+  font: 700 clamp(44px, 7vw, 88px)/0.98 var(--font-display);
+  letter-spacing: -.035em; margin: 0 0 20px; color: var(--rose-deep);
+}
+.hero h1 span { display: block; color: var(--text); font-size: .52em; letter-spacing: -.02em; line-height: 1.12; margin-top: 12px; }
+.hero p { font-size: 18px; max-width: 46ch; margin: 0 0 28px; color: #3a3a3a; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 32px 0 0; padding: 0; list-style: none; font-weight: 600; color: var(--rose-deep); }
+
+/* balloon cluster: product photos cut into balloon shapes, tied with strings */
+.bunch { position: relative; height: 500px; }
+.balloon {
+  position: absolute; width: var(--w); aspect-ratio: 5 / 6;
+  left: var(--x); top: var(--y);
+  animation: rise 1.4s cubic-bezier(.2,.8,.2,1) var(--d, 0s) both, sway 7s ease-in-out calc(var(--d, 0s) + 1.4s) infinite alternate;
+  transform-origin: 50% 160%;
+}
+.balloon-skin {
+  width: 100%; height: 100%; border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  overflow: hidden; background: var(--accent);
+  box-shadow: inset -14px -18px 30px rgba(138,79,79,.28), var(--shadow-pop);
+  position: relative;
+}
+.balloon-skin img { width: 100%; height: 100%; object-fit: cover; }
+.balloon-skin::after { /* glossy highlight */
+  content: ""; position: absolute; left: 18%; top: 12%; width: 22%; height: 16%;
+  border-radius: 50%; background: rgba(255,255,255,.55); filter: blur(2px); transform: rotate(-30deg);
+}
+.balloon::before { /* knot */
+  content: ""; position: absolute; left: 50%; top: 99%; width: 14px; height: 10px; transform: translateX(-50%);
+  background: var(--accent-dark); clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.balloon::after { /* string */
+  content: ""; position: absolute; left: 50%; top: calc(100% + 9px); width: 2px; height: var(--s, 140px);
+  background: linear-gradient(var(--accent-dark), transparent); transform: rotate(var(--sr, 0deg)); transform-origin: top;
+}
+.balloon.plain .balloon-skin { background: radial-gradient(circle at 50% 50%, var(--c, var(--accent)) 60%, color-mix(in srgb, var(--c, var(--accent)) 70%, var(--rose-deep))); }
+@keyframes rise { from { transform: translateY(120px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes sway { from { rotate: -2.5deg; } to { rotate: 2.5deg; } }
+
+/* ---------- toolbar / categories ---------- */
+.shop { padding-block: 56px 24px; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.section-head h2 { font: 700 clamp(28px, 4vw, 40px)/1.1 var(--font-display); letter-spacing: -.02em; margin: 0; }
+.section-head p { margin: 0; color: var(--muted); }
+
+.toolbar {
+  position: sticky; top: 68px; z-index: 20; background: #fff;
+  padding: 12px 0; margin-bottom: 20px; border-bottom: 1px solid var(--line);
+}
+.toolbar-row { display: flex; gap: 10px; align-items: center; }
+.search {
+  flex: 1; display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 16px;
+  border-radius: var(--pill); background: var(--surface); border: 1px solid var(--line);
+}
+.search input { border: 0; outline: 0; background: transparent; flex: 1; min-width: 0; }
+.search:focus-within { border-color: var(--rose); }
+.select { height: 48px; padding: 0 16px; border-radius: var(--pill); border: 1px solid var(--line); background: #fff; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+  border-radius: var(--pill); border: 1px solid var(--line); background: #fff; font-weight: 600; white-space: nowrap;
+}
+.chip small { color: var(--muted); font-weight: 600; }
+.chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #fff; }
+.chip[aria-pressed="true"] small { color: var(--accent); }
+.chip.sale[aria-pressed="false"] { color: var(--rose); border-color: var(--accent); }
+
+/* ---------- product grid ---------- */
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 20px; }
+.card { position: relative; display: flex; flex-direction: column; }
+.card-photo {
+  position: relative; aspect-ratio: 1; border-radius: var(--r-photo); overflow: hidden;
+  background: var(--accent-soft); border: 0; padding: 0;
+}
+.card-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.card-photo:hover img { transform: scale(1.04); }
+.badge {
+  position: absolute; left: 12px; top: 12px; padding: 4px 10px; border-radius: var(--pill);
+  background: var(--rose); color: #fff; font-weight: 700; font-size: 13px;
+}
+.card-body { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding-top: 12px; }
+.card-title { margin: 0; font-weight: 600; font-size: 15px; line-height: 1.35; }
+.card-title button { all: unset; cursor: pointer; }
+.card-title button:focus-visible { outline: 3px solid var(--rose); border-radius: 4px; }
+.price { font-weight: 800; color: var(--rose-deep); font-size: 17px; margin-top: 4px; white-space: nowrap; }
+.price s { color: var(--muted); font-weight: 500; font-size: 14px; margin-left: 6px; }
+.add { flex: none; }
+.add .icon-btn { width: 44px; height: 44px; background: var(--text); color: #fff; font-size: 22px; }
+.add .icon-btn:hover { background: var(--rose-deep); }
+.stepper { display: inline-flex; align-items: center; border-radius: var(--pill); background: var(--accent-soft); }
+.stepper button { width: 36px; height: 44px; border: 0; background: none; font-size: 20px; color: var(--rose-deep); }
+.stepper output { min-width: 18px; text-align: center; font-weight: 700; }
+.more { display: flex; justify-content: center; margin-top: 36px; }
+.empty { text-align: center; padding: 64px 0; color: var(--muted); }
+.empty strong { display: block; color: var(--text); font: 700 22px/1.3 var(--font-display); margin-bottom: 8px; }
+.skeleton { aspect-ratio: 1; border-radius: var(--r-photo); background: linear-gradient(90deg, var(--accent-soft), #fff, var(--accent-soft)); background-size: 200% 100%; animation: shimmer 1.4s infinite linear; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ---------- perks / faq / footer ---------- */
+.perks { padding-block: 64px; }
+.perks-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.perk h3 { font: 700 20px/1.25 var(--font-display); margin: 12px 0 6px; }
+.perk p { margin: 0; color: var(--muted); max-width: 34ch; }
+.perk-icon { width: 52px; height: 60px; border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%; display: grid; place-items: center; font-size: 24px; background: var(--accent-soft); }
+
+.faq { padding-block: 24px 72px; }
+.faq-list { max-width: 760px; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 20px 0; font-weight: 700; font-size: 17px; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 24px; line-height: 1; color: var(--rose); transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { margin: 0 0 20px; color: #3a3a3a; max-width: 64ch; }
+
+.footer { background: var(--text); color: #fff; padding-block: 56px 96px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+.footer .logo { color: #fff; }
+.footer h4 { margin: 0 0 12px; font-size: 15px; color: var(--accent); }
+.footer p, .footer a { color: #e8e8e8; margin: 0 0 8px; display: block; text-decoration: none; }
+.footer a:hover { color: #fff; text-decoration: underline; }
+
+/* ---------- overlay: drawer & modal ---------- */
+.scrim { position: fixed; inset: 0; z-index: 50; background: rgba(17,17,17,.42); animation: fade .2s ease; }
+@keyframes fade { from { opacity: 0; } }
+.drawer {
+  position: fixed; z-index: 60; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+  background: #fff; display: flex; flex-direction: column; animation: slide .25s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slide { from { transform: translateX(100%); } }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.drawer-head h2 { margin: 0; font: 700 22px/1.2 var(--font-display); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 8px 20px 20px; }
+.drawer-foot { padding: 16px 20px 20px; border-top: 1px solid var(--line); }
+.total-row { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; margin-bottom: 14px; }
+.line { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.line img { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; background: var(--accent-soft); }
+.line-title { font-weight: 600; font-size: 15px; margin: 0 0 4px; }
+.line-price { color: var(--rose-deep); font-weight: 700; }
+.link-btn { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; font-size: 14px; }
+
+.modal {
+  position: fixed; z-index: 60; inset: 0; margin: auto; width: min(880px, calc(100% - 32px)); height: fit-content; max-height: calc(100% - 32px);
+  overflow: auto; background: #fff; border-radius: var(--r-panel); display: grid; grid-template-columns: 1fr 1fr;
+  animation: pop .22s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes pop { from { transform: scale(.96); opacity: 0; } }
+.modal img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; background: var(--accent-soft); }
+.modal-body { padding: 32px; display: flex; flex-direction: column; gap: 14px; }
+.modal-body h2 { font: 700 28px/1.15 var(--font-display); margin: 0; letter-spacing: -.01em; }
+.modal-body .price { font-size: 24px; }
+.modal-close { position: absolute; top: 14px; right: 14px; }
+.modal-note { color: var(--muted); margin: 0; }
+.modal-note li { margin-bottom: 4px; }
+
+/* ---------- form ---------- */
+.form { display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 600; font-size: 14px; }
+.field input, .field textarea, .field select {
+  height: 48px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface);
+}
+.field textarea { height: 88px; padding: 12px 14px; resize: vertical; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: 0; border-color: var(--rose); background: #fff; }
+.field-error { color: #b3261e; font-size: 13px; }
+.segmented { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: var(--pill); background: var(--accent-soft); }
+.segmented button { height: 42px; border: 0; border-radius: var(--pill); background: none; font-weight: 700; color: var(--rose-deep); }
+.segmented button[aria-pressed="true"] { background: #fff; color: var(--text); box-shadow: 0 2px 8px rgba(138,79,79,.15); }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.alert { padding: 12px 14px; border-radius: 14px; background: #fdecea; color: #8c1d18; font-size: 14px; }
+.success { text-align: center; padding: 40px 8px; }
+.success .perk-icon { margin: 0 auto 16px; width: 72px; height: 84px; font-size: 34px; }
+.success h3 { font: 700 24px/1.2 var(--font-display); margin: 0 0 8px; }
+.success p { color: var(--muted); margin: 0 0 24px; }
+
+/* ---------- mobile bar ---------- */
+.mobile-bar { display: none; }
+.fab-row { position: fixed; right: 18px; bottom: 18px; z-index: 25; display: flex; flex-direction: column; gap: 10px; }
+.fab { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; text-decoration: none; font-size: 22px; background: #fff; box-shadow: var(--shadow-pop); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+  .header-nav { display: none; }
+}
+@media (max-width: 760px) {
+  .hero-grid { grid-template-columns: 1fr; min-height: 0; padding-block: 32px 40px; }
+  .bunch { height: 320px; order: -1; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 22px 12px; }
+  .card-body { flex-direction: column; }
+  .add { align-self: stretch; }
+  .add .icon-btn, .add .stepper { width: 100%; border-radius: var(--pill); justify-content: space-between; }
+  .add .icon-btn { height: 40px; font-size: 15px; font-weight: 700; }
+  .perks-row, .footer-grid { grid-template-columns: 1fr; }
+  .modal { grid-template-columns: 1fr; }
+  .modal-body { padding: 22px; }
+  .header-phone { display: none; }
+  .select { padding: 0 10px; max-width: 132px; }
+  .fab-row { bottom: 84px; }
+  .mobile-bar {
+    display: flex; position: fixed; z-index: 26; left: 12px; right: 12px; bottom: 12px;
+    border-radius: var(--pill); background: var(--text); color: #fff; padding: 6px 6px 6px 20px;
+    align-items: center; justify-content: space-between; box-shadow: var(--shadow-pop);
+  }
+  .mobile-bar .btn { min-height: 44px; background: var(--accent); color: var(--text); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* "+" on desktop, "+ Додати" on phones */
+@media (max-width: 760px) { .add-label::after { content: "Додати"; margin-left: 6px; } }
+
+
+/* ---- preview-only adjustments ---- */
+/* Layout: one long shop page — balloon hero, sticky filters, photo grid, quiet perks/FAQ, dark footer. */
+.wrap { padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.header { top: env(safe-area-inset-top, 0px); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--bg); }
+.toolbar { top: calc(68px + env(safe-area-inset-top, 0px)); }
+.fab-row { right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+.demo-note { background: var(--text); color: #fff; font-size: 13px; text-align: center; padding-block: 8px; }
+.demo-note .wrap { display: block; }
+/* illustrated stand-ins for product photos (real photos load from the shop in the app) */
+.ph { position: absolute; inset: 0; background: var(--bg-ph, var(--accent-soft)); overflow: hidden; }
+.ph i { position: absolute; width: var(--s); aspect-ratio: 5/6; left: var(--x); top: var(--y); border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  background: radial-gradient(circle at 32% 26%, rgba(255,255,255,.65) 0 9%, transparent 10%), var(--c); box-shadow: inset -8px -10px 18px rgba(0,0,0,.14); }
+.ph i::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1.5px; height: 70%; background: rgba(138,79,79,.35); }
+.ph b { position: absolute; left: 12px; bottom: 10px; right: 12px; font: 700 13px/1.2 var(--font-display); color: var(--rose-deep); opacity: .75; }
+.line .ph, .modal .ph { position: relative; }
+.line .thumb { width: 72px; height: 72px; border-radius: 16px; overflow: hidden; position: relative; }
+.modal .ph { min-height: 320px; height: 100%; }
+.modal .ph b { font-size: 18px; bottom: 18px; left: 22px; }
+</style>
+
+<div class="demo-note"><div class="wrap">Демо дизайну. Фото товарів у робочій версії підтягуються з сайту, тут замість них ілюстрації. Замовлення не надсилаються.</div></div>
+<div id="app"></div>
+
+<script>
+const DATA = {"categories":[{"slug":"for-him","name":"Для нього","emoji":"🎩"},{"slug":"for-lovers","name":"Для закоханих","emoji":"💘"},{"slug":"diy","name":"Збери сам","emoji":"🎈"},{"slug":"box","name":"Коробка","emoji":"🎁"},{"slug":"for-her","name":"Для неї","emoji":"🌸"},{"slug":"photozone","name":"Фотозона","emoji":"📸"},{"slug":"kids","name":"Свята для дітей","emoji":"🧸"}],"products":[[26,"Набір повітряних кульок «Сяйво»",3900,"img/p/51408ebf77d648fb2ef9.jpg",4300,4],[27,"Композиція «Love you»",6901,"img/p/a8bd19039d802e48b52b.jpg",6950,1],[28,"Набір кульок «Бантики» 17 шт.",2500,"img/p/ff225be95b12f81dd72b.jpg",null,4],[31,"Композиція «Золото з чорним»",1920,"img/p/223ffb7225cfbfa8abba.jpg",null,1],[34,"Композиція «Ти можеш все!!»",3200,"img/p/a701b2a7d5f9fd0e3206.jpg",null,1],[36,"Композиція «Коханому»",1330,"img/p/9fc0dc2cd233d8094221.jpg",null,1],[51,"Фотозона з кульок ювілейна чорно-золота",485,"img/p/2c8021e4670b6cb4e16b.jpg",null,5],[52,"Стіна з кульок «Молочний шоколад» (340 кульок)",830,"img/p/ccb98c7123a7c57860b9.jpg",null,5],[53,"Стіна з кульок чорна з хром золотом та сріблом (278 кульок)",960,"img/p/e62ce93267ec6a2dc328.jpg",null,5],[54,"Набір 180 кульок для великої арки «Гламурний шик» чорне з золотом",990,"img/p/333cafaa3e98a6290c69.jpg",null,5],[55,"Фотозона-арка «Макарун» ліла+рожевий+білий, 10 м",1480,"img/p/c9aa8343f165aad1003a.jpg",null,5],[59,"Кульки з гелієм «Розкіш»",1490,"img/p/d32d6c6ffd2ce9bac9d3.jpg",null,4],[61,"Кульки з гелієм «Голд Едішн»",1240,"img/p/679afc12e4c6f8f6b719.jpg",null,4],[63,"Кульки з гелієм «Чарівниця»",3860,"img/p/ac024a3822eec401518c.jpg",null,4],[65,"Фотозона з гелієвими кульками №3",2545,"img/p/dd1dd32bf04fdcc9fbed.jpg",null,4],[67,"Фотозона з гелієвими кульками №10",5350,"img/p/14c5c18f1c76cec20afe.jpg",null,5],[68,"Фотозона з гелієвими кульками №11",4135,"img/p/075898065e71e2edb9ed.jpg",null,5],[70,"Арка-гірлянда «Яскраво-чорна», 87 шт.",1200,"img/p/b9c16c83505a2a55971c.jpg",null,5],[71,"Фотозона з кульок «Свято у стилі glamour» (167 кульок)",4500,"img/p/0f572817b15e00655d7e.jpg",null,5],[82,"Фонтан кульок «Шарм»",650,"img/p/0921764fc7da6f9a1aed.jpg",null,4],[83,"Фонтан кульок «Фантазія»",1250,"img/p/3842645fbbd018348b59.jpg",null,4],[84,"Фонтан кульок «Небо»",1065,"img/p/1a8fd7c0da42f5a24fc7.jpg",null,4],[85,"Фонтан кульок «Рожеве золото»",810,"img/p/232557d9562193fd38a2.jpg",null,4],[87,"Кулька «Я тебе кохаю»",295,"img/p/6bf1a11207955d57904c.jpg",null,1],[88,"5 кульок «Я тебе кохаю»",1325,"img/p/bfac8781e1dcde1003f5.jpg",null,1],[90,"Колекція кульок «Україна»",375,"img/p/f27aea03b8dd632d3a59.jpg",null,4],[93,"День народження дівчини «K»",1550,"img/p/31b696316718e3ec06d9.jpg",null,4],[95,"Набір 7 сердечок + 50 кульок",4950,"img/p/2be5c6786fd25f4a31d6.jpg",null,1],[96,"Кулька-серце 44 см",155,"img/p/e337ff2b8ad4140dfaf3.jpg",null,1],[98,"Набір «20 сердець + 10 кульок з конфеті»",4055,"img/p/b9c2f8f0f90d90ad9cad.jpg",null,1],[99,"Фонтан кульок «Райдужний настрій»",890,"img/p/3a8d3bc67e31a31811b6.jpg",null,4],[100,"Фонтан кульок «Aloha»",1205,"img/p/8d8a62387b7229b91e30.jpg",null,4],[124,"Металік синій 30 см",90,"img/p/38a200ae77cd7da0be03.jpg",null,2],[126,"Металік блакитний 30 см",90,"img/p/98f36049315024434453.jpg",null,2],[127,"Металік срібло 30 см",90,"img/p/1a0590422bf06f9c11cc.jpg",null,2],[128,"Металік білий 30 см",90,"img/p/cd7d4d450a3d7af16354.jpg",null,2],[129,"Пастель чорний 33 см",75,"img/p/385bccb28e8e9ec02bcd.png",null,2],[130,"Пастель какао 33 см",75,"img/p/d384dbcb2ef3fa8345e0.png",null,2],[131,"Пастель сірий 33 см",75,"img/p/b0fa146c2cecf74f568a.png",null,2],[132,"Пастель фуксія 33 см",75,"img/p/160166b8468a367affe0.png",null,2],[133,"Пастель темно-рожевий 33 см",75,"img/p/dec2a72f10f9c091e698.png",null,2],[134,"Пастель рожевий 33 см",75,"img/p/c83329d16930e72c4290.png",null,2],[135,"Пастель червоний 33 см",75,"img/p/333aee9b90c25a01bd8f.png",null,2],[136,"Пастель яблуко 33 см",75,"img/p/4fc151133856f79bef61.png",null,2],[138,"Пастель м'ятний 33 см",75,"img/p/bd7a7d26eefceb119785.png",null,2],[139,"Пастель зелений 33 см",75,"img/p/6c9b3f549cb92582e03a.png",null,2],[140,"Пастель бірюзовий 33 см",75,"img/p/9de8fc930109d02ecf68.png",null,2],[141,"Пастель тіффані 33 см",75,"img/p/716f053549656835d834.png",null,2],[142,"Пастель темно-синій 33 см",75,"img/p/7945a401d7c90db50c55.png",null,2],[143,"Пастель блакитний 33 см",75,"img/p/7b2354f3e56bb5871f94.png",null,2],[145,"Пастель білий 33 см",75,"img/p/c20abb0cc7ed355033c6.png",null,2],[147,"Пастель смарагдовий 33 см",75,"img/p/1e31885dfdf520398424.png",null,2],[148,"Панди",90,"img/p/3fd478d78cb22447556b.jpg",null,2],[149,"Кулька з конфеті",110,"img/p/1aa8e86889dd43292736.jpg",null,2],[150,"Набір №111",1530,"img/p/987439377227c53ab0cd.jpg",null,4],[151,"Набір №5",1195,"img/p/dd0e61a240d2039ead3a.png",null,4],[155,"Серце сатин м'ятне",150,"img/p/032f7d3c6eb30a5471a1.png",null,2],[156,"Серце сатин зелене",150,"img/p/220f4b25439c9796fb1a.png",null,2],[157,"Серце сатин смарагдове",150,"img/p/009cf3e43f4378900312.png",null,2],[158,"Серце сатин бургунді",150,"img/p/26d8aadda58f6631786f.png",null,2],[159,"Серце сатин синє",145,"img/p/22f5d28e3d290078c8d9.png",null,2],[160,"Серце сатин синя сталь",150,"img/p/bbe307782dc305db8310.png",null,2],[161,"Серце сатин чорне",145,"img/p/1b99dccd38f25d87c2ec.png",null,2],[162,"Серце сатин золото",155,"img/p/b649a93265bccf1a4cac.png",null,2],[163,"Серце сатин срібло",150,"img/p/d1489e253e54932a6eda.png",null,2],[164,"Серце сатин рожеве",145,"img/p/3150f66bc15a987e1c14.png",null,2],[165,"Серце сатин лілове",155,"img/p/a29ee060bb551a8abb1d.jpg",null,2],[166,"Серце сатин золото (світле)",155,"img/p/481ed7bcc6e1ea3c0d87.jpg",null,2],[167,"Серце перлинне",155,"img/p/977c53c92c4793e7e3fa.jpg",null,2],[168,"Серце металік рожеве",150,"img/p/26301c76980a7c400da8.jpg",null,2],[169,"Серце металік смарагдове",150,"img/p/d9c9e19652da14d33b42.jpg",null,2],[170,"Серце металік синє",150,"img/p/accc225e232888131d96.jpg",null,2],[171,"Серце металік лілове",150,"img/p/734d2b8393fa352904c1.jpg",null,2],[172,"Серце металік золото",155,"img/p/3b06cedbd4f14df4a3fe.jpg",null,2],[173,"Серце металік срібло",145,"img/p/d44f9011deea59a8e2d0.jpg",null,2],[175,"Серце металік червоне",155,"img/p/cd46c6234bb67ffef6bc.jpg",null,2],[176,"Зірка блиск зелена",195,"img/p/d467098d60eab9b0df85.jpg",null,2],[177,"Зірка сатин синя",155,"img/p/6228bb624699edc026f6.png",null,2],[179,"Зірка сатин смарагдова",150,"img/p/81bcbf77f30ac11817c9.png",null,2],[180,"Зірка сатин чорна",150,"img/p/3e6e221a5caf0654fe11.jpg",null,2],[181,"Зірка сатин срібло",155,"img/p/34a63e114583982269a6.jpg",null,2],[182,"Зірка сатин золото",150,"img/p/b6f49bbf714a6da31033.jpg",null,2],[183,"Зірка сатин бузкова",155,"img/p/1e5aff374a7264fa58a5.jpg",null,2],[184,"Зірка металік перлина",155,"img/p/b9808f356195b52eea74.jpg",null,2],[185,"Зірка металік лілова",150,"img/p/a008bfe5c14096a5b11d.jpg",null,2],[186,"Зірка металік персикова",155,"img/p/aba3512cc986629556a9.jpg",null,2],[187,"Зірка пастель м'ятна",145,"img/p/41a7685c7e989e783eaa.jpg",null,2],[189,"Зірка металік рожеве золото",155,"img/p/cd67a0af46e942dab67a.jpg",null,2],[190,"Зірка металік фіолетова",150,"img/p/09f740f4eaef3dda5649.jpg",null,2],[191,"Зірка металік малинова",150,"img/p/4dbf246279d34f2d4da8.jpg",null,2],[192,"Зірка металік червона",155,"img/p/44ab7672c9499c88778a.jpg",null,2],[193,"Зірка металік синя",150,"img/p/122a5b58c1771dbadbcf.jpg",null,2],[194,"Зірка металік золото",150,"img/p/1b18d492ed08a7a93356.jpg",null,2],[195,"Зірка металік срібло",150,"img/p/75a9cfaead1de90506a8.jpg",null,2],[196,"Коробка з кульками №40",4465,"img/p/3f1cca64f7176841209e.jpg",null,3],[197,"Коробка з кульками №39",5660,"img/p/3ef7ddb4ea5ff74115ae.jpg",null,3],[198,"Коробка з кульками №38",3540,"img/p/2a49318146258dea2d87.jpg",null,3],[200,"Коробка з кульками №37",5005,"img/p/ee3b48516bdb3dd07e17.jpg",null,3],[201,"Коробка з кульками №25",4385,"img/p/8b372dbbd73e6815743d.jpg",null,3],[202,"Коробка з кульками №24",2285,"img/p/8353ecd7529b1ef4c600.jpg",null,3],[203,"Коробка з кульками №19",5465,"img/p/d4b05fdd877342e1d8af.jpg",null,3],[204,"Коробка з кульками №20",2235,"img/p/dccdc113dc1984054b67.jpg",null,3],[206,"Коробка з кульками №14",4165,"img/p/88169a89ccef7e3c2bbd.jpg",null,3],[207,"Коробка з кульками №13",2000,"img/p/383232bd4435181d33b6.jpg",null,3],[208,"Коробка з кульками №10",2640,"img/p/73bc0a9e003a4a5c23a8.jpg",null,3],[211,"Коробка з кульками №7",4340,"img/p/d1c7f6dec2ed9065f62e.jpg",null,3],[212,"Коробка з кульками №2",2705,"img/p/90c6a03158ad5db2ee0e.jpg",null,3],[213,"Коробка з кульками №3",2750,"img/p/5cdfc1db2937226d24da.jpg",null,3],[215,"Коробка з кульками №1",2885,"img/p/77c372c1d58c83fda1ea.jpg",null,3],[216,"Коробка з кульками №15",6930,"img/p/3ef0e0877525b486ab82.jpg",null,3],[217,"Красуня",250,"img/p/96320b10afe5d35f5665.jpg",null,4],[218,"З днем народження",250,"img/p/48188f629f08352dabd1.jpg",null,4],[219,"Найкраща мама",250,"img/p/f72b089244638f474d31.jpg",null,4],[220,"З днем народження",250,"img/p/fb1cf4a3642708b5fe90.jpg",null,4],[221,"З днем народження",250,"img/p/1600851e0908b5f2be3c.jpg",null,4],[222,"З днем народження",250,"img/p/ce0cfcdab28af0510f88.jpg",null,4],[223,"Люблю тебе, мамо",250,"img/p/04a5d8ca7bf97102e20f.png",null,4],[224,"Сучка",250,"img/p/3418b11ea070ca6a8d28.jpg",null,4],[225,"З днем народження",250,"img/p/b7dea8f01448ce476c8b.jpg",null,4],[226,"З днем народження",250,"img/p/0600b8bb50bdcff4602c.jpg",null,4],[227,"З днем народження, донечко",250,"img/p/dd2ea03348e9ff7360c2.jpg",null,4],[228,"Королева",250,"img/p/d4b79b6820159a0e3e86.jpg",null,4],[229,"З днем народження",250,"img/p/4f788f08077071667ffb.jpg",null,4],[230,"З днем народження",250,"img/p/5064ed001d7bb2023ea6.jpg",null,4],[231,"Україна",250,"img/p/c826a68b6b29890131ca.jpg",null,4],[232,"Яка краля",250,"img/p/8154c966e662f64799f4.jpg",null,4],[233,"Серденько",250,"img/p/1227dc91dcbbace13bc7.jpg",null,4],[234,"Ти супер-пупер",250,"img/p/06c535efcbc238077b90.jpg",null,4],[235,"Happy",250,"img/p/eec7dfd5cf50e963729b.jpg",null,4],[236,"Крихітко",250,"img/p/69baf8063f47ddacb04c.jpg",null,4],[237,"Сонечко",250,"img/p/8ef036504de2165a5574.jpg",null,4],[238,"Найкраща",250,"img/p/3ecdd30f147546d9b44e.jpg",null,4],[293,"Авокадо",380,"img/p/8dfe0f7763ede6f880e4.jpg",null,6],[294,"Ромашка",550,"img/p/59a3cfa9e5b748da89c2.jpg",null,6],[295,"Стіч",500,"img/p/3d554fe0f690ccdf443c.jpg",null,6],[296,"Стіч рожевий",500,"img/p/80b2aee15b00a2483790.jpg",null,6],[297,"Дракоша 182",600,"img/p/985a5dbdc2fe291af9ae.jpg",null,6],[298,"Дракон",500,"img/p/01268f1175a4397aff63.jpg",null,6],[299,"Дракоша",400,"img/p/5eb15664b1ee834142c2.jpg",null,6],[300,"Дракон",600,"img/p/70df4da96e5349b7c0a7.jpg",null,6],[301,"Зебра",600,"img/p/170fb32e73e31ea48991.jpg",null,6],[302,"Панда",380,"img/p/a9a4f1d14bdd74d89172.jpg",null,6],[303,"Принцеса",500,"img/p/166e579c9f8331c18fa1.jpg",null,6],[304,"Дракоша",500,"img/p/3fb3e9408200db46dede.jpg",null,6],[305,"Котик",600,"img/p/331fd7daf497f2f6d825.jpg",null,6],[306,"Фламінго",450,"img/p/83df3ef9f792564e6983.jpg",null,6],[307,"Фламінго",750,"img/p/f5822c8024a4dd262375.jpg",null,6],[308,"Герой",750,"img/p/015a9e6a023048e159ec.jpg",null,6],[309,"Кактус",650,"img/p/cc8503d16206d73e16b3.jpg",null,6],[310,"Дракон",500,"img/p/a835208fc36fef2d6fec.jpg",null,6],[311,"Дракон",550,"img/p/4307131cd473f63872cf.jpg",null,6],[312,"Корівка",350,"img/p/6e0d523979ede725f255.jpg",null,6],[313,"Собачка",550,"img/p/f5751afc33478a6b0ac8.jpg",null,6],[314,"Дракон",550,"img/p/d0c8cbb1bd4ad27ce1cf.jpg",null,6],[315,"Дракон 207",500,"img/p/9a7bb190f6cdf8f153ee.jpg",null,6],[316,"Пожежна машина",550,"img/p/08f6fc883149fccc1fbd.jpg",null,6],[317,"Котик",550,"img/p/acf2d696d21f7c447095.jpg",null,6],[318,"Паровоз",550,"img/p/da31edd9d66d44723a61.jpg",null,6],[319,"Єдиноріг",700,"img/p/6930a0f395ca65f29e5f.jpg",null,6],[320,"Лев",350,"img/p/f79304e18b9ee1c7e8d8.jpg",null,6],[321,"Тигреня",500,"img/p/d9d4d9a07788c3ff34d6.jpg",null,6],[322,"Лисиця",300,"img/p/cb7f3a52f51e2811170f.jpg",null,6],[323,"Соняшник",450,"img/p/19a9fea873ad739a39c6.jpg",null,6],[324,"Зебра",850,"img/p/061a48ddc09b5b105099.jpg",null,6],[325,"Лось",1000,"img/p/ad3fd541226e05ef919f.jpg",null,6],[326,"Коник",1200,"img/p/8b3de4c936980b6439ca.jpg",null,6],[327,"Пупс",550,"img/p/ef8303c0d9db64f877fb.jpg",null,6],[328,"Кава",500,"img/p/490e0f5e76fbfb783a71.jpg",null,6],[329,"Божа корівка",600,"img/p/0698c55f764d5b93ac11.jpg",null,6],[330,"Міньйон",500,"img/p/7ed040ba144600b8f6c7.jpg",null,6],[331,"Виписка (фольга + 5 латексних кульок + грузик)",990,"img/p/ba37771e478caf063d90.jpg",null,6],[332,"Дракоша",950,"img/p/bf7150909b776535e91c.jpg",null,6],[333,"Ніжний бузок",1350,"img/p/7591d7383dfa28b92e1e.jpg",null,4],[334,"Принцеса",1180,"img/p/92fe97a32aecd91fb182.jpg",null,6],[335,"Райдуга",1500,"img/p/223e53c19c47b68b4a40.jpg",null,6],[336,"Рожеве ігристе",1350,"img/p/ef32cef03241c404dfdf.jpg",null,4],[337,"Серце",1710,"img/p/d1d6f32c7575294b3c14.jpg",null,1],[338,"Святкове сяйво",1860,"img/p/36b974872e2dea3a1958.jpg",null,4],[339,"Мікс",875,"img/p/2b82150eac28ae8e0aba.jpg",null,4],[340,"Тракторець",980,"img/p/e1a99e8e12f3a399bbae.jpg",null,6],[341,"Блакитна хмаринка",2700,"img/p/0eb536a299d156ea6534.jpg",null,6],[342,"Ніжність принцеси",1150,"img/p/cb1efea16df98ea9111d.jpg",null,6],[343,"Brawl Stars",1300,"img/p/854fee40e1c472169aa0.jpg",null,6],[344,"Ніжно з любовʼю",700,"img/p/0e18be4cff8ee67ee87d.jpg",null,4],[345,"Мікс",980,"img/p/e97e07ac26843e4b8ffd.jpg",null,4],[346,"Рожевий шик",1410,"img/p/01d60d7e95f2d7f990e6.jpg",null,4],[347,"Сяйво",1050,"img/p/dc03ee9333273569f8f5.jpg",null,4],[348,"Королева",750,"img/p/c44ee1384803b4ead619.jpg",null,4],[349,"Мамин букет фантазії",850,"img/p/341fd8dd8f77c61976c3.jpg",null,4],[350,"Єдиноріжка",859,"img/p/87e51e2719740376fa98.jpg",null,6],[351,"Фонтан настрою",1410,"img/p/80502ea3fd663b6bb2bc.jpg",null,6],[352,"Happy kids",1600,"img/p/dba4334798f4fececceb.jpg",null,6],[353,"Hello Kitty",750,"img/p/df3fe3cc58028f9a1876.jpg",null,6],[354,"Золотий сюрприз",2050,"img/p/36f26a6a07580f4e649c.jpg",null,3],[355,"Рожевий бум",1100,"img/p/d0895665c54571d49bc3.jpg",null,4],[356,"Перша хмаринка",1050,"img/p/e949fb0939f90f61df7d.jpg",null,6],[357,"Райдужний єдиноріг",2100,"img/p/dd5a760f57485bac3142.jpg",null,6],[358,"Червоно-чорний стильний фонтан",1810,"img/p/b82d700d6b0a44a9f26a.jpg",null,4],[359,"Бризки шампанського",1350,"img/p/607580a85d008e9d9ce0.jpg",null,4],[360,"Фіолетовий рай",2800,"img/p/8ab9ccb7def976987f06.jpg",null,4],[361,"Блакитне сяйво",2200,"img/p/96b3ebf9397205f1ed36.jpg",null,4],[363,"Твоє серце",990,"img/p/7850adde83a540caa63c.jpg",null,1],[364,"Бантик для дівчинки",1650,"img/p/edb41cbfdaa5a7de7df3.jpg",null,6],[365,"LOL",1850,"img/p/55f1465368ee6d9836c3.jpg",null,3],[366,"Ніжна композиція",2450,"img/p/9cfd91a6c50ce03def2f.jpg",null,6],[367,"Зелений гай",1750,"img/p/f6bbb34a57dc77184aae.jpg",null,6],[368,"Яскраві LOL",3900,"img/p/50d558cefab8514d329f.jpg",null,6],[369,"Поні",1250,"img/p/7c70b9760dcec39c0781.jpg",null,6],[370,"Фонтан бум",1550,"img/p/1735335c3faa3bec37a8.jpg",null,6],[371,"1 рік",2380,"img/p/dab5309165d1c2a63aec.jpg",null,6],[372,"Яскраві ігри",2800,"img/p/44c4559393cdd1245ca1.jpg",null,6]]};
+const SHOP = { phone: "+380936424049", phoneLabel: "093 642 40 49", instagram: "https://www.instagram.com/oops_kulka" };
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const uah = (n) => n.toLocaleString("uk-UA") + " грн";
+const plural = (n) => { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? "товар" : a >= 2 && a <= 4 && (b < 12 || b > 14) ? "товари" : "товарів"; };
+
+const cats = DATA.categories.map((c, i) => ({ ...c, id: i + 1 }));
+const products = DATA.products.map(([id, title, price, image, old, ci]) => ({
+  id, title, price, old: old && old > price ? old : null, disc: old && old > price ? Math.round((old - price) * 100 / old) : 0,
+  cat: cats[ci].slug, pop: id >= 333 ? id : 0,
+}));
+cats.forEach((c) => (c.count = products.filter((p) => p.cat === c.slug).length));
+
+/* colour story per product, derived from its name */
+const PALETTES = [
+  [/рожев|ніжн|принцес|бантик|фламінго|kitty|макарун/i, ["#e6b3b3", "#f5dede", "#d99999"]],
+  [/золот|голд|шампан|сяйво|сонеч|соняшник|гламур/i, ["#e2c27a", "#f6ead0", "#c9a24d"]],
+  [/блакит|синій|синя|синє|небо|хмарин|сталь/i, ["#9cc3e6", "#e3eef8", "#6f9fcf"]],
+  [/чорн|шоколад|кава|какао/i, ["#2b2b2b", "#efe6e6", "#c9a24d"]],
+  [/фіолет|бузок|лілов|бузков|рай/i, ["#b9a0d6", "#eee6f6", "#9277b8"]],
+  [/зелен|гай|м'ят|смарагд|авокадо|кактус|тіффані|бірюз|яблуко/i, ["#9fd0b4", "#e6f4ec", "#5fae86"]],
+  [/червон|серц|кохан|love|люблю/i, ["#d9606a", "#f8e1e3", "#c06f6f"]],
+  [/райдуж|lol|яскрав|ігри|kids|мікс|brawl|дракон|дракоша/i, ["#f2b04d", "#fdf0d8", "#7fb6e3"]],
+];
+function paletteFor(t) { for (const [re, p] of PALETTES) if (re.test(t)) return p; return ["#e6b3b3", "#f5dede", "#c06f6f"]; }
+function ph(p, label = true) {
+  const [a, bg, c] = paletteFor(p.title); const r = (p.id * 9301 + 49297) % 233280 / 233280;
+  const balls = [[22 + r * 8, 14, 38, a], [50 - r * 6, 24, 30, c], [8, 40, 26, c], [62, 8, 26, a]];
+  return `<div class="ph" style="--bg-ph:${bg}">${balls.map(([x, y, s, col]) => `<i style="--x:${x}%;--y:${y}%;--s:${s}%;--c:${col}"></i>`).join("")}${label ? `<b>${esc(p.title)}</b>` : ""}</div>`;
+}
+
+/* ---------- state ---------- */
+const S = { cat: null, sale: false, sort: "popular", q: "", shown: 24, product: null, drawer: null, method: "pickup", orderNo: null, orderTotal: 0, cart: {} };
+try { S.cart = JSON.parse(localStorage.getItem("oops-cart-demo") || "{}"); } catch {}
+const saveCart = () => { try { localStorage.setItem("oops-cart-demo", JSON.stringify(S.cart)); } catch {} };
+const byId = Object.fromEntries(products.map((p) => [p.id, p]));
+const cartLines = () => Object.entries(S.cart).filter(([id]) => byId[id]).map(([id, q]) => ({ p: byId[id], q }));
+const cartCount = () => cartLines().reduce((n, l) => n + l.q, 0);
+const cartTotal = () => cartLines().reduce((n, l) => n + l.q * l.p.price, 0);
+function setQty(id, q) { if (q <= 0) delete S.cart[id]; else S.cart[id] = Math.min(99, q); saveCart(); renderDynamic(); }
+
+function filtered() {
+  const q = S.q.trim().toLocaleLowerCase("uk");
+  let list = products.filter((p) => (!S.cat || p.cat === S.cat) && (!S.sale || p.old) && (!q || p.title.toLocaleLowerCase("uk").includes(q)));
+  const cmp = { popular: (a, b) => b.pop - a.pop || b.id - a.id, new: (a, b) => b.id - a.id, price_asc: (a, b) => a.price - b.price, price_desc: (a, b) => b.price - a.price }[S.sort];
+  return list.sort(cmp);
+}
+
+/* ---------- static shell ---------- */
+const BUNCH = [
+  ["34%", "2%", "40%", "0s", "190px", "4deg", "#e6b3b3"], ["2%", "22%", "34%", ".15s", "160px", "-14deg", "#c06f6f"],
+  ["64%", "26%", "33%", ".3s", "150px", "16deg", "#f5dede"], ["20%", "58%", "16%", ".45s", "90px", "-6deg", "#d99999"],
+  ["58%", "66%", "13%", ".55s", "70px", "8deg", "#8a4f4f"],
+];
+$("#app").innerHTML = `
+<header class="header"><div class="wrap header-row">
+  <a class="logo" href="#top"><span class="logo-dot" aria-hidden="true"></span>УПС! Кулька</a>
+  <nav class="header-nav" aria-label="Розділи"><a href="#catalog">Каталог</a><a href="#delivery">Доставка</a><a href="#faq">Питання</a></nav>
+  <div class="header-actions"><span class="header-phone">${SHOP.phoneLabel}</span>
+    <button class="icon-btn cart-btn" id="cartBtn" aria-label="Кошик">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 7Z"/><path d="M9 7V6a3 3 0 0 1 6 0v1"/></svg>
+      <span class="cart-count" id="cartCount" hidden></span></button></div>
+</div></header>
+<main>
+<section class="hero" id="top"><div class="wrap hero-grid">
+  <div>
+    <h1>Упс!<span>Кульки, що роблять свято з будь-якого дня</span></h1>
+    <p>Композиції, фонтани й фотозони з гелієвих кульок у Києві. Оберіть готову або зберіть свою, а ми акуратно привеземо.</p>
+    <div class="hero-cta"><a class="btn btn-primary" href="#catalog">Обрати кульки</a><a class="btn btn-soft" href="${SHOP.instagram}" target="_blank" rel="noreferrer">Більше робіт в Instagram</a></div>
+    <ul class="hero-facts"><li>Понад 200 позицій</li><li>Доставка таксі по Києву</li><li>Самовивіз</li></ul>
+  </div>
+  <div class="bunch" aria-hidden="true">${BUNCH.map(([x, y, w, d, s, sr, c]) => `<div class="balloon plain" style="--x:${x};--y:${y};--w:${w};--d:${d};--s:${s};--sr:${sr};--c:${c}"><div class="balloon-skin"></div></div>`).join("")}</div>
+</div></section>
+
+<section class="shop" id="catalog" aria-labelledby="catalog-title"><div class="wrap">
+  <div class="section-head"><h2 id="catalog-title">Каталог</h2><p id="total" aria-live="polite"></p></div>
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <label class="search"><span aria-hidden="true">🔍</span><span class="sr-only">Пошук</span><input id="q" type="search" placeholder="Дракон, серце, фонтан…"></label>
+      <label><span class="sr-only">Сортування</span><select id="sort" class="select"><option value="popular">Популярні</option><option value="new">Нові</option><option value="price_asc">Дешевші</option><option value="price_desc">Дорожчі</option></select></label>
+    </div>
+    <div class="chips" role="group" aria-label="Категорії" id="chips"></div>
+  </div>
+  <div id="results"></div>
+</div></section>
+
+<section class="perks" id="delivery"><div class="wrap"><div class="perks-row">
+  <div class="perk"><div class="perk-icon" aria-hidden="true">🚕</div><h3>Доставка таксі</h3><p>Відправимо замовлення таксі в зручний час. Поїздку ви оплачуєте за тарифом таксі.</p></div>
+  <div class="perk"><div class="perk-icon" aria-hidden="true">🏬</div><h3>Самовивіз</h3><p>Заберіть замовлення самі: менеджер підкаже, коли воно буде готове.</p></div>
+  <div class="perk"><div class="perk-icon" aria-hidden="true">💵</div><h3>Оплата при отриманні</h3><p>Платите, коли забираєте замовлення. Онлайн-оплата зʼявиться найближчим часом.</p></div>
+</div></div></section>
+
+<section class="faq" id="faq"><div class="wrap"><div class="section-head"><h2>Часті питання</h2></div><div class="faq-list">
+  <details><summary>Скільки коштує доставка?</summary><p>Ми відправляємо замовлення таксі, а ви оплачуєте лише поїздку за тарифом служби таксі. Самовивіз безкоштовний.</p></details>
+  <details><summary>Як оплатити замовлення?</summary><p>При отриманні: готівкою або карткою. Онлайн-оплату підключаємо найближчим часом.</p></details>
+  <details><summary>Можна змінити кольори композиції?</summary><p>Так. Напишіть побажання в коментарі до замовлення або в Instagram, і ми підберемо палітру.</p></details>
+  <details><summary>За скільки часу треба замовляти?</summary><p>Готові композиції часто можемо зібрати день у день. Фотозони й великі набори краще бронювати за 1–2 дні.</p></details>
+  <details><summary>Де забрати самовивозом?</summary><p>Після оформлення менеджер зателефонує й підкаже адресу та час, коли замовлення буде готове.</p></details>
+</div></div></section>
+</main>
+<footer class="footer"><div class="wrap footer-grid">
+  <div><span class="logo"><span class="logo-dot" aria-hidden="true"></span>УПС! Кулька</span><p style="margin-top:14px;max-width:36ch">Повітряні кульки для свят, сюрпризів і просто гарного настрою. Київ.</p></div>
+  <div><h4>Контакти</h4><p>${SHOP.phoneLabel}</p><a href="${SHOP.instagram}" target="_blank" rel="noreferrer">Instagram @oops_kulka</a></div>
+  <div><h4>Покупцям</h4><a href="#catalog">Каталог</a><a href="#delivery">Доставка й оплата</a><a href="#faq">Часті питання</a></div>
+</div></footer>
+<div class="fab-row"><a class="fab" href="${SHOP.instagram}" target="_blank" rel="noreferrer" aria-label="Написати в Instagram">💬</a></div>
+<div id="mobileBar"></div>
+<div id="overlay"></div>`;
+
+/* ---------- dynamic parts ---------- */
+function addCtl(p, wide) {
+  const n = S.cart[p.id] || 0;
+  if (!n) return wide
+    ? `<button class="btn btn-primary btn-block" data-add="${p.id}">Додати в кошик за ${uah(p.price)}</button>`
+    : `<button class="icon-btn" data-add="${p.id}" aria-label="Додати «${esc(p.title)}» в кошик"><span aria-hidden="true">+</span><span class="add-label" aria-hidden="true"></span></button>`;
+  return `<div class="stepper"${wide ? ' style="width:100%;justify-content:space-between;min-height:48px"' : ""}><button data-set="${p.id}:${n - 1}" aria-label="Менше">−</button><output>${n}</output><button data-set="${p.id}:${n + 1}" aria-label="Більше">+</button></div>`;
+}
+const price = (p) => `${uah(p.price)}${p.old ? `<s>${uah(p.old)}</s>` : ""}`;
+
+function renderChips() {
+  const all = products.length;
+  $("#chips").innerHTML =
+    `<button class="chip" aria-pressed="${!S.cat && !S.sale}" data-cat="">Усе <small>${all}</small></button>` +
+    `<button class="chip sale" aria-pressed="${S.sale}" data-sale="1">🏷️ Акції</button>` +
+    cats.map((c) => `<button class="chip" aria-pressed="${S.cat === c.slug}" data-cat="${c.slug}"><span aria-hidden="true">${c.emoji}</span> ${esc(c.name)} <small>${c.count}</small></button>`).join("");
+}
+
+function renderResults() {
+  const list = filtered();
+  $("#total").textContent = `${list.length} ${plural(list.length)}`;
+  if (!list.length) {
+    const emptyCat = S.cat && !S.q.trim() && !S.sale;
+    $("#results").innerHTML = emptyCat
+      ? `<div class="empty"><strong>Тут скоро з'являться композиції</strong>Напишіть нам в Instagram, і ми зберемо подарунок під ваш запит.<div class="more"><a class="btn btn-soft" href="${SHOP.instagram}" target="_blank" rel="noreferrer">Написати в Instagram</a></div></div>`
+      : `<div class="empty"><strong>Нічого не знайшли</strong>Спробуйте інше слово або подивіться весь каталог.<div class="more"><button class="btn btn-soft" data-reset>Показати все</button></div></div>`;
+    return;
+  }
+  const shown = list.slice(0, S.shown);
+  $("#results").innerHTML = `<ul class="grid" role="list" style="list-style:none;margin:0;padding:0">${shown.map((p) => `
+    <li class="card">
+      <button class="card-photo" data-open="${p.id}" tabindex="-1" aria-hidden="true">${ph(p, false)}${p.disc ? `<span class="badge">−${p.disc}%</span>` : ""}</button>
+      <div class="card-body"><div><h3 class="card-title"><button data-open="${p.id}">${esc(p.title)}</button></h3><div class="price">${price(p)}</div></div>
+      <div class="add">${addCtl(p)}</div></div>
+    </li>`).join("")}</ul>` +
+    (list.length > S.shown ? `<div class="more"><button class="btn btn-soft" data-more>Показати ще ${Math.min(24, list.length - S.shown)}</button></div>` : "");
+}
+
+function renderHeader() {
+  const n = cartCount(); const el = $("#cartCount");
+  el.hidden = !n; el.textContent = n;
+  $("#cartBtn").setAttribute("aria-label", `Кошик, товарів: ${n}`);
+  $("#mobileBar").innerHTML = n ? `<div class="mobile-bar"><span><strong>${n}</strong> шт. на ${uah(cartTotal())}</span><button class="btn" data-cart>До кошика</button></div>` : "";
+}
+
+function renderOverlay() {
+  const o = $("#overlay");
+  document.body.style.overflow = S.product || S.drawer ? "hidden" : "";
+  if (S.product) {
+    const p = S.product;
+    o.innerHTML = `<div class="scrim" data-close></div><div class="modal" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+      ${ph(p)}<div class="modal-body"><h2 id="pm-title">${esc(p.title)}</h2><div class="price">${price(p)}</div>
+      <ul class="modal-note"><li>Доставка таксі по Києву або самовивіз</li><li>Кольори й напис можна змінити: напишіть у коментарі</li></ul>
+      <div style="margin-top:auto;display:grid;gap:10px">${addCtl(p, true)}${S.cart[p.id] ? `<button class="btn btn-soft btn-block" data-cart>Перейти до кошика</button>` : ""}</div></div>
+      <button class="icon-btn modal-close" data-close aria-label="Закрити">✕</button></div>`;
+    return;
+  }
+  if (!S.drawer) { o.innerHTML = ""; return; }
+  const lines = cartLines();
+  let title = "Кошик", body = "", foot = "";
+  if (S.drawer === "done") {
+    title = "Дякуємо!";
+    body = `<div class="success"><div class="perk-icon" aria-hidden="true">🎈</div><h3>Замовлення №${S.orderNo} прийнято</h3><p>Менеджер зателефонує найближчим часом, щоб підтвердити деталі. Сума: ${uah(S.orderTotal)}.</p><button class="btn btn-primary" data-close>Повернутися до каталогу</button></div>`;
+  } else if (!lines.length) {
+    body = `<div class="success"><div class="perk-icon" aria-hidden="true">🎈</div><h3>Кошик порожній</h3><p>Додайте композицію з каталогу, і вона зʼявиться тут.</p><button class="btn btn-primary" data-close>До каталогу</button></div>`;
+  } else if (S.drawer === "cart") {
+    body = `<ul style="list-style:none;margin:0;padding:0">${lines.map(({ p, q }) => `<li class="line"><div class="thumb">${ph(p, false)}</div>
+      <div><p class="line-title">${esc(p.title)}</p><span class="line-price">${uah(p.price * q)}</span></div>
+      <div style="display:grid;justify-items:end;gap:4px">${addCtl(p)}<button class="link-btn" data-set="${p.id}:0">Видалити</button></div></li>`).join("")}</ul>`;
+    foot = `<div class="total-row"><span>Разом</span><span>${uah(cartTotal())}</span></div><button class="btn btn-primary btn-block" data-step="checkout">Оформити замовлення</button>`;
+  } else {
+    title = "Оформлення";
+    const today = new Date().toISOString().slice(0, 10);
+    body = `<form class="form" id="checkout" style="padding-top:12px" novalidate>
+      <div class="field"><label for="c-name">Імʼя</label><input id="c-name" name="name" autocomplete="given-name" value="Олена"></div>
+      <div class="field"><label for="c-phone">Телефон</label><input id="c-phone" name="phone" type="tel" placeholder="093 123 45 67" value="093 111 22 33"><span class="field-error" id="phoneErr" hidden>Вкажіть номер у форматі 093 123 45 67</span></div>
+      <div class="segmented" role="group" aria-label="Спосіб отримання"><button type="button" data-method="pickup" aria-pressed="${S.method === "pickup"}">Самовивіз</button><button type="button" data-method="taxi" aria-pressed="${S.method === "taxi"}">Таксі</button></div>
+      ${S.method === "taxi" ? `<div class="field"><label for="c-addr">Адреса в Києві</label><input id="c-addr" name="address" placeholder="Вулиця, будинок, квартира"><span class="field-error" id="addrErr" hidden>Вкажіть адресу для таксі</span><span style="font-size:13px;color:var(--muted)">Таксі викличемо ми, поїздку ви оплачуєте за тарифом таксі.</span></div>` : ""}
+      <div class="row-2"><div class="field"><label for="c-date">Дата</label><input id="c-date" name="date" type="date" min="${today}"></div>
+      <div class="field"><label for="c-slot">Час</label><select id="c-slot" name="slot"><option value="">Будь-коли</option>${["10–12", "12–14", "14–16", "16–18", "18–20"].map((s) => `<option>${s}</option>`).join("")}</select></div></div>
+      <div class="field"><label for="c-comment">Коментар</label><textarea id="c-comment" name="comment" placeholder="Колір, напис на кульці, побажання"></textarea></div>
+      <p style="margin:0;font-size:14px">💵 Оплата при отриманні</p>
+      <div class="total-row" style="margin-top:6px"><span>За товари</span><span>${uah(cartTotal())}</span></div>
+      <button class="btn btn-primary btn-block">Підтвердити замовлення</button>
+      <button type="button" class="link-btn" data-step="cart" style="justify-self:center">Повернутися до кошика</button></form>`;
+  }
+  o.innerHTML = `<div class="scrim" data-close></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="drawer-head"><h2 id="cart-title">${title}</h2><button class="icon-btn" data-close aria-label="Закрити">✕</button></div>
+    <div class="drawer-body">${body}</div>${foot ? `<div class="drawer-foot">${foot}</div>` : ""}</aside>`;
+}
+
+function renderDynamic() { renderResults(); renderHeader(); renderOverlay(); }
+renderChips(); renderDynamic();
+
+/* ---------- events ---------- */
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-add],[data-set],[data-open],[data-close],[data-cart],[data-step],[data-method],[data-cat],[data-sale],[data-more],[data-reset],#cartBtn");
+  if (!t) return;
+  const d = t.dataset;
+  if (d.add) setQty(d.add, (S.cart[d.add] || 0) + 1);
+  else if (d.set) { const [id, q] = d.set.split(":"); setQty(id, +q); }
+  else if (d.open) { S.product = byId[d.open]; renderOverlay(); $(".modal button")?.focus(); }
+  else if ("close" in d) { S.product = null; S.drawer = null; renderOverlay(); }
+  else if ("cart" in d || t.id === "cartBtn") { S.product = null; S.drawer = "cart"; renderOverlay(); $(".drawer button")?.focus(); }
+  else if (d.step) { S.drawer = d.step; renderOverlay(); }
+  else if (d.method) { S.method = d.method; renderOverlay(); }
+  else if (d.cat !== undefined) { S.cat = d.cat || null; if (!d.cat) S.sale = false; S.shown = 24; renderChips(); renderResults(); }
+  else if (d.sale) { S.sale = !S.sale; S.shown = 24; renderChips(); renderResults(); }
+  else if ("more" in d) { S.shown += 24; renderResults(); }
+  else if ("reset" in d) { S.cat = null; S.sale = false; S.q = ""; $("#q").value = ""; renderChips(); renderResults(); }
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && (S.product || S.drawer)) { S.product = null; S.drawer = null; renderOverlay(); } });
+let qt; $("#q").addEventListener("input", (e) => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value; S.shown = 24; renderResults(); }, 200); });
+$("#sort").addEventListener("change", (e) => { S.sort = e.target.value; renderResults(); });
+document.addEventListener("submit", (e) => {
+  if (e.target.id !== "checkout") return;
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const digits = String(f.get("phone")).replace(/\D/g, "");
+  const okPhone = /^(380\d{9}|0\d{9})$/.test(digits);
+  $("#phoneErr").hidden = okPhone;
+  const addrOk = S.method !== "taxi" || String(f.get("address") || "").trim();
+  if ($("#addrErr")) $("#addrErr").hidden = !!addrOk;
+  if (!okPhone || !addrOk) return;
+  S.orderNo = 1000 + Math.floor(Math.random() * 900); S.orderTotal = cartTotal();
+  S.cart = {}; saveCart(); S.drawer = "done"; renderDynamic();
+});
+</script>

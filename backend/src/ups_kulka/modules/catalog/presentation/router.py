@@ -4,7 +4,7 @@ Thin by design (see backend/AGENTS.md): parse request -> call ONE use case ->
 map result. No business rules, no DB access, no error handling here.
 """
 
-from typing import Annotated
+from typing import Annotated, Any
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
@@ -26,7 +26,12 @@ from ups_kulka.shared.presentation.errors import ErrorOut
 
 router = APIRouter(prefix="/api/v1/catalog", tags=["catalog"])
 
-_ERRORS = {404: {"model": ErrorOut}, 409: {"model": ErrorOut}, 422: {"model": ErrorOut}}
+# Any: this is the exact type of FastAPI's `responses` parameter.
+_ERRORS: dict[int | str, dict[str, Any]] = {
+    404: {"model": ErrorOut},
+    409: {"model": ErrorOut},
+    422: {"model": ErrorOut},
+}
 
 
 @router.post("/tags", status_code=status.HTTP_201_CREATED, responses=_ERRORS)

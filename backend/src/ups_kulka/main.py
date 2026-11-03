@@ -5,10 +5,12 @@ from fastapi import FastAPI
 
 from ups_kulka.container import Container
 from ups_kulka.modules.catalog.presentation import router as catalog_router
+from ups_kulka.modules.orders.presentation import router as orders_router
+from ups_kulka.modules.payments.presentation import router as payments_router
 from ups_kulka.shared.presentation.errors import register_error_handlers
 
 # Every module's presentation router: registered and wired for DI.
-ROUTER_MODULES = (catalog_router,)
+ROUTER_MODULES = (catalog_router, orders_router, payments_router)
 
 
 def create_app(container: Container | None = None) -> FastAPI:

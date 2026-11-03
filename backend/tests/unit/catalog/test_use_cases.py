@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 from tests.fakes.catalog import FakeCatalogUnitOfWork
@@ -6,6 +8,7 @@ from ups_kulka.modules.catalog.application.dto import (
     CreateTagCommand,
     ListProductsQuery,
 )
+from ups_kulka.modules.catalog.application.public import CatalogFacade
 from ups_kulka.modules.catalog.application.use_cases.create_product import CreateProduct
 from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
@@ -99,3 +102,14 @@ async def test_create_tag_duplicate(uow: FakeCatalogUnitOfWork) -> None:
     await _tag(uow, "pastelni", group="color")
     with pytest.raises(TagSlugAlreadyTaken):
         await _tag(uow, "pastelni", group="color")
+
+
+async def test_facade_returns_prices_for_known_products_only(uow: FakeCatalogUnitOfWork) -> None:
+    product = await CreateProduct(uow)(_cmd())
+    unknown = uuid.uuid4()
+
+    result = await CatalogFacade(uow).products_for_order([product.id, unknown, product.id])
+
+    assert set(result) == {product.id}
+    assert result[product.id].price_kopecks == 141000
+    assert result[product.id].is_active

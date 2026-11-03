@@ -13,6 +13,7 @@ dependencies = [
     "alembic>=1.14",
     "psycopg[binary]>=3.2",  # sync driver for Alembic migrations
     "dependency-injector>=4.46",
+    "httpx>=0.28",  # monobank and Telegram adapters
 ]
 
 [dependency-groups]
@@ -42,7 +43,13 @@ src = ["src", "tests"]
 select = ["E", "F", "W", "I", "B", "UP", "N", "S", "ASYNC", "RUF", "SIM", "PT", "C4", "T20", "ERA"]
 ignore = [
     "B008",   # FastAPI Depends() in defaults is the intended pattern
+    "RUF001", "RUF002", "RUF003",  # Ukrainian UI texts are required (AGENTS.md, section 6)
+    "N818",   # domain errors are named by meaning: SlugAlreadyTaken (backend/AGENTS.md)
 ]
+
+[tool.ruff.lint.isort]
+# Explicit, so import grouping is the same on every machine.
+known-first-party = ["ups_kulka", "tests"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S105", "S106"]

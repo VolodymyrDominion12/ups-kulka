@@ -41,8 +41,7 @@ def database_url() -> Iterator[str]:
         container.start()
     except Exception as exc:  # pragma: no cover - no Docker locally
         pytest.fail(
-            "PostgreSQL for tests is not available: start Docker or set TEST_DATABASE_URL "
-            f"({exc})"
+            f"PostgreSQL for tests is not available: start Docker or set TEST_DATABASE_URL ({exc})"
         )
     try:
         yield _to_async_url(container.get_connection_url())

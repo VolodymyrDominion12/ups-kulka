@@ -1,0 +1,22 @@
+/* УПС! Кулька — design tokens. Palette kept from oops.kylka.shop (docs/design/README.md). */
+:root {
+  --accent: #e6b3b3;
+  --accent-dark: #d99999;
+  --accent-soft: #f5dede;
+  --rose: #c06f6f;
+  --rose-deep: #8a4f4f;
+  --text: #111111;
+  --muted: #6f6f6f;
+  --line: #eadada;
+  --bg: #ffffff;
+  --surface: #fff8f8;
+
+  /* Loaded with next/font (Cyrillic subset); fallbacks keep metrics close. */
+  --font-display: var(--font-comfortaa, "Comfortaa"), "Manrope", system-ui, sans-serif;
+  --font-body: var(--font-manrope, "Manrope"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --r-photo: 22px;
+  --r-panel: 28px;
+  --pill: 999px;
+  --shadow-pop: 0 18px 40px -18px rgba(138, 79, 79, 0.45);
+}

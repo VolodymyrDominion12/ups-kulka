@@ -1,0 +1,1739 @@
+{
+ "source": "https://oops.kylka.shop",
+ "captured_at": "2026-11-03",
+ "notes": "Names translated to Ukrainian and typos fixed; see specs/010-import-old-site.",
+ "tags": [
+  {
+   "old_category": "Для нього",
+   "group": "recipient",
+   "slug": "dlia-noho",
+   "name": "Для нього"
+  },
+  {
+   "old_category": "Для закоханих",
+   "group": "occasion",
+   "slug": "dlia-zakokhanykh",
+   "name": "Для закоханих"
+  },
+  {
+   "old_category": "Збери сам",
+   "group": "type",
+   "slug": "zbery-sam",
+   "name": "Збери сам"
+  },
+  {
+   "old_category": "Коробка",
+   "group": "type",
+   "slug": "korobka",
+   "name": "Коробка-сюрприз"
+  },
+  {
+   "old_category": "Для неї",
+   "group": "recipient",
+   "slug": "dlia-nei",
+   "name": "Для неї"
+  },
+  {
+   "old_category": "Фотозона",
+   "group": "type",
+   "slug": "fotozona",
+   "name": "Фотозона"
+  },
+  {
+   "old_category": "Свята для дітей",
+   "group": "occasion",
+   "slug": "dytiachi-sviata",
+   "name": "Дитячі свята"
+  }
+ ],
+ "products": [
+  {
+   "old_id": 26,
+   "name": "Набір повітряних кульок «Сяйво»",
+   "price_uah": 3900,
+   "old_price_uah": 4300,
+   "image_url": "https://oops.kylka.shop/img/p/51408ebf77d648fb2ef9.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 27,
+   "name": "Композиція «Love you»",
+   "price_uah": 6901,
+   "old_price_uah": 6950,
+   "image_url": "https://oops.kylka.shop/img/p/a8bd19039d802e48b52b.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 28,
+   "name": "Набір кульок «Бантики» 17 шт.",
+   "price_uah": 2500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ff225be95b12f81dd72b.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 31,
+   "name": "Композиція «Золото з чорним»",
+   "price_uah": 1920,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/223ffb7225cfbfa8abba.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 34,
+   "name": "Композиція «Ти можеш все!!»",
+   "price_uah": 3200,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/a701b2a7d5f9fd0e3206.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 36,
+   "name": "Композиція «Коханому»",
+   "price_uah": 1330,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/9fc0dc2cd233d8094221.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 51,
+   "name": "Фотозона з кульок ювілейна чорно-золота",
+   "price_uah": 485,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/2c8021e4670b6cb4e16b.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 52,
+   "name": "Стіна з кульок «Молочний шоколад» (340 кульок)",
+   "price_uah": 830,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ccb98c7123a7c57860b9.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 53,
+   "name": "Стіна з кульок чорна з хром золотом та сріблом (278 кульок)",
+   "price_uah": 960,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/e62ce93267ec6a2dc328.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 54,
+   "name": "Набір 180 кульок для великої арки «Гламурний шик» чорне з золотом",
+   "price_uah": 990,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/333cafaa3e98a6290c69.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 55,
+   "name": "Фотозона-арка «Макарун» ліла+рожевий+білий, 10 м",
+   "price_uah": 1480,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/c9aa8343f165aad1003a.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 59,
+   "name": "Кульки з гелієм «Розкіш»",
+   "price_uah": 1490,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d32d6c6ffd2ce9bac9d3.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 61,
+   "name": "Кульки з гелієм «Голд Едішн»",
+   "price_uah": 1240,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/679afc12e4c6f8f6b719.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 63,
+   "name": "Кульки з гелієм «Чарівниця»",
+   "price_uah": 3860,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ac024a3822eec401518c.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 65,
+   "name": "Фотозона з гелієвими кульками №3",
+   "price_uah": 2545,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dd1dd32bf04fdcc9fbed.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 67,
+   "name": "Фотозона з гелієвими кульками №10",
+   "price_uah": 5350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/14c5c18f1c76cec20afe.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 68,
+   "name": "Фотозона з гелієвими кульками №11",
+   "price_uah": 4135,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/075898065e71e2edb9ed.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 70,
+   "name": "Арка-гірлянда «Яскраво-чорна», 87 шт.",
+   "price_uah": 1200,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b9c16c83505a2a55971c.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 71,
+   "name": "Фотозона з кульок «Свято у стилі glamour» (167 кульок)",
+   "price_uah": 4500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0f572817b15e00655d7e.jpg",
+   "tag": "fotozona"
+  },
+  {
+   "old_id": 82,
+   "name": "Фонтан кульок «Шарм»",
+   "price_uah": 650,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0921764fc7da6f9a1aed.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 83,
+   "name": "Фонтан кульок «Фантазія»",
+   "price_uah": 1250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3842645fbbd018348b59.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 84,
+   "name": "Фонтан кульок «Небо»",
+   "price_uah": 1065,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1a8fd7c0da42f5a24fc7.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 85,
+   "name": "Фонтан кульок «Рожеве золото»",
+   "price_uah": 810,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/232557d9562193fd38a2.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 87,
+   "name": "Кулька «Я тебе кохаю»",
+   "price_uah": 295,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/6bf1a11207955d57904c.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 88,
+   "name": "5 кульок «Я тебе кохаю»",
+   "price_uah": 1325,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/bfac8781e1dcde1003f5.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 90,
+   "name": "Колекція кульок «Україна»",
+   "price_uah": 375,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f27aea03b8dd632d3a59.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 93,
+   "name": "День народження дівчини «K»",
+   "price_uah": 1550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/31b696316718e3ec06d9.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 95,
+   "name": "Набір 7 сердечок + 50 кульок",
+   "price_uah": 4950,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/2be5c6786fd25f4a31d6.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 96,
+   "name": "Кулька-серце 44 см",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/e337ff2b8ad4140dfaf3.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 98,
+   "name": "Набір «20 сердець + 10 кульок з конфеті»",
+   "price_uah": 4055,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b9c2f8f0f90d90ad9cad.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 99,
+   "name": "Фонтан кульок «Райдужний настрій»",
+   "price_uah": 890,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3a8d3bc67e31a31811b6.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 100,
+   "name": "Фонтан кульок «Aloha»",
+   "price_uah": 1205,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8d8a62387b7229b91e30.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 124,
+   "name": "Металік синій 30 см",
+   "price_uah": 90,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/38a200ae77cd7da0be03.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 126,
+   "name": "Металік блакитний 30 см",
+   "price_uah": 90,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/98f36049315024434453.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 127,
+   "name": "Металік срібло 30 см",
+   "price_uah": 90,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1a0590422bf06f9c11cc.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 128,
+   "name": "Металік білий 30 см",
+   "price_uah": 90,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cd7d4d450a3d7af16354.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 129,
+   "name": "Пастель чорний 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/385bccb28e8e9ec02bcd.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 130,
+   "name": "Пастель какао 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d384dbcb2ef3fa8345e0.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 131,
+   "name": "Пастель сірий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b0fa146c2cecf74f568a.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 132,
+   "name": "Пастель фуксія 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/160166b8468a367affe0.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 133,
+   "name": "Пастель темно-рожевий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dec2a72f10f9c091e698.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 134,
+   "name": "Пастель рожевий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/c83329d16930e72c4290.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 135,
+   "name": "Пастель червоний 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/333aee9b90c25a01bd8f.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 136,
+   "name": "Пастель яблуко 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/4fc151133856f79bef61.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 138,
+   "name": "Пастель м'ятний 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/bd7a7d26eefceb119785.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 139,
+   "name": "Пастель зелений 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/6c9b3f549cb92582e03a.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 140,
+   "name": "Пастель бірюзовий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/9de8fc930109d02ecf68.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 141,
+   "name": "Пастель тіффані 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/716f053549656835d834.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 142,
+   "name": "Пастель темно-синій 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7945a401d7c90db50c55.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 143,
+   "name": "Пастель блакитний 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7b2354f3e56bb5871f94.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 145,
+   "name": "Пастель білий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/c20abb0cc7ed355033c6.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 147,
+   "name": "Пастель смарагдовий 33 см",
+   "price_uah": 75,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1e31885dfdf520398424.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 148,
+   "name": "Панди",
+   "price_uah": 90,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3fd478d78cb22447556b.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 149,
+   "name": "Кулька з конфеті",
+   "price_uah": 110,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1aa8e86889dd43292736.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 150,
+   "name": "Набір №111",
+   "price_uah": 1530,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/987439377227c53ab0cd.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 151,
+   "name": "Набір №5",
+   "price_uah": 1195,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dd0e61a240d2039ead3a.png",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 155,
+   "name": "Серце сатин м'ятне",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/032f7d3c6eb30a5471a1.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 156,
+   "name": "Серце сатин зелене",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/220f4b25439c9796fb1a.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 157,
+   "name": "Серце сатин смарагдове",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/009cf3e43f4378900312.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 158,
+   "name": "Серце сатин бургунді",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/26d8aadda58f6631786f.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 159,
+   "name": "Серце сатин синє",
+   "price_uah": 145,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/22f5d28e3d290078c8d9.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 160,
+   "name": "Серце сатин синя сталь",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/bbe307782dc305db8310.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 161,
+   "name": "Серце сатин чорне",
+   "price_uah": 145,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1b99dccd38f25d87c2ec.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 162,
+   "name": "Серце сатин золото",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b649a93265bccf1a4cac.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 163,
+   "name": "Серце сатин срібло",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d1489e253e54932a6eda.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 164,
+   "name": "Серце сатин рожеве",
+   "price_uah": 145,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3150f66bc15a987e1c14.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 165,
+   "name": "Серце сатин лілове",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/a29ee060bb551a8abb1d.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 166,
+   "name": "Серце сатин золото (світле)",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/481ed7bcc6e1ea3c0d87.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 167,
+   "name": "Серце перлинне",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/977c53c92c4793e7e3fa.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 168,
+   "name": "Серце металік рожеве",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/26301c76980a7c400da8.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 169,
+   "name": "Серце металік смарагдове",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d9c9e19652da14d33b42.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 170,
+   "name": "Серце металік синє",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/accc225e232888131d96.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 171,
+   "name": "Серце металік лілове",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/734d2b8393fa352904c1.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 172,
+   "name": "Серце металік золото",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3b06cedbd4f14df4a3fe.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 173,
+   "name": "Серце металік срібло",
+   "price_uah": 145,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d44f9011deea59a8e2d0.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 175,
+   "name": "Серце металік червоне",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cd46c6234bb67ffef6bc.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 176,
+   "name": "Зірка блиск зелена",
+   "price_uah": 195,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d467098d60eab9b0df85.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 177,
+   "name": "Зірка сатин синя",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/6228bb624699edc026f6.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 179,
+   "name": "Зірка сатин смарагдова",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/81bcbf77f30ac11817c9.png",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 180,
+   "name": "Зірка сатин чорна",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3e6e221a5caf0654fe11.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 181,
+   "name": "Зірка сатин срібло",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/34a63e114583982269a6.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 182,
+   "name": "Зірка сатин золото",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b6f49bbf714a6da31033.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 183,
+   "name": "Зірка сатин бузкова",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1e5aff374a7264fa58a5.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 184,
+   "name": "Зірка металік перлина",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b9808f356195b52eea74.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 185,
+   "name": "Зірка металік лілова",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/a008bfe5c14096a5b11d.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 186,
+   "name": "Зірка металік персикова",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/aba3512cc986629556a9.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 187,
+   "name": "Зірка пастель м'ятна",
+   "price_uah": 145,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/41a7685c7e989e783eaa.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 189,
+   "name": "Зірка металік рожеве золото",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cd67a0af46e942dab67a.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 190,
+   "name": "Зірка металік фіолетова",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/09f740f4eaef3dda5649.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 191,
+   "name": "Зірка металік малинова",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/4dbf246279d34f2d4da8.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 192,
+   "name": "Зірка металік червона",
+   "price_uah": 155,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/44ab7672c9499c88778a.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 193,
+   "name": "Зірка металік синя",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/122a5b58c1771dbadbcf.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 194,
+   "name": "Зірка металік золото",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1b18d492ed08a7a93356.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 195,
+   "name": "Зірка металік срібло",
+   "price_uah": 150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/75a9cfaead1de90506a8.jpg",
+   "tag": "zbery-sam"
+  },
+  {
+   "old_id": 196,
+   "name": "Коробка з кульками №40",
+   "price_uah": 4465,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3f1cca64f7176841209e.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 197,
+   "name": "Коробка з кульками №39",
+   "price_uah": 5660,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3ef7ddb4ea5ff74115ae.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 198,
+   "name": "Коробка з кульками №38",
+   "price_uah": 3540,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/2a49318146258dea2d87.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 200,
+   "name": "Коробка з кульками №37",
+   "price_uah": 5005,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ee3b48516bdb3dd07e17.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 201,
+   "name": "Коробка з кульками №25",
+   "price_uah": 4385,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8b372dbbd73e6815743d.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 202,
+   "name": "Коробка з кульками №24",
+   "price_uah": 2285,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8353ecd7529b1ef4c600.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 203,
+   "name": "Коробка з кульками №19",
+   "price_uah": 5465,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d4b05fdd877342e1d8af.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 204,
+   "name": "Коробка з кульками №20",
+   "price_uah": 2235,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dccdc113dc1984054b67.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 206,
+   "name": "Коробка з кульками №14",
+   "price_uah": 4165,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/88169a89ccef7e3c2bbd.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 207,
+   "name": "Коробка з кульками №13",
+   "price_uah": 2000,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/383232bd4435181d33b6.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 208,
+   "name": "Коробка з кульками №10",
+   "price_uah": 2640,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/73bc0a9e003a4a5c23a8.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 211,
+   "name": "Коробка з кульками №7",
+   "price_uah": 4340,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d1c7f6dec2ed9065f62e.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 212,
+   "name": "Коробка з кульками №2",
+   "price_uah": 2705,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/90c6a03158ad5db2ee0e.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 213,
+   "name": "Коробка з кульками №3",
+   "price_uah": 2750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/5cdfc1db2937226d24da.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 215,
+   "name": "Коробка з кульками №1",
+   "price_uah": 2885,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/77c372c1d58c83fda1ea.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 216,
+   "name": "Коробка з кульками №15",
+   "price_uah": 6930,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3ef0e0877525b486ab82.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 217,
+   "name": "Красуня",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/96320b10afe5d35f5665.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 218,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/48188f629f08352dabd1.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 219,
+   "name": "Найкраща мама",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f72b089244638f474d31.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 220,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/fb1cf4a3642708b5fe90.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 221,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1600851e0908b5f2be3c.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 222,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ce0cfcdab28af0510f88.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 223,
+   "name": "Люблю тебе, мамо",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/04a5d8ca7bf97102e20f.png",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 224,
+   "name": "Сучка",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3418b11ea070ca6a8d28.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 225,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b7dea8f01448ce476c8b.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 226,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0600b8bb50bdcff4602c.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 227,
+   "name": "З днем народження, донечко",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dd2ea03348e9ff7360c2.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 228,
+   "name": "Королева",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d4b79b6820159a0e3e86.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 229,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/4f788f08077071667ffb.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 230,
+   "name": "З днем народження",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/5064ed001d7bb2023ea6.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 231,
+   "name": "Україна",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/c826a68b6b29890131ca.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 232,
+   "name": "Яка краля",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8154c966e662f64799f4.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 233,
+   "name": "Серденько",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1227dc91dcbbace13bc7.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 234,
+   "name": "Ти супер-пупер",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/06c535efcbc238077b90.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 235,
+   "name": "Happy",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/eec7dfd5cf50e963729b.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 236,
+   "name": "Крихітко",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/69baf8063f47ddacb04c.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 237,
+   "name": "Сонечко",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8ef036504de2165a5574.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 238,
+   "name": "Найкраща",
+   "price_uah": 250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3ecdd30f147546d9b44e.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 293,
+   "name": "Авокадо",
+   "price_uah": 380,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8dfe0f7763ede6f880e4.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 294,
+   "name": "Ромашка",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/59a3cfa9e5b748da89c2.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 295,
+   "name": "Стіч",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3d554fe0f690ccdf443c.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 296,
+   "name": "Стіч рожевий",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/80b2aee15b00a2483790.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 297,
+   "name": "Дракоша 182",
+   "price_uah": 600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/985a5dbdc2fe291af9ae.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 298,
+   "name": "Дракон",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/01268f1175a4397aff63.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 299,
+   "name": "Дракоша",
+   "price_uah": 400,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/5eb15664b1ee834142c2.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 300,
+   "name": "Дракон",
+   "price_uah": 600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/70df4da96e5349b7c0a7.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 301,
+   "name": "Зебра",
+   "price_uah": 600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/170fb32e73e31ea48991.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 302,
+   "name": "Панда",
+   "price_uah": 380,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/a9a4f1d14bdd74d89172.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 303,
+   "name": "Принцеса",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/166e579c9f8331c18fa1.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 304,
+   "name": "Дракоша",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/3fb3e9408200db46dede.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 305,
+   "name": "Котик",
+   "price_uah": 600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/331fd7daf497f2f6d825.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 306,
+   "name": "Фламінго",
+   "price_uah": 450,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/83df3ef9f792564e6983.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 307,
+   "name": "Фламінго",
+   "price_uah": 750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f5822c8024a4dd262375.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 308,
+   "name": "Герой",
+   "price_uah": 750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/015a9e6a023048e159ec.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 309,
+   "name": "Кактус",
+   "price_uah": 650,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cc8503d16206d73e16b3.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 310,
+   "name": "Дракон",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/a835208fc36fef2d6fec.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 311,
+   "name": "Дракон",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/4307131cd473f63872cf.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 312,
+   "name": "Корівка",
+   "price_uah": 350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/6e0d523979ede725f255.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 313,
+   "name": "Собачка",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f5751afc33478a6b0ac8.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 314,
+   "name": "Дракон",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d0c8cbb1bd4ad27ce1cf.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 315,
+   "name": "Дракон 207",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/9a7bb190f6cdf8f153ee.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 316,
+   "name": "Пожежна машина",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/08f6fc883149fccc1fbd.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 317,
+   "name": "Котик",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/acf2d696d21f7c447095.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 318,
+   "name": "Паровоз",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/da31edd9d66d44723a61.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 319,
+   "name": "Єдиноріг",
+   "price_uah": 700,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/6930a0f395ca65f29e5f.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 320,
+   "name": "Лев",
+   "price_uah": 350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f79304e18b9ee1c7e8d8.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 321,
+   "name": "Тигреня",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d9d4d9a07788c3ff34d6.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 322,
+   "name": "Лисиця",
+   "price_uah": 300,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cb7f3a52f51e2811170f.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 323,
+   "name": "Соняшник",
+   "price_uah": 450,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/19a9fea873ad739a39c6.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 324,
+   "name": "Зебра",
+   "price_uah": 850,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/061a48ddc09b5b105099.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 325,
+   "name": "Лось",
+   "price_uah": 1000,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ad3fd541226e05ef919f.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 326,
+   "name": "Коник",
+   "price_uah": 1200,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8b3de4c936980b6439ca.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 327,
+   "name": "Пупс",
+   "price_uah": 550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ef8303c0d9db64f877fb.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 328,
+   "name": "Кава",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/490e0f5e76fbfb783a71.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 329,
+   "name": "Божа корівка",
+   "price_uah": 600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0698c55f764d5b93ac11.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 330,
+   "name": "Міньйон",
+   "price_uah": 500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7ed040ba144600b8f6c7.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 331,
+   "name": "Виписка (фольга + 5 латексних кульок + грузик)",
+   "price_uah": 990,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ba37771e478caf063d90.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 332,
+   "name": "Дракоша",
+   "price_uah": 950,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/bf7150909b776535e91c.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 333,
+   "name": "Ніжний бузок",
+   "price_uah": 1350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7591d7383dfa28b92e1e.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 334,
+   "name": "Принцеса",
+   "price_uah": 1180,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/92fe97a32aecd91fb182.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 335,
+   "name": "Райдуга",
+   "price_uah": 1500,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/223e53c19c47b68b4a40.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 336,
+   "name": "Рожеве ігристе",
+   "price_uah": 1350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/ef32cef03241c404dfdf.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 337,
+   "name": "Серце",
+   "price_uah": 1710,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d1d6f32c7575294b3c14.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 338,
+   "name": "Святкове сяйво",
+   "price_uah": 1860,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/36b974872e2dea3a1958.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 339,
+   "name": "Мікс",
+   "price_uah": 875,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/2b82150eac28ae8e0aba.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 340,
+   "name": "Тракторець",
+   "price_uah": 980,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/e1a99e8e12f3a399bbae.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 341,
+   "name": "Блакитна хмаринка",
+   "price_uah": 2700,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0eb536a299d156ea6534.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 342,
+   "name": "Ніжність принцеси",
+   "price_uah": 1150,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/cb1efea16df98ea9111d.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 343,
+   "name": "Brawl Stars",
+   "price_uah": 1300,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/854fee40e1c472169aa0.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 344,
+   "name": "Ніжно з любовʼю",
+   "price_uah": 700,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/0e18be4cff8ee67ee87d.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 345,
+   "name": "Мікс",
+   "price_uah": 980,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/e97e07ac26843e4b8ffd.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 346,
+   "name": "Рожевий шик",
+   "price_uah": 1410,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/01d60d7e95f2d7f990e6.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 347,
+   "name": "Сяйво",
+   "price_uah": 1050,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dc03ee9333273569f8f5.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 348,
+   "name": "Королева",
+   "price_uah": 750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/c44ee1384803b4ead619.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 349,
+   "name": "Мамин букет фантазії",
+   "price_uah": 850,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/341fd8dd8f77c61976c3.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 350,
+   "name": "Єдиноріжка",
+   "price_uah": 859,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/87e51e2719740376fa98.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 351,
+   "name": "Фонтан настрою",
+   "price_uah": 1410,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/80502ea3fd663b6bb2bc.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 352,
+   "name": "Happy kids",
+   "price_uah": 1600,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dba4334798f4fececceb.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 353,
+   "name": "Hello Kitty",
+   "price_uah": 750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/df3fe3cc58028f9a1876.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 354,
+   "name": "Золотий сюрприз",
+   "price_uah": 2050,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/36f26a6a07580f4e649c.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 355,
+   "name": "Рожевий бум",
+   "price_uah": 1100,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/d0895665c54571d49bc3.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 356,
+   "name": "Перша хмаринка",
+   "price_uah": 1050,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/e949fb0939f90f61df7d.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 357,
+   "name": "Райдужний єдиноріг",
+   "price_uah": 2100,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dd5a760f57485bac3142.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 358,
+   "name": "Червоно-чорний стильний фонтан",
+   "price_uah": 1810,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/b82d700d6b0a44a9f26a.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 359,
+   "name": "Бризки шампанського",
+   "price_uah": 1350,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/607580a85d008e9d9ce0.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 360,
+   "name": "Фіолетовий рай",
+   "price_uah": 2800,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/8ab9ccb7def976987f06.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 361,
+   "name": "Блакитне сяйво",
+   "price_uah": 2200,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/96b3ebf9397205f1ed36.jpg",
+   "tag": "dlia-nei"
+  },
+  {
+   "old_id": 363,
+   "name": "Твоє серце",
+   "price_uah": 990,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7850adde83a540caa63c.jpg",
+   "tag": "dlia-zakokhanykh"
+  },
+  {
+   "old_id": 364,
+   "name": "Бантик для дівчинки",
+   "price_uah": 1650,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/edb41cbfdaa5a7de7df3.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 365,
+   "name": "LOL",
+   "price_uah": 1850,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/55f1465368ee6d9836c3.jpg",
+   "tag": "korobka"
+  },
+  {
+   "old_id": 366,
+   "name": "Ніжна композиція",
+   "price_uah": 2450,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/9cfd91a6c50ce03def2f.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 367,
+   "name": "Зелений гай",
+   "price_uah": 1750,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/f6bbb34a57dc77184aae.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 368,
+   "name": "Яскраві LOL",
+   "price_uah": 3900,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/50d558cefab8514d329f.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 369,
+   "name": "Поні",
+   "price_uah": 1250,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/7c70b9760dcec39c0781.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 370,
+   "name": "Фонтан бум",
+   "price_uah": 1550,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/1735335c3faa3bec37a8.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 371,
+   "name": "1 рік",
+   "price_uah": 2380,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/dab5309165d1c2a63aec.jpg",
+   "tag": "dytiachi-sviata"
+  },
+  {
+   "old_id": 372,
+   "name": "Яскраві ігри",
+   "price_uah": 2800,
+   "old_price_uah": null,
+   "image_url": "https://oops.kylka.shop/img/p/44c4559393cdd1245ca1.jpg",
+   "tag": "dytiachi-sviata"
+  }
+ ]
+}

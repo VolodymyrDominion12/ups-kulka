@@ -14,7 +14,12 @@ async def _create_tag(client: AsyncClient, slug: str, group: str = "recipient") 
 async def _create_product(client: AsyncClient, slug: str, tags: list[str] | None = None) -> dict:
     response = await client.post(
         f"{API}/products",
-        json={"slug": slug, "name": f"Набір {slug}", "price_kopecks": 99000, "tag_slugs": tags or []},
+        json={
+            "slug": slug,
+            "name": f"Набір {slug}",
+            "price_kopecks": 99000,
+            "tag_slugs": tags or [],
+        },
     )
     assert response.status_code == 201, response.text
     return response.json()

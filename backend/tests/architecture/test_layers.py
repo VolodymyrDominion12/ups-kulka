@@ -30,10 +30,17 @@ FORBIDDEN_FRAMEWORKS: dict[str, tuple[str, ...]] = {
 }
 # shared/<layer> follows the same rules as module layers.
 SHARED_FORBIDDEN: dict[str, tuple[str, ...]] = {
-    "domain": ("ups_kulka.shared.application", "ups_kulka.shared.infrastructure",
-               "ups_kulka.shared.presentation", "ups_kulka.modules"),
-    "application": ("ups_kulka.shared.infrastructure", "ups_kulka.shared.presentation",
-                    "ups_kulka.modules"),
+    "domain": (
+        "ups_kulka.shared.application",
+        "ups_kulka.shared.infrastructure",
+        "ups_kulka.shared.presentation",
+        "ups_kulka.modules",
+    ),
+    "application": (
+        "ups_kulka.shared.infrastructure",
+        "ups_kulka.shared.presentation",
+        "ups_kulka.modules",
+    ),
     "infrastructure": ("ups_kulka.shared.presentation", "ups_kulka.modules"),
     "presentation": ("ups_kulka.shared.infrastructure", "ups_kulka.modules"),
 }
@@ -117,7 +124,9 @@ def test_layer_dependencies(module: str, layer: str, path: Path) -> None:
         if name.startswith("ups_kulka.modules.") and not name.startswith(own_prefix):
             other = name.split(".")[2]
             if not name.startswith(f"ups_kulka.modules.{other}.application.public"):
-                violations.append(f"{imp.line}: cross-module import {name}; use .application.public")
+                violations.append(
+                    f"{imp.line}: cross-module import {name}; use .application.public"
+                )
         # 4. Nobody inside a module imports the composition root.
         if name in ("ups_kulka.container", "ups_kulka.main"):
             violations.append(f"{imp.line}: {layer} must not import {name}")

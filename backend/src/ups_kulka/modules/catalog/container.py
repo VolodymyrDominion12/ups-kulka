@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
+from ups_kulka.modules.catalog.application.public import CatalogFacade
 from ups_kulka.modules.catalog.application.use_cases.create_product import CreateProduct
 from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
@@ -20,3 +21,6 @@ class CatalogContainer(containers.DeclarativeContainer):
     create_product = providers.Factory(CreateProduct, uow_factory=uow.provider)
     get_product = providers.Factory(GetProduct, uow_factory=uow.provider)
     list_products = providers.Factory(ListProducts, uow_factory=uow.provider)
+
+    # Public facade for other modules (orders reads prices through it).
+    facade = providers.Factory(CatalogFacade, uow_factory=uow.provider)
