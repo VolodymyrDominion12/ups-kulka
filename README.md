@@ -28,6 +28,20 @@ uv run python scripts/import_old_site.py
 Інтеграційні тести самі піднімають PostgreSQL через testcontainers (потрібен
 запущений Docker) або використовують `TEST_DATABASE_URL`.
 
+## Вітрина й адмінка (фронтенд)
+
+Потрібно: Node.js 22. Бекенд має працювати на `http://localhost:8000`.
+
+```bash
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev        # http://localhost:3000 — вітрина, /admin — адмінка
+npm test           # Vitest: кошик, оформлення, телефон, UTM
+npm run typecheck
+npm run build
+```
+
 ## Документи
 
 - [AGENTS.md](AGENTS.md), [backend/AGENTS.md](backend/AGENTS.md) — правила

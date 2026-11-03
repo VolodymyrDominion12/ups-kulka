@@ -11,3 +11,5 @@ htmlcov/
 node_modules/
 .next/
 dist/
+.env*.local
+next-env.d.ts

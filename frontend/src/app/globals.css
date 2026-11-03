@@ -21,3 +21,188 @@ body {
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ---------- storefront (specs/003-storefront, docs/design) ---------- */
+:focus-visible {
+  outline: 3px solid var(--rose);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.logo-balloon {
+  position: relative;
+  width: 22px;
+  height: 26px;
+  border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.55) 0 18%, transparent 19%),
+    var(--accent);
+}
+.logo-balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 6px;
+  height: 5px;
+  transform: translateX(-50%);
+  background: var(--accent-dark);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+/* Icon set in a balloon shape (perks, thank-you page). */
+.balloon-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 60px;
+  border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  background: var(--accent-soft);
+  color: var(--rose-deep);
+}
+
+/* Product without a photo: three balloons on a tinted square. */
+.balloon-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+.balloon-placeholder i {
+  position: absolute;
+  aspect-ratio: 5 / 6;
+  border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  box-shadow: inset -8px -10px 18px rgb(0 0 0 / 0.12);
+}
+.balloon-placeholder i::before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  top: 12%;
+  width: 20%;
+  height: 14%;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.6);
+  transform: rotate(-30deg);
+}
+.balloon-placeholder i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1.5px;
+  height: 70%;
+  background: rgb(138 79 79 / 0.35);
+}
+
+/* Hero: product photos cut into balloons on strings. The one motion on the page. */
+.balloon-bunch {
+  position: relative;
+  height: 320px;
+}
+@media (min-width: 768px) {
+  .balloon-bunch {
+    height: 500px;
+  }
+}
+.balloon {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  aspect-ratio: 5 / 6;
+  transform-origin: 50% 160%;
+  animation: balloon-rise 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d) both,
+    balloon-sway 7s ease-in-out calc(var(--d) + 1.4s) infinite alternate;
+}
+.balloon-skin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50% 50% 47% 47% / 54% 54% 46% 46%;
+  background: radial-gradient(circle at 50% 50%, var(--c) 60%, color-mix(in srgb, var(--c) 70%, var(--rose-deep)));
+  box-shadow: inset -14px -18px 30px rgb(138 79 79 / 0.28), 0 18px 40px -18px rgb(138 79 79 / 0.45);
+}
+.balloon-skin img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.balloon-skin::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 12%;
+  width: 22%;
+  height: 16%;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  filter: blur(2px);
+  transform: rotate(-30deg);
+}
+.balloon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 99%;
+  width: 14px;
+  height: 10px;
+  transform: translateX(-50%);
+  background: var(--accent-dark);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 9px);
+  width: 2px;
+  height: var(--s);
+  background: linear-gradient(var(--accent-dark), transparent);
+  transform: rotate(var(--r));
+  transform-origin: top;
+}
+@keyframes balloon-rise {
+  from {
+    transform: translateY(120px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes balloon-sway {
+  from {
+    rotate: -2.5deg;
+  }
+  to {
+    rotate: 2.5deg;
+  }
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  font-size: 24px;
+  line-height: 1;
+  color: var(--rose);
+  transition: transform 0.2s;
+}
+.faq[open] summary::after {
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
