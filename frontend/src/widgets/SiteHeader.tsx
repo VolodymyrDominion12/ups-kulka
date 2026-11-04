@@ -26,11 +26,14 @@ export function SiteHeader() {
           <Link href="/kulky" className="hover:text-ink">
             Каталог
           </Link>
-          <Link href="/#dostavka" className="hover:text-ink">
+          <Link href="/dostavka" className="hover:text-ink">
             Доставка
           </Link>
-          <Link href="/#pytannia" className="hover:text-ink">
-            Питання
+          <Link href="/kontakty" className="hover:text-ink">
+            Контакти
+          </Link>
+          <Link href="/pro-nas" className="hover:text-ink">
+            Про нас
           </Link>
         </nav>
         <div className="ml-auto flex items-center gap-4">

@@ -12,6 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/kulky`, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/dostavka`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/kontakty`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/pro-nas`, changeFrequency: "monthly", priority: 0.6 },
   ];
   try {
     const tags = await catalogApi.listTags();
