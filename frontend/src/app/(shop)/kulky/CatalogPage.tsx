@@ -115,7 +115,7 @@ export async function CatalogPage({ tags, detail, page, q, sort, onSale }: Props
       </div>
 
       {detail?.intro_text && (
-        <p className="mb-5 max-w-[72ch] text-[15px] leading-relaxed text-[#3a3a3a]">
+        <p className="mb-4 max-w-[72ch] text-[15px] leading-relaxed text-[#3a3a3a]">
           {detail.intro_text}
         </p>
       )}
@@ -124,7 +124,7 @@ export async function CatalogPage({ tags, detail, page, q, sort, onSale }: Props
 
       <TagChips tags={tags} active={detail?.slug ?? null} />
 
-      <div className="mt-6">
+      <div className="mt-5">
         <ProductGrid page={data} basePath={basePath} />
       </div>
 

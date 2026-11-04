@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { groupTagSections, sortTags } from "@/widgets/TagChips";
 import { responsiveImage } from "../images";
 import { discountPercent, formatUah } from "../money";
 import { parseOnSale, parseOrderNumber, parsePage, parseQuery, parseSort } from "../paging";
@@ -121,3 +122,35 @@ describe("utm", () => {
     });
   });
 });
+
+describe("TagChips grouping", () => {
+  const sampleTags = [
+    { id: "1", group: "color", slug: "pastelni", name: "Пастельні тони" },
+    { id: "2", group: "recipient", slug: "dlia-mamy", name: "Для мами" },
+    { id: "3", group: "occasion", slug: "den-narodzhennia", name: "День народження" },
+    { id: "4", group: "type", slug: "fontany", name: "Фонтани та букети" },
+  ];
+
+  it("sorts tags by group priority and Ukrainian locale name", () => {
+    const sorted = sortTags(sampleTags);
+    expect(sorted.map((t) => t.slug)).toEqual([
+      "dlia-mamy",
+      "den-narodzhennia",
+      "fontany",
+      "pastelni",
+    ]);
+  });
+
+  it("buckets tags into compact dropdown sections and omits empty ones", () => {
+    const sections = groupTagSections(sampleTags);
+    expect(sections.map((s) => ({ id: s.id, slugs: s.items.map((t) => t.slug) }))).toEqual([
+      { id: "occasion", slugs: ["dlia-mamy", "den-narodzhennia"] },
+      { id: "theme", slugs: ["fontany"] },
+      { id: "color", slugs: ["pastelni"] },
+    ]);
+
+    const onlyColors = groupTagSections([sampleTags[0]]);
+    expect(onlyColors.map((s) => s.id)).toEqual(["color"]);
+  });
+});
+
