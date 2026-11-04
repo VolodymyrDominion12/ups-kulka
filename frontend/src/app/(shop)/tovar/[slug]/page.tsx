@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Price } from "@/entities/product/Price";
-import { ProductImage } from "@/entities/product/ProductImage";
+import { ProductGallery } from "@/entities/product/ProductGallery";
 import { toCartProduct } from "@/entities/product/toCartProduct";
 import { AddToCartButton } from "@/features/cart/AddToCartButton";
 import { catalogApi, type ProductOut } from "@/shared/api/storefront";
@@ -49,7 +49,6 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function ProductPage({ params }: { params: Params }) {
   const product = await catalogApi.getProduct((await params).slug);
   if (!product) notFound();
-  const [cover, ...rest] = product.images;
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6">
@@ -68,26 +67,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       </nav>
 
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="grid gap-3">
-          <div className="aspect-[4/5] overflow-hidden rounded-panel bg-accent-soft">
-            <ProductImage
-              image={cover}
-              alt={product.name}
-              seed={product.slug}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              priority
-            />
-          </div>
-          {rest.length > 0 && (
-            <ul className="grid grid-cols-4 gap-2">
-              {rest.slice(0, 4).map((image) => (
-                <li key={image.media_id} className="aspect-[4/5] overflow-hidden rounded-2xl bg-accent-soft">
-                  <ProductImage image={image} alt="" seed={product.slug} sizes="120px" />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <ProductGallery images={product.images} name={product.name} seed={product.slug} />
 
         <div className="flex flex-col gap-5">
           <h1 className="font-display text-[clamp(28px,4vw,40px)] font-bold leading-tight tracking-tight">

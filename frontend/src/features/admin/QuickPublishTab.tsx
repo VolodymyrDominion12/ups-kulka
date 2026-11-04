@@ -77,7 +77,7 @@ export function QuickPublishTab({
   const handleFilesSelected = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setError(null);
-    const fileArray = Array.from(files).slice(0, 6);
+    const fileArray = Array.from(files).slice(0, 10);
     setUploadingCount((c) => c + fileArray.length);
 
     for (const file of fileArray) {
@@ -268,7 +268,7 @@ export function QuickPublishTab({
           >
             <ImagePlus className="h-7 w-7 text-rose-deep" />
             <span className="text-sm font-bold">З галереї</span>
-            <span className="text-[11px] text-muted">До 6 фото</span>
+            <span className="text-[11px] text-muted">До 10 фото</span>
           </button>
         </div>
 

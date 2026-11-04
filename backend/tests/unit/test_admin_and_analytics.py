@@ -1,5 +1,5 @@
 import uuid
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
@@ -200,6 +200,9 @@ async def test_admin_orders_and_marketing_analytics() -> None:
         ListAdminOrdersQuery(status="assembled", delivery_date=today, q="Марія")
     )
     assert listed.total == 1
+
+    # Pin order1's created_at to the tested period
+    uow.orders.saved[0].created_at = datetime(2026, 11, 3, 12, 0, tzinfo=UTC)
 
     # Place a past-year order to test Anniversary Radar & Repeat Customer CRM
     await create_order(

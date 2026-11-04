@@ -1,8 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import { Check, Eye, EyeOff, Loader2, Pencil, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Eye,
+  EyeOff,
+  ImagePlus,
+  Loader2,
+  Pencil,
+  Search,
+  Star,
+  Trash2,
+} from "lucide-react";
 import { adminApi, formatMoneyUah, ProductOut } from "@/shared/api/admin";
+import {
+  appendMediaIds,
+  moveMediaToFront,
+  removeMediaId,
+  reorderMediaIds,
+} from "@/shared/lib/gallery";
 
 interface CatalogManageTabProps {
   products: ProductOut[];
@@ -19,6 +37,8 @@ export function CatalogManageTab({
   const [editOldPriceUah, setEditOldPriceUah] = useState("");
   const [editName, setEditName] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const filtered = products.filter((p) => {
     const q = search.trim().toLowerCase();
@@ -75,6 +95,50 @@ export function CatalogManageTab({
       setBusyId(null);
     }
   };
+
+  const applyMedia = async (product: ProductOut, media_ids: string[]) => {
+    setPhotoError(null);
+    try {
+      const updated = await adminApi.updateProduct(product.id, { media_ids });
+      onProductUpdated(updated);
+    } catch (err) {
+      setPhotoError(
+        err instanceof Error ? err.message : "Не вдалося зберегти фото"
+      );
+    }
+  };
+
+  const handleAddPhotos = async (product: ProductOut, files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const current = product.images.map((img) => img.media_id);
+    const room = Math.max(0, 10 - current.length);
+    const fileArray = Array.from(files).slice(0, room);
+    if (fileArray.length === 0) return;
+
+    setUploadingId(product.id);
+    try {
+      const added: string[] = [];
+      for (const file of fileArray) {
+        const asset = await adminApi.uploadMedia(file);
+        added.push(asset.id);
+      }
+      await applyMedia(product, appendMediaIds(current, added, 10));
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
+  const mediaIds = (product: ProductOut) =>
+    product.images.map((img) => img.media_id);
+
+  const handleSetCover = (product: ProductOut, index: number) =>
+    applyMedia(product, moveMediaToFront(mediaIds(product), index));
+
+  const handleRemovePhoto = (product: ProductOut, index: number) =>
+    applyMedia(product, removeMediaId(mediaIds(product), index));
+
+  const handleMovePhoto = (product: ProductOut, index: number, delta: -1 | 1) =>
+    applyMedia(product, reorderMediaIds(mediaIds(product), index, index + delta));
 
   return (
     <div className="space-y-4 pb-24">
@@ -162,7 +226,7 @@ export function CatalogManageTab({
                       onClick={() => startEditing(product)}
                       className="ml-auto inline-flex items-center gap-1 rounded-full bg-surface px-2.5 py-1 text-[11px] font-semibold text-ink"
                     >
-                      <Pencil className="h-3 w-3" /> Ціна / Назва
+                      <Pencil className="h-3 w-3" /> Редагувати
                     </button>
                   </div>
 
@@ -211,6 +275,109 @@ export function CatalogManageTab({
                     >
                       <Check className="h-3.5 w-3.5" /> Зберегти
                     </button>
+                  </div>
+
+                  {/* Photos */}
+                  <div className="pt-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-muted">
+                        Фото ({product.images.length}/10)
+                      </span>
+                      <label
+                        className={`inline-flex min-h-[34px] cursor-pointer items-center gap-1 rounded-full px-3 text-[11px] font-bold text-rose-deep ${
+                          uploadingId === product.id ? "opacity-50" : ""
+                        }`}
+                      >
+                        {uploadingId === product.id ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <ImagePlus className="h-3.5 w-3.5" />
+                        )}
+                        {uploadingId === product.id ? "Завантаження..." : "Додати фото"}
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          multiple
+                          disabled={uploadingId === product.id}
+                          className="hidden"
+                          onChange={(e) => {
+                            void handleAddPhotos(product, e.target.files);
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {product.images.length > 0 ? (
+                      <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                        {product.images.map((img, index) => (
+                          <div
+                            key={img.media_id}
+                            className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl border border-line bg-surface"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={img.variants["320w"] || img.blur_data_url}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                            {index === 0 && (
+                              <span className="absolute left-1 top-1 rounded-full bg-ink/80 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                                Головне
+                              </span>
+                            )}
+                            <div className="absolute inset-x-0 bottom-0 flex justify-center gap-0.5 bg-black/45 px-1 py-1">
+                              {index > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetCover(product, index)}
+                                  title="Зробити головним"
+                                  className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 text-white"
+                                >
+                                  <Star className="h-3 w-3" />
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => handleMovePhoto(product, index, -1)}
+                                disabled={index === 0}
+                                title="Ліворуч"
+                                className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 text-white disabled:opacity-30"
+                              >
+                                <ArrowLeft className="h-3 w-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleMovePhoto(product, index, 1)}
+                                disabled={index === product.images.length - 1}
+                                title="Праворуч"
+                                className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 text-white disabled:opacity-30"
+                              >
+                                <ArrowRight className="h-3 w-3" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemovePhoto(product, index)}
+                                title="Видалити фото"
+                                className="flex h-6 w-6 items-center justify-center rounded-md bg-white/20 text-rose-200"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-1.5 text-[11px] italic text-muted">
+                        Немає фото — натисніть «Додати фото».
+                      </p>
+                    )}
+
+                    {photoError && (
+                      <p className="mt-1.5 text-[11px] font-semibold text-red-600">
+                        {photoError}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}

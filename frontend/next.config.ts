@@ -1,9 +1,11 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Self-contained server for the Docker image (frontend/Dockerfile).
-  output: "standalone",
+  output: process.env.NODE_ENV === "production" ? "standalone" : undefined,
+  outputFileTracingRoot: path.join(__dirname, "../"),
   // Local development only: in Docker, Caddy sends /api and /media straight to the API.
   async rewrites() {
     const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
