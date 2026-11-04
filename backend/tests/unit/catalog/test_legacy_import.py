@@ -76,3 +76,34 @@ def test_only_real_discounts_become_old_prices() -> None:
         "Набір повітряних кульок «Сяйво»": (390000, 430000),
         "Композиція «Love you»": (690100, 695000),
     }
+
+
+def test_seed_tags_have_seo_content_and_multi_dimensional_coverage() -> None:
+    plan = plan_legacy_import(_catalog())
+    by_slug = {cmd.slug: cmd for cmd in plan.tags}
+
+    # Check key SEO landing page slugs exist across dimensions
+    for expected in (
+        "pastelni",
+        "rozhevi",
+        "zoloto-chorni",
+        "blakytni-syni",
+        "dlia-hlopchyka",
+        "dlia-divchynky",
+        "den-narodzhennia",
+        "vypyska",
+        "1-rik",
+        "folhovani-fihury",
+        "kulky-z-napysom",
+    ):
+        assert expected in by_slug
+        tag_cmd = by_slug[expected]
+        assert tag_cmd.seo_title
+        assert tag_cmd.seo_description
+        assert tag_cmd.intro_text
+        assert tag_cmd.seo_text
+        assert len(tag_cmd.faq) >= 1
+
+    # Products carry multiple tags (e.g. category + color + recipient/type)
+    multi_tagged = [p for p in plan.products if len(p.tag_slugs) >= 2]
+    assert len(multi_tagged) >= 180

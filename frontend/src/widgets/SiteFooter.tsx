@@ -28,11 +28,14 @@ export function SiteFooter() {
           <Link href="/kulky" className="hover:text-white hover:underline">
             Каталог
           </Link>
-          <Link href="/#dostavka" className="hover:text-white hover:underline">
+          <Link href="/dostavka" className="hover:text-white hover:underline">
             Доставка й оплата
           </Link>
-          <Link href="/#pytannia" className="hover:text-white hover:underline">
-            Часті питання
+          <Link href="/kontakty" className="hover:text-white hover:underline">
+            Контакти
+          </Link>
+          <Link href="/pro-nas" className="hover:text-white hover:underline">
+            Про нас
           </Link>
         </div>
       </div>

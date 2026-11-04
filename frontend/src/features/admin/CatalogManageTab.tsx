@@ -14,7 +14,12 @@ import {
   Star,
   Trash2,
 } from "lucide-react";
-import { adminApi, formatMoneyUah, ProductOut } from "@/shared/api/admin";
+import {
+  adminApi,
+  formatMoneyUah,
+  ProductOut,
+  TagOut,
+} from "@/shared/api/admin";
 import {
   appendMediaIds,
   moveMediaToFront,
@@ -22,13 +27,24 @@ import {
   reorderMediaIds,
 } from "@/shared/lib/gallery";
 
+const TAG_GROUP_LABELS: Record<string, string> = {
+  recipient: "Для кого",
+  occasion: "Привід / Свято",
+  type: "Тип композиції",
+  color: "Колір / Стиль",
+  theme: "Тематика",
+  age: "Вік",
+};
+
 interface CatalogManageTabProps {
   products: ProductOut[];
+  tags: TagOut[];
   onProductUpdated: (product: ProductOut) => void;
 }
 
 export function CatalogManageTab({
   products,
+  tags,
   onProductUpdated,
 }: CatalogManageTabProps) {
   const [search, setSearch] = useState("");
@@ -36,6 +52,7 @@ export function CatalogManageTab({
   const [editPriceUah, setEditPriceUah] = useState("");
   const [editOldPriceUah, setEditOldPriceUah] = useState("");
   const [editName, setEditName] = useState("");
+  const [editTagSlugs, setEditTagSlugs] = useState<string[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -71,6 +88,13 @@ export function CatalogManageTab({
         ? String(Math.round(product.old_price_kopecks / 100))
         : ""
     );
+    setEditTagSlugs(product.tags.map((t) => t.slug));
+  };
+
+  const toggleEditTag = (slug: string) => {
+    setEditTagSlugs((prev) =>
+      prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
+    );
   };
 
   const saveEdit = async (product: ProductOut) => {
@@ -88,6 +112,7 @@ export function CatalogManageTab({
         old_price_kopecks:
           newOldPrice && newOldPrice > newPrice ? newOldPrice * 100 : null,
         clear_old_price: !newOldPrice,
+        tag_slugs: editTagSlugs,
       });
       onProductUpdated(updated);
       setEditingId(null);
@@ -276,6 +301,46 @@ export function CatalogManageTab({
                       <Check className="h-3.5 w-3.5" /> Зберегти
                     </button>
                   </div>
+
+                  {/* Multi-dimensional Tag Selector */}
+                  {tags.length > 0 && (
+                    <div className="space-y-2 rounded-2xl border border-line bg-surface/60 p-2.5">
+                      <div className="text-[11px] font-bold text-muted">
+                        Теги та кольори ({editTagSlugs.length})
+                      </div>
+                      {Object.keys(TAG_GROUP_LABELS).map((groupKey) => {
+                        const groupItems = tags.filter((t) => t.group === groupKey);
+                        if (groupItems.length === 0) return null;
+                        return (
+                          <div key={groupKey}>
+                            <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
+                              {TAG_GROUP_LABELS[groupKey]}
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {groupItems.map((tag) => {
+                                const active = editTagSlugs.includes(tag.slug);
+                                return (
+                                  <button
+                                    key={tag.slug}
+                                    type="button"
+                                    onClick={() => toggleEditTag(tag.slug)}
+                                    className={`min-h-[30px] rounded-full px-2.5 py-1 text-[11px] font-bold transition ${
+                                      active
+                                        ? "bg-rose-deep text-white shadow-sm"
+                                        : "border border-line bg-white text-ink"
+                                    }`}
+                                  >
+                                    {active ? "✓ " : ""}
+                                    {tag.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
 
                   {/* Photos */}
                   <div className="pt-1">

@@ -24,6 +24,9 @@ from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
 from ups_kulka.modules.catalog.application.use_cases.get_tag_detail import GetTagDetail
 from ups_kulka.modules.catalog.application.use_cases.list_products import ListProducts
+from ups_kulka.modules.catalog.application.use_cases.list_related_products import (
+    ListRelatedProducts,
+)
 from ups_kulka.modules.catalog.application.use_cases.list_tags import ListTags
 from ups_kulka.modules.catalog.application.use_cases.update_tag_seo import UpdateTagSeo
 from ups_kulka.modules.catalog.presentation.schemas import (
@@ -111,6 +114,15 @@ async def get_product(
     use_case: GetProduct = Depends(Provide["catalog.get_product"]),
 ) -> ProductOut:
     return ProductOut.from_dto(await use_case(slug))
+
+
+@router.get("/api/v1/catalog/products/{slug}/related", responses=_ERRORS)
+@inject
+async def list_related_products(
+    slug: str,
+    use_case: ListRelatedProducts = Depends(Provide["catalog.list_related_products"]),
+) -> list[ProductOut]:
+    return [ProductOut.from_dto(product) for product in await use_case(slug)]
 
 
 @router.get("/api/v1/admin/catalog/products", responses=_ERRORS, tags=["admin-catalog"])

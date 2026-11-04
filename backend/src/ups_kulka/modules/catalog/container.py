@@ -15,6 +15,9 @@ from ups_kulka.modules.catalog.application.use_cases.import_legacy_photos import
     ImportLegacyPhotos,
 )
 from ups_kulka.modules.catalog.application.use_cases.list_products import ListProducts
+from ups_kulka.modules.catalog.application.use_cases.list_related_products import (
+    ListRelatedProducts,
+)
 from ups_kulka.modules.catalog.application.use_cases.list_tags import ListTags
 from ups_kulka.modules.catalog.application.use_cases.update_tag_seo import UpdateTagSeo
 from ups_kulka.modules.catalog.infrastructure.adapters import (
@@ -49,6 +52,7 @@ class CatalogContainer(containers.DeclarativeContainer):
     )
     get_product = providers.Factory(GetProduct, uow_factory=uow.provider)
     list_products = providers.Factory(ListProducts, uow_factory=uow.provider)
+    list_related_products = providers.Factory(ListRelatedProducts, uow_factory=uow.provider)
 
     quick_create_product = providers.Factory(
         QuickCreateProduct,

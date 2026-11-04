@@ -101,3 +101,39 @@ async def test_list_tags_with_counts_is_one_query(
 
     assert len(summaries) == 15
     assert all(s.product_count == 0 for s in summaries)
+
+
+async def test_list_related_query_count_is_constant(
+    container: Container, query_counter: QueryCounter
+) -> None:
+    create_tag = container.catalog.create_tag()
+    create_product = container.catalog.create_product()
+    for slug in ("a", "b", "c", "d", "e"):
+        await create_tag(CreateTagCommand(group="theme", slug=f"tag-{slug}", name=slug))
+    await create_product(
+        CreateProductCommand(
+            slug="target",
+            name="Target",
+            description="",
+            price_kopecks=100,
+            tag_slugs=("tag-a", "tag-b"),
+        )
+    )
+    for i in range(12):
+        await create_product(
+            CreateProductCommand(
+                slug=f"rel-{i}",
+                name=f"Rel {i}",
+                description="",
+                price_kopecks=100,
+                tag_slugs=("tag-a",),
+            )
+        )
+
+    list_related = container.catalog.list_related_products()
+
+    # ids (GROUP BY) + products + selectinload(tags) + selectinload(media)
+    with query_counter.assert_max_queries(4):
+        related = await list_related("target")
+
+    assert len(related) == 8  # RELATED_PRODUCTS_LIMIT

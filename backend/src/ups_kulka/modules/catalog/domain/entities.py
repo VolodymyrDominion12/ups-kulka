@@ -11,6 +11,7 @@ from ups_kulka.shared.domain.transliteration import to_slug
 _SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MAX_NAME_LENGTH = 200
 MAX_IMAGES_PER_PRODUCT = 10
+RELATED_PRODUCTS_LIMIT = 8
 STANDARD_IMAGE_WIDTHS = (320, 640, 960, 1280)
 
 

@@ -36,10 +36,32 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: SHOP.name,
+  description:
+    "Композиції, фонтани й фотозони з гелієвих кульок у Києві. Самовивіз або доставка таксі.",
+  url: SHOP.siteUrl,
+  telephone: SHOP.phone,
+  sameAs: [SHOP.instagramUrl],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: SHOP.city,
+    addressCountry: "UA",
+  },
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="uk" className={`${comfortaa.variable} ${manrope.variable}`}>
-      <body className="min-h-screen bg-surface text-ink antialiased">{children}</body>
+      <body className="min-h-screen bg-surface text-ink antialiased">
+        {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+      </body>
     </html>
   );
 }

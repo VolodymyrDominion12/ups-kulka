@@ -141,3 +141,20 @@ async def test_list_products_sort_and_on_sale(client: AsyncClient) -> None:
 
     invalid = await client.get(f"{API}/products", params={"sort": "bogus"})
     assert invalid.status_code == 422
+
+
+async def test_list_related_products_by_shared_tags(client: AsyncClient) -> None:
+    await _create_tag(client, "pastelni", group="color")
+    await _create_tag(client, "dlia-divchynky")
+    await _create_product(client, "target", ["pastelni", "dlia-divchynky"])
+    await _create_product(client, "one-tag", ["pastelni"])
+    await _create_product(client, "unrelated")
+
+    response = await client.get(f"{API}/products/target/related")
+
+    assert response.status_code == 200
+    assert [p["slug"] for p in response.json()] == ["one-tag"]
+
+    unknown = await client.get(f"{API}/products/nema/related")
+    assert unknown.status_code == 200
+    assert unknown.json() == []

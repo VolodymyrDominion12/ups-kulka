@@ -10,6 +10,11 @@ class CreateTagCommand:
     group: str
     slug: str
     name: str
+    seo_title: str = ""
+    seo_description: str = ""
+    intro_text: str = ""
+    seo_text: str = ""
+    faq: tuple["FaqItemDTO", ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
