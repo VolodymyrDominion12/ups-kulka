@@ -16,11 +16,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const tags = await catalogApi.listTags();
     entries.push(
-      ...tags.map((tag) => ({
-        url: `${base}/kulky/${tag.slug}`,
-        changeFrequency: "weekly" as const,
-        priority: 0.8,
-      })),
+      ...tags
+        .filter((tag) => tag.is_indexable)
+        .map((tag) => ({
+          url: `${base}/kulky/${tag.slug}`,
+          changeFrequency: "weekly" as const,
+          priority: 0.8,
+        })),
     );
     const products: ProductOut[] = [];
     for (let offset = 0; ; offset += API_PAGE) {

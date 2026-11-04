@@ -13,6 +13,13 @@ class InvalidTag(ValidationError):
     code = "invalid_tag"
 
 
+class TagNotFound(NotFoundError):
+    code = "tag_not_found"
+
+    def __init__(self, identifier: str) -> None:
+        super().__init__(f"Tag '{identifier}' not found")
+
+
 class TagSlugAlreadyTaken(ConflictError):
     code = "tag_slug_already_taken"
 

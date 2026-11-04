@@ -44,7 +44,15 @@ class ProductRepository(Protocol):
 
     async def get_by_slug(self, slug: str, *, active_only: bool = True) -> Product | None: ...
 
-    async def list_active(self, *, tag_slug: str | None, page: PageRequest) -> Page[Product]:
+    async def list_active(
+        self,
+        *,
+        tag_slug: str | None,
+        page: PageRequest,
+        q: str | None = None,
+        sort: str = "newest",
+        on_sale: bool | None = None,
+    ) -> Page[Product]:
         """Must run a constant number of queries regardless of page size (no N+1)."""
         ...
 
@@ -71,6 +79,8 @@ class ProductRepository(Protocol):
 class TagRepository(Protocol):
     async def add(self, tag: Tag) -> None: ...
 
+    async def save(self, tag: Tag) -> None: ...
+
     async def slug_exists(self, slug: str) -> bool: ...
 
     async def get_by_slugs(self, slugs: Sequence[str]) -> list[Tag]:
@@ -78,6 +88,14 @@ class TagRepository(Protocol):
         ...
 
     async def list_all(self) -> list[Tag]: ...
+
+    async def get_by_slug_with_count(self, slug: str) -> tuple[Tag, int] | None: ...
+
+    async def get_by_id_with_count(self, tag_id: uuid.UUID) -> tuple[Tag, int] | None: ...
+
+    async def list_with_counts(self) -> list[tuple[Tag, int]]:
+        """One GROUP BY query: each tag with its active product count."""
+        ...
 
 
 class CatalogUnitOfWork(UnitOfWork, Protocol):

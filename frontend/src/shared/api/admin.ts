@@ -10,6 +10,24 @@ export interface TagOut {
   name: string;
 }
 
+export interface TagSummaryOut extends TagOut {
+  product_count: number;
+  is_indexable: boolean;
+}
+
+export interface FaqItemOut {
+  question: string;
+  answer: string;
+}
+
+export interface TagDetailOut extends TagSummaryOut {
+  seo_title: string;
+  seo_description: string;
+  intro_text: string;
+  seo_text: string;
+  faq: FaqItemOut[];
+}
+
 export interface ProductImageOut {
   media_id: string;
   position: number;
@@ -315,7 +333,25 @@ export const adminApi = {
     });
   },
 
-  listTags: () => apiRequest<TagOut[]>("/api/v1/catalog/tags"),
+  listTags: () => apiRequest<TagSummaryOut[]>("/api/v1/catalog/tags"),
+
+  getTagSeo: (slug: string) =>
+    apiRequest<TagDetailOut>(`/api/v1/catalog/tags/${encodeURIComponent(slug)}`),
+
+  updateTagSeo: (
+    tagId: string,
+    payload: {
+      seo_title?: string;
+      seo_description?: string;
+      intro_text?: string;
+      seo_text?: string;
+      faq?: { question: string; answer: string }[];
+    }
+  ) =>
+    apiRequest<TagDetailOut>(`/api/v1/admin/catalog/tags/${tagId}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
 
   createTag: (payload: {
     group: string;

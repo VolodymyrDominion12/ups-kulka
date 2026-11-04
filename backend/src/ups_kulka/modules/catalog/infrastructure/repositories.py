@@ -1,12 +1,13 @@
 import uuid
 from collections.abc import Sequence
+from typing import Any
 
-from sqlalchemy import ColumnElement, delete, exists, func, insert, or_, select, update
+from sqlalchemy import ColumnElement, Select, delete, exists, func, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from ups_kulka.modules.catalog.application.dto import ProductForOrder
-from ups_kulka.modules.catalog.domain.entities import Product, Tag
+from ups_kulka.modules.catalog.domain.entities import Product, ProductSort, Tag
 from ups_kulka.modules.catalog.infrastructure.mappers import product_to_domain, tag_to_domain
 from ups_kulka.modules.catalog.infrastructure.tables import (
     ProductMediaRow,
@@ -21,11 +22,38 @@ class SqlAlchemyTagRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
+    @staticmethod
+    def _faq_payload(tag: Tag) -> list[dict[str, str]]:
+        return [{"question": item.question, "answer": item.answer} for item in tag.faq]
+
     async def add(self, tag: Tag) -> None:
         self._session.add(
-            TagRow(id=tag.id, group=tag.group.value, slug=tag.slug.value, name=tag.name)
+            TagRow(
+                id=tag.id,
+                group=tag.group.value,
+                slug=tag.slug.value,
+                name=tag.name,
+                seo_title=tag.seo_title,
+                seo_description=tag.seo_description,
+                intro_text=tag.intro_text,
+                seo_text=tag.seo_text,
+                faq=self._faq_payload(tag),
+            )
         )
         await self._session.flush()
+
+    async def save(self, tag: Tag) -> None:
+        await self._session.execute(
+            update(TagRow)
+            .where(TagRow.id == tag.id)
+            .values(
+                seo_title=tag.seo_title,
+                seo_description=tag.seo_description,
+                intro_text=tag.intro_text,
+                seo_text=tag.seo_text,
+                faq=self._faq_payload(tag),
+            )
+        )
 
     async def slug_exists(self, slug: str) -> bool:
         stmt = select(exists().where(TagRow.slug == slug))
@@ -40,6 +68,36 @@ class SqlAlchemyTagRepository:
     async def list_all(self) -> list[Tag]:
         rows = await self._session.scalars(select(TagRow).order_by(TagRow.group, TagRow.name))
         return [tag_to_domain(row) for row in rows]
+
+    def _count_query(self) -> Select[TagRow, int]:
+        """Tag + its active product count in ONE grouped query (no N+1)."""
+        return (
+            select(TagRow, func.count(ProductRow.id))
+            .outerjoin(product_tags, product_tags.c.tag_id == TagRow.id)
+            .outerjoin(
+                ProductRow,
+                (ProductRow.id == product_tags.c.product_id) & ProductRow.is_active.is_(True),
+            )
+            .group_by(TagRow.id)
+        )
+
+    async def get_by_slug_with_count(self, slug: str) -> tuple[Tag, int] | None:
+        row = (await self._session.execute(self._count_query().where(TagRow.slug == slug))).first()
+        if row is None:
+            return None
+        tag_row, count = row
+        return tag_to_domain(tag_row), count or 0
+
+    async def get_by_id_with_count(self, tag_id: uuid.UUID) -> tuple[Tag, int] | None:
+        row = (await self._session.execute(self._count_query().where(TagRow.id == tag_id))).first()
+        if row is None:
+            return None
+        tag_row, count = row
+        return tag_to_domain(tag_row), count or 0
+
+    async def list_with_counts(self) -> list[tuple[Tag, int]]:
+        rows = await self._session.execute(self._count_query().order_by(TagRow.group, TagRow.name))
+        return [(tag_to_domain(tag_row), count or 0) for tag_row, count in rows]
 
 
 class SqlAlchemyProductRepository:
@@ -148,7 +206,15 @@ class SqlAlchemyProductRepository:
         row = await self._session.scalar(stmt)
         return product_to_domain(row) if row is not None else None
 
-    async def list_active(self, *, tag_slug: str | None, page: PageRequest) -> Page[Product]:
+    async def list_active(
+        self,
+        *,
+        tag_slug: str | None,
+        page: PageRequest,
+        q: str | None = None,
+        sort: str = "newest",
+        on_sale: bool | None = None,
+    ) -> Page[Product]:
         """Constant queries: count, page of products, selectinload(tags), selectinload(media)."""
         conditions: list[ColumnElement[bool]] = [ProductRow.is_active.is_(True)]
         if tag_slug is not None:
@@ -158,7 +224,18 @@ class SqlAlchemyProductRepository:
                 .where(product_tags.c.tag_id == TagRow.id)
                 .where(TagRow.slug == tag_slug)
             )
-        return await self._paginate(conditions, page)
+        if q and q.strip():
+            pattern = f"%{q.strip()}%"
+            conditions.append(
+                or_(
+                    ProductRow.name.ilike(pattern),
+                    ProductRow.description.ilike(pattern),
+                    ProductRow.slug.ilike(pattern),
+                )
+            )
+        if on_sale:
+            conditions.append(ProductRow.old_price_kopecks.is_not(None))
+        return await self._paginate(conditions, page, sort=sort)
 
     async def list_for_admin(
         self,
@@ -208,16 +285,28 @@ class SqlAlchemyProductRepository:
         ]
 
     async def _paginate(
-        self, conditions: list[ColumnElement[bool]], page: PageRequest
+        self,
+        conditions: list[ColumnElement[bool]],
+        page: PageRequest,
+        sort: str = "newest",
     ) -> Page[Product]:
         total = await self._session.scalar(
             select(func.count()).select_from(ProductRow).where(*conditions)
         )
+        if sort == ProductSort.PRICE_ASC.value:
+            order: list[ColumnElement[Any]] = [
+                ProductRow.price_kopecks.asc(),
+                ProductRow.id.desc(),
+            ]
+        elif sort == ProductSort.PRICE_DESC.value:
+            order = [ProductRow.price_kopecks.desc(), ProductRow.id.desc()]
+        else:
+            order = [ProductRow.created_at.desc(), ProductRow.id.desc()]
         rows = await self._session.scalars(
             select(ProductRow)
             .options(selectinload(ProductRow.tags), selectinload(ProductRow.media))
             .where(*conditions)
-            .order_by(ProductRow.created_at.desc(), ProductRow.id.desc())
+            .order_by(*order)
             .limit(page.limit)
             .offset(page.offset)
         )

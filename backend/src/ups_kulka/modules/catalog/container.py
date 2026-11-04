@@ -10,11 +10,13 @@ from ups_kulka.modules.catalog.application.use_cases.admin_products import (
 from ups_kulka.modules.catalog.application.use_cases.create_product import CreateProduct
 from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
+from ups_kulka.modules.catalog.application.use_cases.get_tag_detail import GetTagDetail
 from ups_kulka.modules.catalog.application.use_cases.import_legacy_photos import (
     ImportLegacyPhotos,
 )
 from ups_kulka.modules.catalog.application.use_cases.list_products import ListProducts
 from ups_kulka.modules.catalog.application.use_cases.list_tags import ListTags
+from ups_kulka.modules.catalog.application.use_cases.update_tag_seo import UpdateTagSeo
 from ups_kulka.modules.catalog.infrastructure.adapters import (
     CatalogAdminAuthAdapter,
     HttpPhotoDownloader,
@@ -38,6 +40,8 @@ class CatalogContainer(containers.DeclarativeContainer):
     # `.provider` injects the factory itself: each call opens a NEW unit of work.
     create_tag = providers.Factory(CreateTag, uow_factory=uow.provider)
     list_tags = providers.Factory(ListTags, uow_factory=uow.provider)
+    get_tag_detail = providers.Factory(GetTagDetail, uow_factory=uow.provider)
+    update_tag_seo = providers.Factory(UpdateTagSeo, uow_factory=uow.provider, auth=auth_adapter)
     create_product = providers.Factory(
         CreateProduct,
         uow_factory=uow.provider,

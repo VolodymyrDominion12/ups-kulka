@@ -21,6 +21,7 @@ from sqlalchemy import (
     Text,
     Uuid,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ups_kulka.shared.infrastructure.db import Base
@@ -52,6 +53,12 @@ class TagRow(Base):
     group: Mapped[str] = mapped_column(String(32))
     slug: Mapped[str] = mapped_column(String(120), unique=True)
     name: Mapped[str] = mapped_column(String(120))
+    # SEO content for collection landing pages (specs/002-collections-seo).
+    seo_title: Mapped[str] = mapped_column(String(160), default="")
+    seo_description: Mapped[str] = mapped_column(String(300), default="")
+    intro_text: Mapped[str] = mapped_column(Text, default="")
+    seo_text: Mapped[str] = mapped_column(Text, default="")
+    faq: Mapped[list[dict[str, str]]] = mapped_column(JSONB, default=list)
 
 
 class ProductMediaRow(Base):
@@ -91,6 +98,19 @@ class ProductRow(Base):
             "is_active",
             "created_at",
             "id",
+        ),
+        # Search (specs/014-search-sort): trigram indexes for ILIKE '%q%'.
+        Index(
+            "ix_catalog_products_name_trgm",
+            "name",
+            postgresql_using="gin",
+            postgresql_ops={"name": "gin_trgm_ops"},
+        ),
+        Index(
+            "ix_catalog_products_description_trgm",
+            "description",
+            postgresql_using="gin",
+            postgresql_ops={"description": "gin_trgm_ops"},
         ),
     )
 

@@ -2,7 +2,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from ups_kulka.modules.catalog.domain.entities import Product, ProductImage, Tag
+from ups_kulka.modules.catalog.domain.entities import FaqItem, Product, ProductImage, Tag
 
 
 @dataclass(frozen=True, slots=True)
@@ -10,6 +10,17 @@ class CreateTagCommand:
     group: str
     slug: str
     name: str
+
+
+@dataclass(frozen=True, slots=True)
+class UpdateTagSeoCommand:
+    tag_id: uuid.UUID
+    seo_title: str = ""
+    seo_description: str = ""
+    intro_text: str = ""
+    seo_text: str = ""
+    faq: tuple["FaqItemDTO", ...] = ()
+    auth_token: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +68,9 @@ class ListProductsQuery:
     tag_slug: str | None = None
     limit: int = 24
     offset: int = 0
+    q: str | None = None
+    sort: str = "newest"
+    on_sale: bool | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,6 +93,68 @@ class TagDTO:
     @classmethod
     def from_entity(cls, tag: Tag) -> "TagDTO":
         return cls(id=tag.id, group=tag.group.value, slug=tag.slug.value, name=tag.name)
+
+
+@dataclass(frozen=True, slots=True)
+class FaqItemDTO:
+    question: str
+    answer: str
+
+    @classmethod
+    def from_entity(cls, item: FaqItem) -> "FaqItemDTO":
+        return cls(question=item.question, answer=item.answer)
+
+
+@dataclass(frozen=True, slots=True)
+class TagSummaryDTO:
+    id: uuid.UUID
+    group: str
+    slug: str
+    name: str
+    product_count: int
+    is_indexable: bool
+
+    @classmethod
+    def from_entity(cls, tag: Tag, product_count: int) -> "TagSummaryDTO":
+        return cls(
+            id=tag.id,
+            group=tag.group.value,
+            slug=tag.slug.value,
+            name=tag.name,
+            product_count=product_count,
+            is_indexable=tag.is_indexable(product_count),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class TagDetailDTO:
+    id: uuid.UUID
+    group: str
+    slug: str
+    name: str
+    seo_title: str
+    seo_description: str
+    intro_text: str
+    seo_text: str
+    faq: tuple[FaqItemDTO, ...]
+    product_count: int
+    is_indexable: bool
+
+    @classmethod
+    def from_entity(cls, tag: Tag, product_count: int) -> "TagDetailDTO":
+        return cls(
+            id=tag.id,
+            group=tag.group.value,
+            slug=tag.slug.value,
+            name=tag.name,
+            seo_title=tag.seo_title,
+            seo_description=tag.seo_description,
+            intro_text=tag.intro_text,
+            seo_text=tag.seo_text,
+            faq=tuple(FaqItemDTO.from_entity(item) for item in tag.faq),
+            product_count=product_count,
+            is_indexable=tag.is_indexable(product_count),
+        )
 
 
 @dataclass(frozen=True, slots=True)

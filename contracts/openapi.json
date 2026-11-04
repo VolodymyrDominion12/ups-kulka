@@ -773,6 +773,46 @@
         "title": "ErrorOut",
         "type": "object"
       },
+      "FaqItemIn": {
+        "properties": {
+          "answer": {
+            "maxLength": 3000,
+            "minLength": 1,
+            "title": "Answer",
+            "type": "string"
+          },
+          "question": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question",
+          "answer"
+        ],
+        "title": "FaqItemIn",
+        "type": "object"
+      },
+      "FaqItemOut": {
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question",
+          "answer"
+        ],
+        "title": "FaqItemOut",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1711,6 +1751,73 @@
         "title": "SalesKpiOut",
         "type": "object"
       },
+      "TagDetailOut": {
+        "properties": {
+          "faq": {
+            "items": {
+              "$ref": "#/components/schemas/FaqItemOut"
+            },
+            "title": "Faq",
+            "type": "array"
+          },
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "intro_text": {
+            "title": "Intro Text",
+            "type": "string"
+          },
+          "is_indexable": {
+            "title": "Is Indexable",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "product_count": {
+            "title": "Product Count",
+            "type": "integer"
+          },
+          "seo_description": {
+            "title": "Seo Description",
+            "type": "string"
+          },
+          "seo_text": {
+            "title": "Seo Text",
+            "type": "string"
+          },
+          "seo_title": {
+            "title": "Seo Title",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "group",
+          "slug",
+          "name",
+          "seo_title",
+          "seo_description",
+          "intro_text",
+          "seo_text",
+          "faq",
+          "product_count",
+          "is_indexable"
+        ],
+        "title": "TagDetailOut",
+        "type": "object"
+      },
       "TagGroupPerformanceOut": {
         "properties": {
           "group": {
@@ -1812,6 +1919,45 @@
           "name"
         ],
         "title": "TagOut",
+        "type": "object"
+      },
+      "TagSummaryOut": {
+        "properties": {
+          "group": {
+            "title": "Group",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_indexable": {
+            "title": "Is Indexable",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "product_count": {
+            "title": "Product Count",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "group",
+          "slug",
+          "name",
+          "product_count",
+          "is_indexable"
+        ],
+        "title": "TagSummaryOut",
         "type": "object"
       },
       "UpdateAdminOrderIn": {
@@ -1993,6 +2139,44 @@
           }
         },
         "title": "UpdateProductIn",
+        "type": "object"
+      },
+      "UpdateTagSeoIn": {
+        "properties": {
+          "faq": {
+            "items": {
+              "$ref": "#/components/schemas/FaqItemIn"
+            },
+            "maxItems": 20,
+            "title": "Faq",
+            "type": "array"
+          },
+          "intro_text": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Intro Text",
+            "type": "string"
+          },
+          "seo_description": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Seo Description",
+            "type": "string"
+          },
+          "seo_text": {
+            "default": "",
+            "maxLength": 20000,
+            "title": "Seo Text",
+            "type": "string"
+          },
+          "seo_title": {
+            "default": "",
+            "maxLength": 160,
+            "title": "Seo Title",
+            "type": "string"
+          }
+        },
+        "title": "UpdateTagSeoIn",
         "type": "object"
       },
       "ValidationError": {
@@ -2822,6 +3006,106 @@
         ]
       }
     },
+    "/api/v1/admin/catalog/tags/{tag_id}": {
+      "patch": {
+        "operationId": "update_tag_seo_api_v1_admin_catalog_tags__tag_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Tag Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagSeoIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Update Tag Seo",
+        "tags": [
+          "catalog",
+          "admin-catalog"
+        ]
+      }
+    },
     "/api/v1/admin/media": {
       "get": {
         "operationId": "list_media_api_v1_admin_media_get",
@@ -3436,6 +3720,54 @@
               "title": "Offset",
               "type": "integer"
             }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": "newest",
+              "enum": [
+                "newest",
+                "price_asc",
+                "price_desc"
+              ],
+              "title": "Sort",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "on_sale",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "On Sale"
+            }
           }
         ],
         "responses": {
@@ -3646,7 +3978,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/TagOut"
+                    "$ref": "#/components/schemas/TagSummaryOut"
                   },
                   "title": "Response List Tags Api V1 Catalog Tags Get",
                   "type": "array"
@@ -3766,6 +4098,78 @@
           }
         },
         "summary": "Create Tag",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/catalog/tags/{slug}": {
+      "get": {
+        "operationId": "get_tag_detail_api_v1_catalog_tags__slug__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get Tag Detail",
         "tags": [
           "catalog"
         ]

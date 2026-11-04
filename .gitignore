@@ -17,3 +17,8 @@ next-env.d.ts
 # Server-only files (deploy/deploy.sh)
 deploy/edge/sites/
 deploy/env/*.env
+
+# Local runtime data (media, logs)
+var/
+backend/var/
+
