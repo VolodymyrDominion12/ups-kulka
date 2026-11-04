@@ -68,9 +68,14 @@ async def run(catalog: LegacyCatalog, *, photos: bool) -> int:
                 merged = tuple(
                     dict.fromkeys([*(t.slug for t in existing.tags), *product_cmd.tag_slugs])
                 )
+                updates = {}
                 if set(merged) != existing_slugs:
+                    updates["tag_slugs"] = merged
+                if product_cmd.description and existing.description != product_cmd.description:
+                    updates["description"] = product_cmd.description
+                if updates:
                     await update_product(
-                        UpdateProductCommand(product_id=existing.id, tag_slugs=merged)
+                        UpdateProductCommand(product_id=existing.id, **updates)
                     )
                     updated_products += 1
         out.write(

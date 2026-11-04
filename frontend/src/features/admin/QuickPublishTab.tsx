@@ -384,11 +384,11 @@ export function QuickPublishTab({
 
         <div className="mt-3">
           <label className="block text-xs font-semibold text-muted">
-            Короткий склад / опис (опційно)
+            Опис товару чи послуги (опційно)
           </label>
           <textarea
             rows={2}
-            placeholder="Фольгована цифра, 7 латексних кульок пастель, 3 конфеті, грузик..."
+            placeholder="Склад композиції, наповнення кульок або деталі послуги..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="mt-1 w-full rounded-2xl border border-line bg-surface p-3 text-sm text-ink focus:border-rose focus:outline-none"

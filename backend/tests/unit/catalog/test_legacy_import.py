@@ -107,3 +107,13 @@ def test_seed_tags_have_seo_content_and_multi_dimensional_coverage() -> None:
     # Products carry multiple tags (e.g. category + color + recipient/type)
     multi_tagged = [p for p in plan.products if len(p.tag_slugs) >= 2]
     assert len(multi_tagged) >= 180
+
+
+def test_seed_products_have_relevant_descriptions() -> None:
+    plan = plan_legacy_import(_catalog())
+    assert len(plan.products) == 211
+    # Every product in the seed catalog must have a positive Ukrainian description
+    for product in plan.products:
+        assert product.description, f"Product {product.name} ({product.slug}) has empty description"
+        assert len(product.description) >= 50, f"Product {product.name} description too short"
+
