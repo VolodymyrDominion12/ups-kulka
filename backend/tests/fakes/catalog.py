@@ -12,10 +12,14 @@ from ups_kulka.shared.application.pagination import Page, PageRequest
 
 
 class InMemoryTagRepository:
-    def __init__(self, store: dict[str, Tag]) -> None:
+    def __init__(self, store: dict[str, Tag], products: dict[str, Product]) -> None:
         self._store = store
+        self._products = products
 
     async def add(self, tag: Tag) -> None:
+        self._store[tag.slug.value] = tag
+
+    async def save(self, tag: Tag) -> None:
         self._store[tag.slug.value] = tag
 
     async def slug_exists(self, slug: str) -> bool:
@@ -26,6 +30,29 @@ class InMemoryTagRepository:
 
     async def list_all(self) -> list[Tag]:
         return sorted(self._store.values(), key=lambda t: (t.group.value, t.name))
+
+    def _active_count(self, tag: Tag) -> int:
+        return sum(
+            1
+            for p in self._products.values()
+            if p.is_active and any(t.id == tag.id for t in p.tags)
+        )
+
+    async def get_by_slug_with_count(self, slug: str) -> tuple[Tag, int] | None:
+        tag = self._store.get(slug)
+        if tag is None:
+            return None
+        return tag, self._active_count(tag)
+
+    async def get_by_id_with_count(self, tag_id: uuid.UUID) -> tuple[Tag, int] | None:
+        for tag in self._store.values():
+            if tag.id == tag_id:
+                return tag, self._active_count(tag)
+        return None
+
+    async def list_with_counts(self) -> list[tuple[Tag, int]]:
+        tags = sorted(self._store.values(), key=lambda t: (t.group.value, t.name))
+        return [(tag, self._active_count(tag)) for tag in tags]
 
 
 class InMemoryProductRepository:
@@ -53,13 +80,42 @@ class InMemoryProductRepository:
             return None
         return product
 
-    async def list_active(self, *, tag_slug: str | None, page: PageRequest) -> Page[Product]:
-        items = [
-            p
-            for p in self._store.values()
-            if p.is_active and (tag_slug is None or any(t.slug.value == tag_slug for t in p.tags))
-        ]
-        items.sort(key=lambda p: (p.created_at, p.id), reverse=True)
+    async def list_active(
+        self,
+        *,
+        tag_slug: str | None,
+        page: PageRequest,
+        q: str | None = None,
+        sort: str = "newest",
+        on_sale: bool | None = None,
+    ) -> Page[Product]:
+        def matches(product: Product) -> bool:
+            if not product.is_active:
+                return False
+            if tag_slug is not None and not any(t.slug.value == tag_slug for t in product.tags):
+                return False
+            if on_sale and product.old_price is None:
+                return False
+            if q and q.strip():
+                needle = q.strip().lower()
+                haystack = (
+                    product.name.lower()
+                    + " "
+                    + product.description.lower()
+                    + " "
+                    + product.slug.value.lower()
+                )
+                if needle not in haystack:
+                    return False
+            return True
+
+        items = [p for p in self._store.values() if matches(p)]
+        if sort == "price_asc":
+            items.sort(key=lambda p: p.price.kopecks)
+        elif sort == "price_desc":
+            items.sort(key=lambda p: p.price.kopecks, reverse=True)
+        else:
+            items.sort(key=lambda p: (p.created_at, p.id), reverse=True)
         return Page(
             items=tuple(items[page.offset : page.offset + page.limit]),
             total=len(items),
@@ -137,7 +193,7 @@ class FakeCatalogUnitOfWork:
         self._products = dict(self.committed_products)
         self._tags = dict(self.committed_tags)
         self.products = InMemoryProductRepository(self._products)
-        self.tags = InMemoryTagRepository(self._tags)
+        self.tags = InMemoryTagRepository(self._tags, self._products)
         return self
 
     async def __aexit__(

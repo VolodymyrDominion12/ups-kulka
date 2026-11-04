@@ -104,6 +104,54 @@ async def test_create_tag_duplicate(uow: FakeCatalogUnitOfWork) -> None:
         await _tag(uow, "pastelni", group="color")
 
 
+async def test_list_products_sorts_by_price(uow: FakeCatalogUnitOfWork) -> None:
+    for slug, price in (("a-cheap", 10000), ("b-mid", 50000), ("c-expensive", 90000)):
+        await CreateProduct(uow)(
+            CreateProductCommand(slug=slug, name=slug, description="", price_kopecks=price)
+        )
+
+    asc = await ListProducts(uow)(ListProductsQuery(sort="price_asc", limit=10))
+    assert [p.price_kopecks for p in asc.items] == [10000, 50000, 90000]
+
+    desc = await ListProducts(uow)(ListProductsQuery(sort="price_desc", limit=10))
+    assert [p.price_kopecks for p in desc.items] == [90000, 50000, 10000]
+
+
+async def test_list_products_search_matches_name_and_description(
+    uow: FakeCatalogUnitOfWork,
+) -> None:
+    await CreateProduct(uow)(
+        CreateProductCommand(slug="yedynorih", name="Єдиноріг", description="", price_kopecks=10000)
+    )
+    await CreateProduct(uow)(
+        CreateProductCommand(slug="sertse", name="Серце", description="", price_kopecks=10000)
+    )
+    await CreateProduct(uow)(
+        CreateProductCommand(
+            slug="tsyfra-5", name="Цифра 5", description="з єдинорігом", price_kopecks=10000
+        )
+    )
+
+    page = await ListProducts(uow)(ListProductsQuery(q="єдиноріг", limit=10))
+
+    assert {p.slug for p in page.items} == {"yedynorih", "tsyfra-5"}
+
+
+async def test_list_products_filters_on_sale(uow: FakeCatalogUnitOfWork) -> None:
+    await CreateProduct(uow)(
+        CreateProductCommand(
+            slug="sale-1", name="Sale", description="", price_kopecks=10000, old_price_kopecks=15000
+        )
+    )
+    await CreateProduct(uow)(
+        CreateProductCommand(slug="no-sale", name="NoSale", description="", price_kopecks=10000)
+    )
+
+    page = await ListProducts(uow)(ListProductsQuery(on_sale=True, limit=10))
+
+    assert [p.slug for p in page.items] == ["sale-1"]
+
+
 async def test_facade_returns_prices_for_known_products_only(uow: FakeCatalogUnitOfWork) -> None:
     product = await CreateProduct(uow)(_cmd())
     unknown = uuid.uuid4()

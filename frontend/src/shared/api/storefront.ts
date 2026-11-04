@@ -15,6 +15,24 @@ export interface TagOut {
   name: string;
 }
 
+export interface TagSummaryOut extends TagOut {
+  product_count: number;
+  is_indexable: boolean;
+}
+
+export interface FaqItemOut {
+  question: string;
+  answer: string;
+}
+
+export interface TagDetailOut extends TagSummaryOut {
+  seo_title: string;
+  seo_description: string;
+  intro_text: string;
+  seo_text: string;
+  faq: FaqItemOut[];
+}
+
 export interface ProductImageOut {
   media_id: string;
   position: number;
@@ -86,9 +104,19 @@ async function getJson<T>(path: string): Promise<T | null> {
 }
 
 export const catalogApi = {
-  async listProducts(params: { tag?: string; limit: number; offset: number }) {
+  async listProducts(params: {
+    tag?: string;
+    limit: number;
+    offset: number;
+    q?: string;
+    sort?: string;
+    on_sale?: boolean;
+  }) {
     const q = new URLSearchParams({ limit: String(params.limit), offset: String(params.offset) });
     if (params.tag) q.set("tag", params.tag);
+    if (params.q) q.set("q", params.q);
+    if (params.sort && params.sort !== "newest") q.set("sort", params.sort);
+    if (params.on_sale) q.set("on_sale", "true");
     const page = await getJson<ProductPageOut>(`/api/v1/catalog/products?${q}`);
     return page ?? { items: [], total: 0, limit: params.limit, offset: params.offset };
   },
@@ -98,7 +126,11 @@ export const catalogApi = {
   },
 
   async listTags() {
-    return (await getJson<TagOut[]>("/api/v1/catalog/tags")) ?? [];
+    return (await getJson<TagSummaryOut[]>("/api/v1/catalog/tags")) ?? [];
+  },
+
+  getTag(slug: string) {
+    return getJson<TagDetailOut>(`/api/v1/catalog/tags/${encodeURIComponent(slug)}`);
   },
 };
 

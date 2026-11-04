@@ -42,6 +42,12 @@ class PillowImageProcessor:
 
         cropped = _crop_four_by_five(rgb)
         crop_w, crop_h = cropped.size
+        if crop_w < MIN_IMAGE_DIMENSION_PX or crop_h < MIN_IMAGE_DIMENSION_PX:
+            scale = max(MIN_IMAGE_DIMENSION_PX / crop_w, MIN_IMAGE_DIMENSION_PX / crop_h)
+            new_w = max(MIN_IMAGE_DIMENSION_PX, round(crop_w * scale))
+            new_h = max(MIN_IMAGE_DIMENSION_PX, round(crop_h * scale))
+            cropped = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
+            crop_w, crop_h = cropped.size
 
         files: dict[str, bytes] = {
             "original.webp": _encode_webp(cropped, quality=85),

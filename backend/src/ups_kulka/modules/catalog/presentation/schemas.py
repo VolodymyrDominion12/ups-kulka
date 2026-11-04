@@ -9,11 +9,15 @@ from pydantic import BaseModel, Field
 from ups_kulka.modules.catalog.application.dto import (
     CreateProductCommand,
     CreateTagCommand,
+    FaqItemDTO,
     ProductDTO,
     ProductImageDTO,
     QuickCreateProductCommand,
+    TagDetailDTO,
     TagDTO,
+    TagSummaryDTO,
     UpdateProductCommand,
+    UpdateTagSeoCommand,
 )
 from ups_kulka.shared.application.pagination import Page
 
@@ -38,6 +42,89 @@ class TagOut(BaseModel):
     @classmethod
     def from_dto(cls, dto: TagDTO) -> "TagOut":
         return cls(id=dto.id, group=dto.group, slug=dto.slug, name=dto.name)
+
+
+class FaqItemIn(BaseModel):
+    question: str = Field(min_length=1, max_length=300)
+    answer: str = Field(min_length=1, max_length=3000)
+
+
+class FaqItemOut(BaseModel):
+    question: str
+    answer: str
+
+    @classmethod
+    def from_dto(cls, dto: FaqItemDTO) -> "FaqItemOut":
+        return cls(question=dto.question, answer=dto.answer)
+
+
+class TagSummaryOut(BaseModel):
+    id: uuid.UUID
+    group: str
+    slug: str
+    name: str
+    product_count: int
+    is_indexable: bool
+
+    @classmethod
+    def from_dto(cls, dto: TagSummaryDTO) -> "TagSummaryOut":
+        return cls(
+            id=dto.id,
+            group=dto.group,
+            slug=dto.slug,
+            name=dto.name,
+            product_count=dto.product_count,
+            is_indexable=dto.is_indexable,
+        )
+
+
+class TagDetailOut(BaseModel):
+    id: uuid.UUID
+    group: str
+    slug: str
+    name: str
+    seo_title: str
+    seo_description: str
+    intro_text: str
+    seo_text: str
+    faq: list[FaqItemOut]
+    product_count: int
+    is_indexable: bool
+
+    @classmethod
+    def from_dto(cls, dto: TagDetailDTO) -> "TagDetailOut":
+        return cls(
+            id=dto.id,
+            group=dto.group,
+            slug=dto.slug,
+            name=dto.name,
+            seo_title=dto.seo_title,
+            seo_description=dto.seo_description,
+            intro_text=dto.intro_text,
+            seo_text=dto.seo_text,
+            faq=[FaqItemOut.from_dto(item) for item in dto.faq],
+            product_count=dto.product_count,
+            is_indexable=dto.is_indexable,
+        )
+
+
+class UpdateTagSeoIn(BaseModel):
+    seo_title: str = Field(default="", max_length=160)
+    seo_description: str = Field(default="", max_length=300)
+    intro_text: str = Field(default="", max_length=2000)
+    seo_text: str = Field(default="", max_length=20000)
+    faq: list[FaqItemIn] = Field(default_factory=list, max_length=20)
+
+    def to_command(self, tag_id: uuid.UUID, auth_token: str | None) -> UpdateTagSeoCommand:
+        return UpdateTagSeoCommand(
+            tag_id=tag_id,
+            seo_title=self.seo_title,
+            seo_description=self.seo_description,
+            intro_text=self.intro_text,
+            seo_text=self.seo_text,
+            faq=tuple(FaqItemDTO(question=i.question, answer=i.answer) for i in self.faq),
+            auth_token=auth_token,
+        )
 
 
 class ProductImageOut(BaseModel):

@@ -232,3 +232,34 @@ async def test_admin_orders_and_analytics_api_no_n_plus_one(
     # Check anniversaries endpoint
     anniv = await client.get("/api/v1/admin/analytics/anniversaries", headers=headers)
     assert anniv.status_code == 200
+
+
+async def test_admin_update_tag_seo(client: AsyncClient) -> None:
+    headers = await _login_headers(client)
+    tag_resp = await client.post(
+        "/api/v1/catalog/tags",
+        json={"group": "occasion", "slug": "vypyska", "name": "Виписка"},
+    )
+    assert tag_resp.status_code == 201, tag_resp.text
+    tag_id = tag_resp.json()["id"]
+
+    unauth = await client.patch(f"/api/v1/admin/catalog/tags/{tag_id}", json={"seo_text": "Текст"})
+    assert unauth.status_code == 401
+
+    resp = await client.patch(
+        f"/api/v1/admin/catalog/tags/{tag_id}",
+        headers=headers,
+        json={
+            "seo_title": "Гелієві кульки на виписку — Київ",
+            "seo_text": "Унікальний текст підбірки",
+            "faq": [{"question": "Скільки тримається гелій?", "answer": "3–5 днів"}],
+        },
+    )
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["seo_title"] == "Гелієві кульки на виписку — Київ"
+    assert body["is_indexable"] is False  # no active products yet
+
+    detail = await client.get("/api/v1/catalog/tags/vypyska")
+    assert detail.status_code == 200
+    assert detail.json()["faq"][0]["question"] == "Скільки тримається гелій?"

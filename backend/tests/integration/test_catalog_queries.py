@@ -86,3 +86,18 @@ async def test_create_product_links_tags_in_one_batch(
     # exists check + tags lookup + insert product + batch insert links (+ BEGIN/COMMIT noise)
     with query_counter.assert_max_queries(6):
         await create_product(command)
+
+
+async def test_list_tags_with_counts_is_one_query(
+    container: Container, query_counter: QueryCounter
+) -> None:
+    create_tag = container.catalog.create_tag()
+    for i in range(15):
+        await create_tag(CreateTagCommand(group="theme", slug=f"t-{i}", name=f"t-{i}"))
+    list_tags = container.catalog.list_tags()
+
+    with query_counter.assert_max_queries(1):
+        summaries = await list_tags()
+
+    assert len(summaries) == 15
+    assert all(s.product_count == 0 for s in summaries)

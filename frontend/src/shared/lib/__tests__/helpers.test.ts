@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { responsiveImage } from "../images";
 import { discountPercent, formatUah } from "../money";
-import { parseOrderNumber, parsePage } from "../paging";
+import { parseOnSale, parseOrderNumber, parsePage, parseQuery, parseSort } from "../paging";
 import { normalizeUaPhone } from "../phone";
 import { attributionFromUrl, parseStoredAttribution } from "../utm";
 
@@ -70,6 +70,22 @@ describe("paging", () => {
     expect(parseOrderNumber("0")).toBeNull();
     expect(parseOrderNumber("10a")).toBeNull();
     expect(parseOrderNumber(undefined)).toBeNull();
+  });
+
+  it("parses sort, sale and query filters", () => {
+    expect(parseSort("price_asc")).toBe("price_asc");
+    expect(parseSort("price_desc")).toBe("price_desc");
+    expect(parseSort("bogus")).toBe("newest");
+    expect(parseSort(undefined)).toBe("newest");
+
+    expect(parseOnSale("true")).toBe(true);
+    expect(parseOnSale("1")).toBe(true);
+    expect(parseOnSale("false")).toBe(false);
+    expect(parseOnSale(undefined)).toBe(false);
+
+    expect(parseQuery("  єдиноріг  ")).toBe("  єдиноріг  ");
+    expect(parseQuery(undefined)).toBe("");
+    expect(parseQuery("x".repeat(200))).toHaveLength(120);
   });
 });
 

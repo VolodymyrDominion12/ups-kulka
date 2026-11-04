@@ -1,4 +1,5 @@
 from ups_kulka.modules.catalog.domain.entities import (
+    FaqItem,
     Product,
     ProductImage,
     Slug,
@@ -14,7 +15,17 @@ from ups_kulka.shared.domain.money import Money
 
 
 def tag_to_domain(row: TagRow) -> Tag:
-    return Tag(id=row.id, group=TagGroup(row.group), slug=Slug(row.slug), name=row.name)
+    return Tag(
+        id=row.id,
+        group=TagGroup(row.group),
+        slug=Slug(row.slug),
+        name=row.name,
+        seo_title=row.seo_title,
+        seo_description=row.seo_description,
+        intro_text=row.intro_text,
+        seo_text=row.seo_text,
+        faq=tuple(FaqItem(question=item["question"], answer=item["answer"]) for item in row.faq),
+    )
 
 
 def media_row_to_domain(row: ProductMediaRow) -> ProductImage:

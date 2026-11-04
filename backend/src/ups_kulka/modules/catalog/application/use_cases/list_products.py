@@ -12,7 +12,13 @@ class ListProducts:
     async def __call__(self, query: ListProductsQuery) -> Page[ProductDTO]:
         page_request = PageRequest(limit=query.limit, offset=query.offset)
         async with self._uow_factory() as uow:
-            page = await uow.products.list_active(tag_slug=query.tag_slug, page=page_request)
+            page = await uow.products.list_active(
+                tag_slug=query.tag_slug,
+                page=page_request,
+                q=query.q,
+                sort=query.sort,
+                on_sale=query.on_sale,
+            )
         return Page(
             items=tuple(ProductDTO.from_entity(product) for product in page.items),
             total=page.total,

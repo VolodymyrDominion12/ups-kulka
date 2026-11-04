@@ -1,6 +1,6 @@
 import re
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import UTC, datetime
 from enum import StrEnum
 
@@ -46,12 +46,36 @@ class TagGroup(StrEnum):
     TYPE = "type"  # цифри, фонтан, бокс-сюрприз
 
 
+class ProductSort(StrEnum):
+    NEWEST = "newest"
+    PRICE_ASC = "price_asc"
+    PRICE_DESC = "price_desc"
+
+
+# A collection page is indexed only with unique text AND this many active products.
+MIN_PRODUCTS_FOR_INDEXING = 6
+MAX_FAQ_ITEMS = 20
+SEO_TITLE_MAX_LENGTH = 160
+SEO_DESCRIPTION_MAX_LENGTH = 300
+
+
+@dataclass(frozen=True, slots=True)
+class FaqItem:
+    question: str
+    answer: str
+
+
 @dataclass(frozen=True, slots=True)
 class Tag:
     id: uuid.UUID
     group: TagGroup
     slug: Slug
     name: str
+    seo_title: str = ""
+    seo_description: str = ""
+    intro_text: str = ""
+    seo_text: str = ""
+    faq: tuple[FaqItem, ...] = ()
 
     @classmethod
     def create(cls, *, group: TagGroup, slug: str, name: str) -> "Tag":
@@ -59,6 +83,50 @@ class Tag:
         if not clean_name:
             raise InvalidTag("Tag name cannot be empty")
         return cls(id=uuid.uuid4(), group=group, slug=Slug(slug), name=clean_name)
+
+    @property
+    def has_unique_text(self) -> bool:
+        return bool(self.seo_text.strip())
+
+    def is_indexable(self, product_count: int) -> bool:
+        """A collection is indexed only with unique text AND enough products."""
+        return self.has_unique_text and product_count >= MIN_PRODUCTS_FOR_INDEXING
+
+    def with_seo(
+        self,
+        *,
+        seo_title: str = "",
+        seo_description: str = "",
+        intro_text: str = "",
+        seo_text: str = "",
+        faq: tuple[FaqItem, ...] = (),
+    ) -> "Tag":
+        clean_title = seo_title.strip()
+        clean_description = seo_description.strip()
+        clean_intro = intro_text.strip()
+        clean_text = seo_text.strip()
+        if len(clean_title) > SEO_TITLE_MAX_LENGTH:
+            raise InvalidTag(f"seo_title is longer than {SEO_TITLE_MAX_LENGTH} chars")
+        if len(clean_description) > SEO_DESCRIPTION_MAX_LENGTH:
+            raise InvalidTag(f"seo_description is longer than {SEO_DESCRIPTION_MAX_LENGTH} chars")
+        items = tuple(faq)
+        if len(items) > MAX_FAQ_ITEMS:
+            raise InvalidTag(f"FAQ cannot have more than {MAX_FAQ_ITEMS} items")
+        cleaned_faq: list[FaqItem] = []
+        for item in items:
+            question = item.question.strip()
+            answer = item.answer.strip()
+            if not question or not answer:
+                raise InvalidTag("FAQ items must have both a question and an answer")
+            cleaned_faq.append(FaqItem(question=question, answer=answer))
+        return replace(
+            self,
+            seo_title=clean_title,
+            seo_description=clean_description,
+            intro_text=clean_intro,
+            seo_text=clean_text,
+            faq=tuple(cleaned_faq),
+        )
 
 
 @dataclass(frozen=True, slots=True)
