@@ -23,6 +23,13 @@ export function TagSeoTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [groupFilter, setGroupFilter] = useState<string>("all");
+
+  // New tag creation modal state
+  const [creatingTag, setCreatingTag] = useState(false);
+  const [newGroup, setNewGroup] = useState<string>("color");
+  const [newName, setNewName] = useState("");
+  const [newSlug, setNewSlug] = useState("");
 
   const [selected, setSelected] = useState<TagDetailOut | null>(null);
   const [seoTitle, setSeoTitle] = useState("");
@@ -48,6 +55,26 @@ export function TagSeoTab() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const handleCreateTag = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newName.trim() || !newSlug.trim()) return;
+    setError(null);
+    try {
+      const created = await adminApi.createTag({
+        group: newGroup,
+        name: newName.trim(),
+        slug: newSlug.trim().toLowerCase(),
+      });
+      setCreatingTag(false);
+      setNewName("");
+      setNewSlug("");
+      await load();
+      await openTag(created.slug);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не вдалося створити тег");
+    }
+  };
 
   const openTag = async (slug: string) => {
     setError(null);
@@ -93,6 +120,7 @@ export function TagSeoTab() {
   };
 
   const filtered = tags.filter((tag) => {
+    if (groupFilter !== "all" && tag.group !== groupFilter) return false;
     const q = search.trim().toLowerCase();
     if (!q) return true;
     return tag.name.toLowerCase().includes(q) || tag.slug.toLowerCase().includes(q);
@@ -214,16 +242,112 @@ export function TagSeoTab() {
 
   return (
     <div className="space-y-4 pb-24">
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-muted" />
-        <input
-          type="search"
-          placeholder="Пошук тегу..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="min-h-[44px] w-full rounded-full border border-line bg-white pl-10 pr-4 text-sm text-ink focus:border-rose focus:outline-none"
-        />
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3.5 top-3.5 h-4 w-4 text-muted" />
+          <input
+            type="search"
+            placeholder="Пошук тегу..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="min-h-[44px] w-full rounded-full border border-line bg-white pl-10 pr-4 text-sm text-ink focus:border-rose focus:outline-none"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setCreatingTag((v) => !v)}
+          className="inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-full bg-ink px-4 text-xs font-bold text-white"
+        >
+          <Plus className="h-4 w-4" /> Новий тег
+        </button>
       </div>
+
+      {/* Group filter chips */}
+      <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
+        <button
+          type="button"
+          onClick={() => setGroupFilter("all")}
+          className={`min-h-[34px] shrink-0 rounded-full px-3 text-xs font-bold transition ${
+            groupFilter === "all"
+              ? "bg-rose-deep text-white"
+              : "border border-line bg-white text-ink"
+          }`}
+        >
+          Усі ({tags.length})
+        </button>
+        {Object.entries(GROUP_LABELS).map(([key, label]) => {
+          const count = tags.filter((t) => t.group === key).length;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setGroupFilter(key)}
+              className={`min-h-[34px] shrink-0 rounded-full px-3 text-xs font-bold transition ${
+                groupFilter === key
+                  ? "bg-rose-deep text-white"
+                  : "border border-line bg-white text-ink"
+              }`}
+            >
+              {label} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {creatingTag && (
+        <form
+          onSubmit={(e) => void handleCreateTag(e)}
+          className="space-y-2.5 rounded-3xl border border-accent bg-white p-4 shadow-sm"
+        >
+          <div className="text-xs font-bold text-rose-deep">
+            Створити новий тег / SEO-підбірку
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <select
+              value={newGroup}
+              onChange={(e) => setNewGroup(e.target.value)}
+              className="min-h-[42px] rounded-xl border border-line bg-surface px-2.5 text-xs font-semibold text-ink"
+            >
+              {Object.entries(GROUP_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Назва (напр. Пастельні)"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="min-h-[42px] rounded-xl border border-line bg-surface px-3 text-xs"
+            />
+            <input
+              type="text"
+              placeholder="slug (pastelni)"
+              value={newSlug}
+              onChange={(e) => setNewSlug(e.target.value)}
+              className="min-h-[42px] rounded-xl border border-line bg-surface px-3 text-xs"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setCreatingTag(false)}
+              className="rounded-full px-3 py-1.5 text-xs text-muted"
+            >
+              Скасувати
+            </button>
+            <button
+              type="submit"
+              className="rounded-full bg-ink px-4 py-1.5 text-xs font-bold text-white"
+            >
+              Створити і заповнити SEO
+            </button>
+          </div>
+        </form>
+      )}
+
+      {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
 
       {loading ? (
         <div className="flex justify-center py-10">

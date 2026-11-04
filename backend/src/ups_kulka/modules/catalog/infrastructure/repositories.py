@@ -284,6 +284,37 @@ class SqlAlchemyProductRepository:
             for r in rows
         ]
 
+    async def list_related(self, slug: str, limit: int) -> list[Product]:
+        """Active products sharing tags with `slug`, most shared first, then newest."""
+        related_tag_ids = (
+            select(product_tags.c.tag_id)
+            .join(ProductRow, ProductRow.id == product_tags.c.product_id)
+            .where(ProductRow.slug == slug)
+        )
+        shared = func.count(product_tags.c.tag_id)
+        id_rows = await self._session.execute(
+            select(ProductRow.id, shared.label("shared"))
+            .join(product_tags, product_tags.c.product_id == ProductRow.id)
+            .where(
+                ProductRow.is_active.is_(True),
+                ProductRow.slug != slug,
+                product_tags.c.tag_id.in_(related_tag_ids),
+            )
+            .group_by(ProductRow.id)
+            .order_by(shared.desc(), ProductRow.created_at.desc(), ProductRow.id.desc())
+            .limit(limit)
+        )
+        ordered_ids = [row.id for row in id_rows]
+        if not ordered_ids:
+            return []
+        rows = await self._session.scalars(
+            select(ProductRow)
+            .options(selectinload(ProductRow.tags), selectinload(ProductRow.media))
+            .where(ProductRow.id.in_(ordered_ids))
+        )
+        by_id = {row.id: product_to_domain(row) for row in rows}
+        return [by_id[pid] for pid in ordered_ids if pid in by_id]
+
     async def _paginate(
         self,
         conditions: list[ColumnElement[bool]],

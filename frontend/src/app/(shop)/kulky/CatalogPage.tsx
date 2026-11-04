@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
   catalogApi,
   type ProductOut,
@@ -74,17 +76,46 @@ export async function CatalogPage({ tags, detail, page, q, sort, onSale }: Props
   const h1 = detail?.seo_title || detail?.name || "Усі композиції";
   const basePath = detail ? `/kulky/${detail.slug}` : "/kulky";
 
+  // Related collections found on the products in this collection (for strong SEO internal linking)
+  const relatedSlugs = new Set<string>();
+  if (detail) {
+    for (const product of data.items) {
+      for (const t of product.tags) {
+        if (t.slug !== detail.slug) {
+          relatedSlugs.add(t.slug);
+        }
+      }
+    }
+  }
+  const relatedTags = detail
+    ? tags.filter((t) => relatedSlugs.has(t.slug) && t.product_count > 0).slice(0, 10)
+    : [];
+
   return (
-    <div className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6">
+      {detail && (
+        <nav aria-label="Хлібні крихти" className="mb-3 text-sm text-muted">
+          <Link href="/" className="hover:text-ink">
+            Головна
+          </Link>
+          <span aria-hidden="true"> / </span>
+          <Link href="/kulky" className="hover:text-ink">
+            Каталог
+          </Link>
+          <span aria-hidden="true"> / </span>
+          <span className="font-semibold text-ink">{detail.name}</span>
+        </nav>
+      )}
+
       <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <h1 className="font-display text-[clamp(30px,5vw,44px)] font-bold leading-tight tracking-tight">
+        <h1 className="font-display text-[clamp(28px,5vw,42px)] font-bold leading-tight tracking-tight">
           {h1}
         </h1>
         <p className="text-muted tabular-nums">{data.total} шт.</p>
       </div>
 
       {detail?.intro_text && (
-        <p className="mb-5 max-w-[70ch] text-[15px] leading-relaxed text-[#3a3a3a]">
+        <p className="mb-5 max-w-[72ch] text-[15px] leading-relaxed text-[#3a3a3a]">
           {detail.intro_text}
         </p>
       )}
@@ -97,16 +128,44 @@ export async function CatalogPage({ tags, detail, page, q, sort, onSale }: Props
         <ProductGrid page={data} basePath={basePath} />
       </div>
 
-      {detail?.seo_text && (
-        <section className="mt-10 max-w-[70ch] text-[15px] leading-relaxed text-[#3a3a3a]">
-          {detail.seo_text
-            .split(/\n+/)
-            .filter(Boolean)
-            .map((paragraph, index) => (
-              <p key={index} className="mb-3">
-                {paragraph}
-              </p>
+      {relatedTags.length > 0 && (
+        <section className="mt-12 rounded-3xl border border-line bg-white p-5">
+          <h2 className="font-display text-lg font-bold text-ink">
+            Суміжні підбірки та кольори
+          </h2>
+          <p className="mt-1 text-xs text-muted">
+            Перегляньте інші популярні категорії, що поєднуються з «{detail?.name}»:
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {relatedTags.map((tag) => (
+              <Link
+                key={tag.id}
+                href={`/kulky/${tag.slug}`}
+                className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent-soft/70 px-3.5 text-sm font-semibold text-rose-deep transition hover:bg-accent-soft"
+              >
+                {tag.name}
+                <span className="text-xs opacity-70">({tag.product_count})</span>
+              </Link>
             ))}
+          </div>
+        </section>
+      )}
+
+      {detail?.seo_text && (
+        <section className="mt-10 rounded-3xl border border-line bg-white p-6">
+          <h2 className="mb-3 font-display text-xl font-bold text-ink">
+            Про підбірку «{detail.name}»
+          </h2>
+          <div className="max-w-[72ch] text-[15px] leading-relaxed text-[#3a3a3a]">
+            {detail.seo_text
+              .split(/\n+/)
+              .filter(Boolean)
+              .map((paragraph, index) => (
+                <p key={index} className="mb-3 last:mb-0">
+                  {paragraph}
+                </p>
+              ))}
+          </div>
         </section>
       )}
 

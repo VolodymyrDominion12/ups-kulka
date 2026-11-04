@@ -13,6 +13,9 @@ from ups_kulka.modules.catalog.application.use_cases.create_product import Creat
 from ups_kulka.modules.catalog.application.use_cases.create_tag import CreateTag
 from ups_kulka.modules.catalog.application.use_cases.get_product import GetProduct
 from ups_kulka.modules.catalog.application.use_cases.list_products import ListProducts
+from ups_kulka.modules.catalog.application.use_cases.list_related_products import (
+    ListRelatedProducts,
+)
 from ups_kulka.modules.catalog.domain.errors import (
     InvalidTag,
     ProductNotFound,
@@ -150,6 +153,23 @@ async def test_list_products_filters_on_sale(uow: FakeCatalogUnitOfWork) -> None
     page = await ListProducts(uow)(ListProductsQuery(on_sale=True, limit=10))
 
     assert [p.slug for p in page.items] == ["sale-1"]
+
+
+async def test_list_related_products_by_shared_tags(uow: FakeCatalogUnitOfWork) -> None:
+    await _tag(uow, "pastelni", group="color")
+    await _tag(uow, "dlia-divchynky")
+    await CreateProduct(uow)(_cmd(slug="target", tags=("pastelni", "dlia-divchynky")))
+    await CreateProduct(uow)(_cmd(slug="one-tag", tags=("pastelni",)))
+    await CreateProduct(uow)(_cmd(slug="two-tags", tags=("pastelni", "dlia-divchynky")))
+    await CreateProduct(uow)(_cmd(slug="unrelated"))
+
+    related = await ListRelatedProducts(uow)("target")
+
+    assert [p.slug for p in related] == ["two-tags", "one-tag"]
+
+
+async def test_list_related_products_unknown_slug_is_empty(uow: FakeCatalogUnitOfWork) -> None:
+    assert await ListRelatedProducts(uow)("nema") == []
 
 
 async def test_facade_returns_prices_for_known_products_only(uow: FakeCatalogUnitOfWork) -> None:

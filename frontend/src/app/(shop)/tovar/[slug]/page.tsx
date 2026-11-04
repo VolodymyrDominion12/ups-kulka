@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Price } from "@/entities/product/Price";
+import { ProductCard } from "@/entities/product/ProductCard";
 import { ProductGallery } from "@/entities/product/ProductGallery";
 import { toCartProduct } from "@/entities/product/toCartProduct";
 import { AddToCartButton } from "@/features/cart/AddToCartButton";
@@ -32,6 +33,28 @@ function productJsonLd(product: ProductOut) {
   };
 }
 
+function breadcrumbJsonLd(product: ProductOut) {
+  const elements = [
+    { "@type": "ListItem", position: 1, name: "Головна", item: `${SHOP.siteUrl}/` },
+    { "@type": "ListItem", position: 2, name: "Каталог", item: `${SHOP.siteUrl}/kulky` },
+  ];
+  if (product.tags[0]) {
+    elements.push({
+      "@type": "ListItem",
+      position: 3,
+      name: product.tags[0].name,
+      item: `${SHOP.siteUrl}/kulky/${product.tags[0].slug}`,
+    });
+  }
+  elements.push({
+    "@type": "ListItem",
+    position: elements.length + 1,
+    name: product.name,
+    item: `${SHOP.siteUrl}/tovar/${product.slug}`,
+  });
+  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: elements };
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const product = await catalogApi.getProduct((await params).slug);
   if (!product) return { title: "Товар не знайдено" };
@@ -49,6 +72,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function ProductPage({ params }: { params: Params }) {
   const product = await catalogApi.getProduct((await params).slug);
   if (!product) notFound();
+  const related = (await catalogApi.listRelated(product.slug)) ?? [];
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6">
@@ -104,6 +128,28 @@ export default async function ProductPage({ params }: { params: Params }) {
           )}
         </div>
       </div>
+
+      {related.length > 0 && (
+        <section className="mt-14">
+          <h2 className="font-display text-2xl font-bold tracking-tight">Схожі композиції</h2>
+          <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
+            {related.map((item) => (
+              <ProductCard
+                key={item.id}
+                product={item}
+                action={<AddToCartButton product={toCartProduct(item)} compact />}
+              />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd(product)).replace(/</g, "\\u003c"),
+        }}
+      />
 
       <script
         type="application/ld+json"

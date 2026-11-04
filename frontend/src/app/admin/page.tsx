@@ -210,6 +210,7 @@ export default function AdminMobilePage() {
         {activeTab === "catalog" && (
           <CatalogManageTab
             products={products}
+            tags={tags}
             onProductUpdated={(updated) =>
               setProducts((prev) =>
                 prev.map((p) => (p.id === updated.id ? updated : p))

@@ -125,6 +125,10 @@ export const catalogApi = {
     return getJson<ProductOut>(`/api/v1/catalog/products/${encodeURIComponent(slug)}`);
   },
 
+  listRelated(slug: string) {
+    return getJson<ProductOut[]>(`/api/v1/catalog/products/${encodeURIComponent(slug)}/related`);
+  },
+
   async listTags() {
     return (await getJson<TagSummaryOut[]>("/api/v1/catalog/tags")) ?? [];
   },

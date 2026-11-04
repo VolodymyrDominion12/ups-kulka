@@ -160,6 +160,21 @@ class InMemoryProductRepository:
             if p.id in wanted
         ]
 
+    async def list_related(self, slug: str, limit: int) -> list[Product]:
+        target = self._store.get(slug)
+        if target is None:
+            return []
+        target_tag_ids = {tag.id for tag in target.tags}
+        scored: list[tuple[int, object, object, Product]] = []
+        for product in self._store.values():
+            if product.id == target.id or not product.is_active:
+                continue
+            shared = sum(1 for tag in product.tags if tag.id in target_tag_ids)
+            if shared > 0:
+                scored.append((shared, product.created_at, product.id, product))
+        scored.sort(key=lambda item: (item[0], item[1], item[2]), reverse=True)
+        return [item[3] for item in scored[:limit]]
+
 
 class FakeMediaLookup:
     def __init__(self, *media_ids: uuid.UUID) -> None:

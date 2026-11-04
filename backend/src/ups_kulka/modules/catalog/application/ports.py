@@ -75,6 +75,10 @@ class ProductRepository(Protocol):
         """Batch lookup for checkout: ONE query for any number of ids."""
         ...
 
+    async def list_related(self, slug: str, limit: int) -> list[Product]:
+        """Active products sharing at least one tag with `slug`, excluding it."""
+        ...
+
 
 class TagRepository(Protocol):
     async def add(self, tag: Tag) -> None: ...

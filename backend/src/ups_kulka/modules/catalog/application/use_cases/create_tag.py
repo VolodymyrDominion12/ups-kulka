@@ -1,6 +1,6 @@
 from ups_kulka.modules.catalog.application.dto import CreateTagCommand, TagDTO
 from ups_kulka.modules.catalog.application.ports import CatalogUnitOfWorkFactory
-from ups_kulka.modules.catalog.domain.entities import Tag, TagGroup
+from ups_kulka.modules.catalog.domain.entities import FaqItem, Tag, TagGroup
 from ups_kulka.modules.catalog.domain.errors import InvalidTag, TagSlugAlreadyTaken
 
 
@@ -15,6 +15,14 @@ class CreateTag:
             raise InvalidTag(f"Unknown tag group '{cmd.group}'") from exc
 
         tag = Tag.create(group=group, slug=cmd.slug, name=cmd.name)
+        if cmd.seo_title or cmd.seo_description or cmd.intro_text or cmd.seo_text or cmd.faq:
+            tag = tag.with_seo(
+                seo_title=cmd.seo_title,
+                seo_description=cmd.seo_description,
+                intro_text=cmd.intro_text,
+                seo_text=cmd.seo_text,
+                faq=tuple(FaqItem(question=item.question, answer=item.answer) for item in cmd.faq),
+            )
         async with self._uow_factory() as uow:
             if await uow.tags.slug_exists(tag.slug.value):
                 raise TagSlugAlreadyTaken(tag.slug.value)
