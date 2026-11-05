@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from ups_kulka.container import Container
 from ups_kulka.modules.admin_auth.presentation import router as admin_auth_router
+from ups_kulka.modules.banners.presentation import router as banners_router
 from ups_kulka.modules.catalog.presentation import router as catalog_router
 from ups_kulka.modules.media.presentation import router as media_router
 from ups_kulka.modules.orders.presentation import router as orders_router
@@ -17,6 +18,7 @@ from ups_kulka.shared.presentation.errors import register_error_handlers
 # Every module's presentation router: registered and wired for DI.
 ROUTER_MODULES = (
     admin_auth_router,
+    banners_router,
     catalog_router,
     media_router,
     orders_router,

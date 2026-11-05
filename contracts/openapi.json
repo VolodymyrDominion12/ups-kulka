@@ -398,6 +398,42 @@
         "title": "AnalyticsDashboardOut",
         "type": "object"
       },
+      "BannerImageOut": {
+        "properties": {
+          "blur_data_url": {
+            "title": "Blur Data Url",
+            "type": "string"
+          },
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "url_prefix": {
+            "title": "Url Prefix",
+            "type": "string"
+          },
+          "variants": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Variants",
+            "type": "object"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "url_prefix",
+          "blur_data_url",
+          "width",
+          "height",
+          "variants"
+        ],
+        "title": "BannerImageOut",
+        "type": "object"
+      },
       "Body_upload_media_api_v1_admin_media_post": {
         "properties": {
           "file": {
@@ -824,6 +860,115 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HomeBannerOut": {
+        "properties": {
+          "campaign_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Campaign Id"
+          },
+          "cta2_label": {
+            "title": "Cta2 Label",
+            "type": "string"
+          },
+          "cta2_url": {
+            "title": "Cta2 Url",
+            "type": "string"
+          },
+          "cta_label": {
+            "title": "Cta Label",
+            "type": "string"
+          },
+          "cta_url": {
+            "title": "Cta Url",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "image": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BannerImageOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "image_alt": {
+            "title": "Image Alt",
+            "type": "string"
+          },
+          "image_mobile": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BannerImageOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "layout": {
+            "title": "Layout",
+            "type": "string"
+          },
+          "ribbon_text": {
+            "title": "Ribbon Text",
+            "type": "string"
+          },
+          "ribbon_url": {
+            "title": "Ribbon Url",
+            "type": "string"
+          },
+          "subtitle": {
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "tag_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tag Slug"
+          },
+          "theme": {
+            "title": "Theme",
+            "type": "string"
+          }
+        },
+        "required": [
+          "layout",
+          "campaign_id",
+          "theme",
+          "headline",
+          "subtitle",
+          "cta_label",
+          "cta_url",
+          "cta2_label",
+          "cta2_url",
+          "image",
+          "image_mobile",
+          "image_alt",
+          "tag_slug",
+          "ribbon_text",
+          "ribbon_url"
+        ],
+        "title": "HomeBannerOut",
         "type": "object"
       },
       "HourlyBucketOut": {
@@ -4361,6 +4506,27 @@
         "summary": "Monobank Webhook",
         "tags": [
           "payments"
+        ]
+      }
+    },
+    "/api/v1/storefront/home-banner": {
+      "get": {
+        "operationId": "get_home_banner_api_v1_storefront_home_banner_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomeBannerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Home Banner",
+        "tags": [
+          "storefront-banners"
         ]
       }
     },

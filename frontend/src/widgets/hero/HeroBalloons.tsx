@@ -1,9 +1,11 @@
-import Link from "next/link";
 import type { CSSProperties } from "react";
 
-import type { ProductOut } from "@/shared/api/storefront";
+import type { HomeBannerOut, ProductOut } from "@/shared/api/storefront";
 import { SHOP } from "@/shared/config/shop";
+import { themeClasses } from "@/shared/lib/banner";
 import { responsiveImage } from "@/shared/lib/images";
+
+import { HeroButton } from "./HeroButton";
 
 /** Balloon positions in the cluster: three photos, two plain balloons. */
 const SLOTS = [
@@ -14,41 +16,65 @@ const SLOTS = [
   { x: "58%", y: "66%", w: "13%", d: ".55s", s: "70px", r: "8deg", c: "#8a4f4f" },
 ] as const;
 
-export function Hero({ showcase }: { showcase: ProductOut[] }) {
+const DEFAULT_TITLE = "Кульки, що роблять свято з будь-якого дня";
+const DEFAULT_TEXT =
+  "Композиції, фонтани й фотозони з гелієвих кульок у Києві. Заберіть самі або відправимо таксі в зручний час.";
+
+/**
+ * The brand hero: text + a bunch of balloons with product photos. It is the default
+ * (no active campaign) and also a campaign layout, which may override texts, buttons and colours.
+ */
+export function HeroBalloons({
+  showcase,
+  banner,
+}: {
+  showcase: ProductOut[];
+  banner?: HomeBannerOut;
+}) {
+  const campaign = banner && banner.campaign_id !== null ? banner : null;
+  const theme = themeClasses(campaign?.theme ?? "rose");
+  const title = campaign?.headline || null;
+  const text = campaign?.subtitle || DEFAULT_TEXT;
+
   const photos = showcase
     .map((p) => (p.images[0] ? responsiveImage(p.images[0], 320) : null))
     .filter((img): img is NonNullable<typeof img> => img !== null)
     .slice(0, 3);
 
   return (
-    <section className="bg-gradient-to-b from-accent-soft to-white">
+    <section className={theme.section}>
       <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-12 pt-8 sm:px-6 md:min-h-[540px] md:grid-cols-[1.05fr_1fr] md:pb-16">
         <div className="order-2 md:order-1">
-          <h1 className="font-display text-[clamp(48px,9vw,92px)] font-bold leading-[0.95] tracking-[-0.035em] text-rose-deep">
-            Упс!
-            <span className="mt-3 block text-[0.42em] leading-[1.15] tracking-[-0.02em] text-ink">
-              Кульки, що роблять свято з будь-якого дня
-            </span>
+          <h1
+            className={`font-display text-[clamp(48px,9vw,92px)] font-bold leading-[0.95] tracking-[-0.035em] ${theme.heading}`}
+          >
+            {title ?? "Упс!"}
+            {!title && (
+              <span className="mt-3 block text-[0.42em] leading-[1.15] tracking-[-0.02em] text-ink">
+                {DEFAULT_TITLE}
+              </span>
+            )}
           </h1>
-          <p className="mt-5 max-w-[46ch] text-lg text-[#3a3a3a]">
-            Композиції, фонтани й фотозони з гелієвих кульок у Києві. Заберіть самі або
-            відправимо таксі в зручний час.
-          </p>
+          <p className={`mt-5 max-w-[46ch] text-lg ${theme.body}`}>{text}</p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              href="/kulky"
-              className="inline-flex h-12 items-center rounded-full bg-ink px-6 font-bold text-white transition hover:bg-rose-deep"
-            >
-              Обрати кульки
-            </Link>
-            <a
-              href={SHOP.instagramUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-12 items-center rounded-full bg-accent-soft px-6 font-bold text-rose-deep transition hover:bg-accent"
-            >
-              Більше робіт в Instagram
-            </a>
+            {campaign?.cta_label ? (
+              <HeroButton href={campaign.cta_url} className={theme.primaryButton}>
+                {campaign.cta_label}
+              </HeroButton>
+            ) : (
+              <HeroButton href="/kulky" className={theme.primaryButton}>
+                Обрати кульки
+              </HeroButton>
+            )}
+            {campaign?.cta2_label ? (
+              <HeroButton href={campaign.cta2_url} className={theme.secondaryButton}>
+                {campaign.cta2_label}
+              </HeroButton>
+            ) : (
+              <HeroButton href={SHOP.instagramUrl} className={theme.secondaryButton}>
+                Більше робіт в Instagram
+              </HeroButton>
+            )}
           </div>
         </div>
 

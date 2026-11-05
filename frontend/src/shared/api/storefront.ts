@@ -77,6 +77,54 @@ export interface PlacedOrderOut {
   payment_url: string | null;
 }
 
+export type BannerLayout = "balloons" | "image" | "split" | "collection";
+export type BannerTheme = "rose" | "red" | "gold" | "dark";
+
+export interface BannerImageOut {
+  url_prefix: string;
+  blur_data_url: string;
+  width: number;
+  height: number;
+  variants: Record<string, string>;
+}
+
+/** Home hero for "now" (specs/017-home-banners). `campaign_id === null` = default balloons. */
+export interface HomeBannerOut {
+  layout: BannerLayout;
+  campaign_id: string | null;
+  theme: BannerTheme;
+  headline: string;
+  subtitle: string;
+  cta_label: string;
+  cta_url: string;
+  cta2_label: string;
+  cta2_url: string;
+  image: BannerImageOut | null;
+  image_mobile: BannerImageOut | null;
+  image_alt: string;
+  tag_slug: string | null;
+  ribbon_text: string;
+  ribbon_url: string;
+}
+
+export const DEFAULT_HOME_BANNER: HomeBannerOut = {
+  layout: "balloons",
+  campaign_id: null,
+  theme: "rose",
+  headline: "",
+  subtitle: "",
+  cta_label: "",
+  cta_url: "",
+  cta2_label: "",
+  cta2_url: "",
+  image: null,
+  image_mobile: null,
+  image_alt: "",
+  tag_slug: null,
+  ribbon_text: "",
+  ribbon_url: "",
+};
+
 export class ApiUnavailableError extends Error {}
 
 /** Server-side base URL: the internal Docker address in production. */
@@ -135,6 +183,25 @@ export const catalogApi = {
 
   getTag(slug: string) {
     return getJson<TagDetailOut>(`/api/v1/catalog/tags/${encodeURIComponent(slug)}`);
+  },
+};
+
+/** A campaign switch must show up fast, so the banner is cached much shorter than the catalogue. */
+const BANNER_REVALIDATE_SECONDS = 60;
+
+export const bannerApi = {
+  /** Never throws: a banner problem must not take the home page down, so it falls back to the default hero. */
+  async getHome(): Promise<HomeBannerOut> {
+    try {
+      const response = await fetch(`${serverBase()}/api/v1/storefront/home-banner`, {
+        next: { revalidate: BANNER_REVALIDATE_SECONDS, tags: ["banner"] },
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) return DEFAULT_HOME_BANNER;
+      return (await response.json()) as HomeBannerOut;
+    } catch {
+      return DEFAULT_HOME_BANNER;
+    }
   },
 };
 

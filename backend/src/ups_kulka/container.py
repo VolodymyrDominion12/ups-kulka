@@ -3,6 +3,7 @@
 from dependency_injector import containers, providers
 
 from ups_kulka.modules.admin_auth.container import AdminAuthContainer
+from ups_kulka.modules.banners.container import BannersContainer
 from ups_kulka.modules.catalog.container import CatalogContainer
 from ups_kulka.modules.media.container import MediaContainer
 from ups_kulka.modules.notifications.container import NotificationsContainer
@@ -33,6 +34,11 @@ class Container(containers.DeclarativeContainer):
         session_factory=session_factory,
         media_root=settings.provided.media_root,
         admin_auth=admin_auth.facade,
+    )
+    banners = providers.Container(
+        BannersContainer,
+        session_factory=session_factory,
+        media=media.facade,
     )
     catalog = providers.Container(
         CatalogContainer,
