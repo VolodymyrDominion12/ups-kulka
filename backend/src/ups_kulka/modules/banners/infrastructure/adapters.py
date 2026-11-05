@@ -1,7 +1,9 @@
 import uuid
 from collections.abc import Sequence
 
+from ups_kulka.modules.admin_auth.application.public import AdminAuthFacade
 from ups_kulka.modules.banners.application.dto import BannerImageDTO
+from ups_kulka.modules.catalog.application.public import CatalogFacade
 from ups_kulka.modules.media.application.public import MediaFacade
 
 
@@ -21,3 +23,19 @@ class MediaBannerAdapter:
             )
             for mid, asset in assets.items()
         }
+
+
+class CatalogTagAdapter:
+    def __init__(self, catalog: CatalogFacade) -> None:
+        self._catalog = catalog
+
+    async def existing_slugs(self, slugs: Sequence[str]) -> set[str]:
+        return await self._catalog.existing_tag_slugs(slugs)
+
+
+class BannerAdminAuthAdapter:
+    def __init__(self, auth: AdminAuthFacade) -> None:
+        self._auth = auth
+
+    def require_admin(self, token: str | None) -> None:
+        self._auth.verify_token(token)

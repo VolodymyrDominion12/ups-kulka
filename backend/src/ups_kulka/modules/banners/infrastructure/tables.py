@@ -18,6 +18,7 @@ class BannerCampaignRow(Base):
         CheckConstraint("status IN ('draft', 'published')", name="status_valid"),
         CheckConstraint("ends_at > starts_at", name="period_valid"),
         Index("ix_banners_campaigns_active", "status", "starts_at", "ends_at"),
+        Index("ix_banners_campaigns_starts_at", "starts_at"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True)

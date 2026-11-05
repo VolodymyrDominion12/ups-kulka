@@ -106,3 +106,47 @@ def test_is_active_at_boundaries() -> None:
     assert not published.is_active_at(END)
     assert not published.is_active_at(START - timedelta(seconds=1))
     assert not make().is_active_at(START)  # draft
+
+
+def test_state_at_covers_the_whole_life() -> None:
+    from ups_kulka.modules.banners.domain.entities import BannerState
+
+    draft = make()
+    published = make(status=BannerStatus.PUBLISHED)
+    assert draft.state_at(START) is BannerState.DRAFT
+    assert published.state_at(START - timedelta(days=1)) is BannerState.SCHEDULED
+    assert published.state_at(START) is BannerState.ACTIVE
+    assert published.state_at(END) is BannerState.EXPIRED
+
+
+def test_revise_keeps_identity_and_revalidates() -> None:
+    original = make()
+    revised = original.revise(headline="Нова назва", priority=3)
+    assert revised.id == original.id
+    assert revised.created_at == original.created_at
+    assert revised.headline == "Нова назва"
+    assert revised.priority == 3
+    with pytest.raises(InvalidBannerPeriod):
+        original.revise(ends_at=START)
+    with pytest.raises(BannerImageRequired):
+        original.revise(layout=BannerLayout.IMAGE)
+    with pytest.raises(ValueError, match="Unknown"):
+        original.revise(bogus=1)
+
+
+def test_duplicate_is_a_draft_a_year_later() -> None:
+    original = make(status=BannerStatus.PUBLISHED, priority=2, headline="З 8 Березня!")
+    copy = original.duplicate("8 Березня 2028")
+    assert copy.id != original.id
+    assert copy.status is BannerStatus.DRAFT
+    assert copy.name == "8 Березня 2028"
+    assert copy.headline == original.headline
+    assert copy.starts_at == datetime(2028, 3, 1, tzinfo=UTC)
+    assert copy.ends_at == datetime(2028, 3, 9, tzinfo=UTC)
+
+
+def test_duplicate_handles_leap_day() -> None:
+    leap = make(
+        starts_at=datetime(2028, 2, 29, tzinfo=UTC), ends_at=datetime(2028, 3, 5, tzinfo=UTC)
+    )
+    assert leap.duplicate("x").starts_at == datetime(2029, 2, 28, tzinfo=UTC)

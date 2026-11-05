@@ -93,3 +93,147 @@ async def test_query_count_is_constant(
         banner = await use_case()
 
     assert banner.headline == f"c{campaigns - 1}"
+
+
+# --- admin API -------------------------------------------------------------
+
+ADMIN = "/api/v1/admin/banners"
+
+
+async def _headers(client: AsyncClient) -> dict[str, str]:
+    resp = await client.post("/api/v1/admin/auth/login", json={"password": "admin123"})
+    assert resp.status_code == 200, resp.text
+    return {"Authorization": f"Bearer {resp.json()['token']}"}
+
+
+def _body(**overrides: object) -> dict[str, object]:
+    body: dict[str, object] = {
+        "name": "8 Березня 2027",
+        "layout": "balloons",
+        "starts_at": (NOW - timedelta(days=1)).isoformat(),
+        "ends_at": (NOW + timedelta(days=1)).isoformat(),
+        "headline": "З 8 Березня!",
+        "cta_label": "Обрати",
+        "cta_url": "/kulky",
+    }
+    body.update(overrides)
+    return body
+
+
+async def test_admin_endpoints_require_auth(client: AsyncClient) -> None:
+    some_id = uuid.uuid4()
+    calls = [
+        client.get(ADMIN),
+        client.post(ADMIN, json=_body()),
+        client.get(f"{ADMIN}/{some_id}"),
+        client.patch(f"{ADMIN}/{some_id}", json={"headline": "x"}),
+        client.post(f"{ADMIN}/{some_id}/publish"),
+        client.post(f"{ADMIN}/{some_id}/unpublish"),
+        client.post(f"{ADMIN}/{some_id}/duplicate"),
+        client.delete(f"{ADMIN}/{some_id}"),
+    ]
+    for call in calls:
+        assert (await call).status_code == 401
+
+
+async def test_campaign_lifecycle_switches_the_home_banner(client: AsyncClient) -> None:
+    headers = await _headers(client)
+
+    created = await client.post(ADMIN, json=_body(), headers=headers)
+    assert created.status_code == 201, created.text
+    banner = created.json()
+    assert banner["state"] == "draft"
+    # A draft is invisible to customers.
+    home = (await client.get("/api/v1/storefront/home-banner")).json()
+    assert home["campaign_id"] is None
+
+    published = await client.post(f"{ADMIN}/{banner['id']}/publish", headers=headers)
+    assert published.json()["state"] == "active"
+    home = (await client.get("/api/v1/storefront/home-banner")).json()
+    assert home["campaign_id"] == banner["id"]
+    assert home["headline"] == "З 8 Березня!"
+
+    patched = await client.patch(
+        f"{ADMIN}/{banner['id']}", json={"headline": "Нове", "theme": "red"}, headers=headers
+    )
+    assert patched.json()["headline"] == "Нове"
+    assert (await client.get("/api/v1/storefront/home-banner")).json()["theme"] == "red"
+
+    unpublished = await client.post(f"{ADMIN}/{banner['id']}/unpublish", headers=headers)
+    assert unpublished.json()["state"] == "draft"
+    assert (await client.get("/api/v1/storefront/home-banner")).json()["campaign_id"] is None
+
+    deleted = await client.delete(f"{ADMIN}/{banner['id']}", headers=headers)
+    assert deleted.status_code == 204
+    assert (await client.get(f"{ADMIN}/{banner['id']}", headers=headers)).status_code == 404
+
+
+async def test_duplicate_creates_next_year_draft(client: AsyncClient) -> None:
+    headers = await _headers(client)
+    created = (await client.post(ADMIN, json=_body(), headers=headers)).json()
+    copy = await client.post(f"{ADMIN}/{created['id']}/duplicate", headers=headers)
+    assert copy.status_code == 201
+    body = copy.json()
+    assert body["id"] != created["id"]
+    assert body["state"] == "draft"
+    assert body["name"].endswith("(копія)")
+    assert int(body["starts_at"][:4]) == int(created["starts_at"][:4]) + 1
+
+
+async def test_validation_errors_are_422(client: AsyncClient) -> None:
+    headers = await _headers(client)
+    ends_before_start = _body(ends_at=(NOW - timedelta(days=5)).isoformat())
+    bad_period = await client.post(ADMIN, json=ends_before_start, headers=headers)
+    assert bad_period.status_code == 422
+    assert bad_period.json()["code"] == "invalid_banner_period"
+
+    no_image = await client.post(ADMIN, json=_body(layout="image"), headers=headers)
+    assert no_image.json()["code"] == "banner_image_required"
+
+    unknown_photo = _body(layout="image", media_id=str(uuid.uuid4()))
+    missing = await client.post(ADMIN, json=unknown_photo, headers=headers)
+    assert missing.json()["code"] == "banner_image_not_found"
+
+    bad_link = await client.post(ADMIN, json=_body(cta_url="javascript:alert(1)"), headers=headers)
+    assert bad_link.json()["code"] == "invalid_banner_link"
+
+    no_tag = await client.post(
+        ADMIN, json=_body(layout="collection", tag_slug="missing"), headers=headers
+    )
+    assert no_tag.json()["code"] == "banner_tag_not_found"
+
+    naive_dates = _body(starts_at="2027-03-01T00:00:00")
+    assert (await client.post(ADMIN, json=naive_dates, headers=headers)).status_code == 422
+
+
+@pytest.mark.parametrize("campaigns", [1, 12])
+async def test_admin_list_query_count_is_constant(
+    client: AsyncClient, container: Container, query_counter: QueryCounter, campaigns: int
+) -> None:
+    headers = await _headers(client)
+    for i in range(campaigns):
+        await _add(container, headline=f"c{i}", media_id=uuid.uuid4(), layout=BannerLayout.IMAGE)
+    query_counter.reset()
+
+    with query_counter.assert_max_queries(3):  # count + page + one batch media lookup
+        response = await client.get(ADMIN, headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["total"] == campaigns
+
+
+async def test_collection_banner_accepts_an_existing_tag(client: AsyncClient) -> None:
+    headers = await _headers(client)
+    tag = await client.post(
+        "/api/v1/catalog/tags",
+        json={"group": "occasion", "name": "8 Березня", "slug": "8-bereznia"},
+        headers=headers,
+    )
+    assert tag.status_code == 201, tag.text
+
+    created = await client.post(
+        ADMIN, json=_body(layout="collection", tag_slug="8-bereznia"), headers=headers
+    )
+
+    assert created.status_code == 201, created.text
+    assert created.json()["tag_slug"] == "8-bereznia"

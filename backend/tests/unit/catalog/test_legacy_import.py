@@ -116,4 +116,3 @@ def test_seed_products_have_relevant_descriptions() -> None:
     for product in plan.products:
         assert product.description, f"Product {product.name} ({product.slug}) has empty description"
         assert len(product.description) >= 50, f"Product {product.name} description too short"
-

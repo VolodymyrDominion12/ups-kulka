@@ -35,15 +35,17 @@ class Container(containers.DeclarativeContainer):
         media_root=settings.provided.media_root,
         admin_auth=admin_auth.facade,
     )
-    banners = providers.Container(
-        BannersContainer,
-        session_factory=session_factory,
-        media=media.facade,
-    )
     catalog = providers.Container(
         CatalogContainer,
         session_factory=session_factory,
         media=media.facade,
+        admin_auth=admin_auth.facade,
+    )
+    banners = providers.Container(
+        BannersContainer,
+        session_factory=session_factory,
+        media=media.facade,
+        catalog=catalog.facade,
         admin_auth=admin_auth.facade,
     )
     notifications = providers.Container(

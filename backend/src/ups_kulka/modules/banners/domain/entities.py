@@ -182,7 +182,7 @@ class BannerCampaign:
             return BannerState.EXPIRED
         return BannerState.ACTIVE
 
-    def revise(self, **changes: Any) -> "BannerCampaign":  # noqa: ANN401 - field values are heterogeneous
+    def revise(self, **changes: Any) -> "BannerCampaign":
         """A copy with ``changes`` applied, validated by the same rules as ``create``."""
         values: dict[str, Any] = {  # Any: heterogeneous field values, validated in ``create``
             f.name: getattr(self, f.name)

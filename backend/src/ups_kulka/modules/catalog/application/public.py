@@ -26,6 +26,15 @@ class CatalogFacade:
             products = await uow.products.get_for_order(unique_ids)
         return {product.id: product for product in products}
 
+    async def existing_tag_slugs(self, slugs: Sequence[str]) -> set[str]:
+        """Which of ``slugs`` are real tags (one query)."""
+        unique = list(dict.fromkeys(slugs))
+        if not unique:
+            return set()
+        async with self._uow_factory() as uow:
+            tags = await uow.tags.get_by_slugs(unique)
+        return {tag.slug.value for tag in tags}
+
     async def products_for_analytics(self) -> list[ProductAnalyticsInfo]:
         """All products with their tags for marketing analytics."""
         async with self._uow_factory() as uow:

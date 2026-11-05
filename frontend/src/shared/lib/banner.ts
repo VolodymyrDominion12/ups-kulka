@@ -50,3 +50,16 @@ const ABSOLUTE_URL = /^https?:\/\//i;
 export function isExternalLink(url: string): boolean {
   return ABSOLUTE_URL.test(url);
 }
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** ISO instant → value for <input type="datetime-local"> in the browser's local time. */
+export function toDateTimeLocal(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/** <input type="datetime-local"> value (local time) → ISO instant with an offset. */
+export function fromDateTimeLocal(value: string): string {
+  return new Date(value).toISOString();
+}

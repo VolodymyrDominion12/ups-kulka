@@ -71,6 +71,72 @@ export interface MediaAssetOut {
   created_at: string;
 }
 
+export type BannerLayout = "balloons" | "image" | "split" | "collection";
+export type BannerTheme = "rose" | "red" | "gold" | "dark";
+export type BannerState = "draft" | "scheduled" | "active" | "expired";
+
+export interface BannerImageOut {
+  url_prefix: string;
+  blur_data_url: string;
+  width: number;
+  height: number;
+  variants: Record<string, string>;
+}
+
+export interface AdminBannerOut {
+  id: string;
+  name: string;
+  layout: BannerLayout;
+  status: "draft" | "published";
+  state: BannerState;
+  starts_at: string;
+  ends_at: string;
+  priority: number;
+  headline: string;
+  subtitle: string;
+  cta_label: string;
+  cta_url: string;
+  cta2_label: string;
+  cta2_url: string;
+  media_id: string | null;
+  media_mobile_id: string | null;
+  image: BannerImageOut | null;
+  image_mobile: BannerImageOut | null;
+  image_alt: string;
+  theme: BannerTheme;
+  tag_slug: string | null;
+  ribbon_text: string;
+  ribbon_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AdminBannerPageOut {
+  items: AdminBannerOut[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+/** Body of POST/PATCH /api/v1/admin/banners (dates are ISO strings with an offset). */
+export interface BannerPayload {
+  name: string;
+  layout: BannerLayout;
+  starts_at: string;
+  ends_at: string;
+  headline: string;
+  subtitle: string;
+  priority: number;
+  cta_label: string;
+  cta_url: string;
+  cta2_label: string;
+  cta2_url: string;
+  media_id: string | null;
+  media_mobile_id: string | null;
+  image_alt: string;
+  theme: BannerTheme;
+}
+
 export type OrderStatus =
   | "new"
   | "confirmed"
@@ -302,6 +368,7 @@ async function apiRequest<T>(
     throw new Error(body?.message || `Помилка запиту (${response.status})`);
   }
 
+  if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
 
@@ -332,6 +399,33 @@ export const adminApi = {
       body: form,
     });
   },
+
+  listBanners: (limit = 100) =>
+    apiRequest<AdminBannerPageOut>(`/api/v1/admin/banners?limit=${limit}`),
+
+  createBanner: (payload: BannerPayload) =>
+    apiRequest<AdminBannerOut>("/api/v1/admin/banners", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+
+  updateBanner: (id: string, payload: BannerPayload) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+
+  publishBanner: (id: string) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/publish`, { method: "POST" }),
+
+  unpublishBanner: (id: string) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/unpublish`, { method: "POST" }),
+
+  duplicateBanner: (id: string) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/duplicate`, { method: "POST" }),
+
+  deleteBanner: (id: string) =>
+    apiRequest<void>(`/api/v1/admin/banners/${id}`, { method: "DELETE" }),
 
   listTags: () => apiRequest<TagSummaryOut[]>("/api/v1/catalog/tags"),
 
