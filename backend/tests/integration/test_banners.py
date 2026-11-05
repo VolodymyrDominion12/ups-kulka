@@ -40,7 +40,7 @@ async def test_api_returns_default_when_empty(client: AsyncClient) -> None:
     body = response.json()
     assert body["layout"] == "balloons"
     assert body["campaign_id"] is None
-    assert "s-maxage=60" in response.headers["cache-control"]
+    assert "no-store" in response.headers["cache-control"]
 
 
 async def test_api_returns_active_campaign(client: AsyncClient, container: Container) -> None:
@@ -129,7 +129,10 @@ async def test_admin_endpoints_require_auth(client: AsyncClient) -> None:
         client.patch(f"{ADMIN}/{some_id}", json={"headline": "x"}),
         client.post(f"{ADMIN}/{some_id}/publish"),
         client.post(f"{ADMIN}/{some_id}/unpublish"),
+        client.post(f"{ADMIN}/{some_id}/activate"),
+        client.post(f"{ADMIN}/{some_id}/deactivate"),
         client.post(f"{ADMIN}/{some_id}/duplicate"),
+        client.get(f"{ADMIN}/presets"),
         client.delete(f"{ADMIN}/{some_id}"),
     ]
     for call in calls:
@@ -220,6 +223,146 @@ async def test_admin_list_query_count_is_constant(
 
     assert response.status_code == 200
     assert response.json()["total"] == campaigns
+
+
+HOME = "/api/v1/storefront/home-banner"
+FAR_FUTURE = {
+    "starts_at": (NOW + timedelta(days=30)).isoformat(),
+    "ends_at": (NOW + timedelta(days=40)).isoformat(),
+}
+
+
+async def test_manual_activation_shows_a_campaign_outside_its_dates(
+    client: AsyncClient,
+) -> None:
+    headers = await _headers(client)
+    created = (await client.post(ADMIN, json=_body(**FAR_FUTURE), headers=headers)).json()
+    assert created["pinned"] is False
+    assert (await client.get(HOME)).json()["campaign_id"] is None
+
+    activated = (await client.post(f"{ADMIN}/{created['id']}/activate", headers=headers)).json()
+    assert activated["pinned"] is True
+    assert activated["status"] == "published"
+    assert activated["state"] == "active"
+    assert (await client.get(HOME)).json()["campaign_id"] == created["id"]
+
+    deactivated = (await client.post(f"{ADMIN}/{created['id']}/deactivate", headers=headers)).json()
+    assert deactivated["pinned"] is False
+    assert deactivated["state"] == "scheduled"
+    assert (await client.get(HOME)).json()["campaign_id"] is None
+
+
+async def test_activating_another_campaign_unpins_the_previous_one(
+    client: AsyncClient,
+) -> None:
+    headers = await _headers(client)
+    first = (await client.post(ADMIN, json=_body(**FAR_FUTURE), headers=headers)).json()
+    second = (await client.post(ADMIN, json=_body(**FAR_FUTURE), headers=headers)).json()
+
+    await client.post(f"{ADMIN}/{first['id']}/activate", headers=headers)
+    await client.post(f"{ADMIN}/{second['id']}/activate", headers=headers)
+
+    first_admin = (await client.get(f"{ADMIN}/{first['id']}", headers=headers)).json()
+    assert first_admin["pinned"] is False
+    assert (await client.get(HOME)).json()["campaign_id"] == second["id"]
+
+
+async def test_pinned_campaign_beats_a_scheduled_one(
+    client: AsyncClient, container: Container
+) -> None:
+    scheduled = await _add(container, headline="scheduled", priority=50)
+    pinned = await _add(
+        container,
+        headline="pinned",
+        priority=-1,
+        starts_at=NOW - timedelta(days=10),
+        ends_at=NOW - timedelta(days=5),
+    )
+    headers = await _headers(client)
+
+    await client.post(f"{ADMIN}/{pinned.id}/activate", headers=headers)
+
+    body = (await client.get(HOME)).json()
+    assert body["campaign_id"] == str(pinned.id)
+    assert body["headline"] == "pinned"
+    assert body["campaign_id"] != str(scheduled.id)
+
+
+async def test_unpublishing_clears_the_manual_override(client: AsyncClient) -> None:
+    headers = await _headers(client)
+    created = (await client.post(ADMIN, json=_body(**FAR_FUTURE), headers=headers)).json()
+    await client.post(f"{ADMIN}/{created['id']}/activate", headers=headers)
+
+    unpublished = (await client.post(f"{ADMIN}/{created['id']}/unpublish", headers=headers)).json()
+
+    assert unpublished["pinned"] is False
+    assert unpublished["state"] == "draft"
+    assert (await client.get(HOME)).json()["campaign_id"] is None
+
+
+async def test_presets_offer_the_four_holidays(client: AsyncClient) -> None:
+    headers = await _headers(client)
+
+    response = await client.get(f"{ADMIN}/presets", headers=headers)
+
+    assert response.status_code == 200, response.text
+    presets = response.json()
+    assert [preset["key"] for preset in presets] == [
+        "valentines",
+        "march_8",
+        "christmas",
+        "new_year",
+    ]
+    for preset in presets:
+        assert preset["starts_at"]
+        assert preset["ends_at"]
+        assert preset["headline"]
+        assert preset["cta_url"] == "/kulky"
+
+
+async def test_a_preset_becomes_a_real_campaign_and_can_be_shown(
+    client: AsyncClient,
+) -> None:
+    headers = await _headers(client)
+    preset = (await client.get(f"{ADMIN}/presets", headers=headers)).json()[1]
+    payload = {
+        key: preset[key]
+        for key in (
+            "name",
+            "layout",
+            "starts_at",
+            "ends_at",
+            "headline",
+            "subtitle",
+            "priority",
+            "cta_label",
+            "cta_url",
+            "cta2_label",
+            "cta2_url",
+            "theme",
+            "ribbon_text",
+            "ribbon_url",
+        )
+    }
+
+    created = await client.post(ADMIN, json=payload, headers=headers)
+
+    assert created.status_code == 201, created.text
+    campaign = created.json()
+    assert campaign["name"] == preset["name"]
+    await client.post(f"{ADMIN}/{campaign['id']}/activate", headers=headers)
+    home = (await client.get(HOME)).json()
+    assert home["campaign_id"] == campaign["id"]
+    assert home["headline"] == preset["headline"]
+    assert home["ribbon_text"] == preset["ribbon_text"]
+
+
+async def test_only_one_campaign_can_stay_pinned(container: Container) -> None:
+    from sqlalchemy.exc import IntegrityError
+
+    await _add(container, pinned=True)
+    with pytest.raises(IntegrityError):
+        await _add(container, pinned=True)
 
 
 async def test_collection_banner_accepts_an_existing_tag(client: AsyncClient) -> None:

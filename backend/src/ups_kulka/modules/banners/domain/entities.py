@@ -73,6 +73,7 @@ class BannerCampaign:
     name: str
     layout: BannerLayout
     status: BannerStatus
+    pinned: bool
     starts_at: datetime
     ends_at: datetime
     priority: int
@@ -103,6 +104,7 @@ class BannerCampaign:
         headline: str,
         subtitle: str = "",
         status: BannerStatus = BannerStatus.DRAFT,
+        pinned: bool = False,
         priority: int = 0,
         cta_label: str = "",
         cta_url: str = "",
@@ -150,6 +152,7 @@ class BannerCampaign:
             name=clean_name,
             layout=layout,
             status=status,
+            pinned=pinned,
             starts_at=starts_at,
             ends_at=ends_at,
             priority=priority,
@@ -171,16 +174,29 @@ class BannerCampaign:
         )
 
     def is_active_at(self, moment: datetime) -> bool:
-        return self.status is BannerStatus.PUBLISHED and self.starts_at <= moment < self.ends_at
+        """On the storefront right now: pinned manually, or published inside its period."""
+        if self.status is not BannerStatus.PUBLISHED:
+            return False
+        return self.pinned or self.starts_at <= moment < self.ends_at
 
     def state_at(self, moment: datetime) -> BannerState:
         if self.status is BannerStatus.DRAFT:
             return BannerState.DRAFT
+        if self.pinned:
+            return BannerState.ACTIVE
         if moment < self.starts_at:
             return BannerState.SCHEDULED
         if moment >= self.ends_at:
             return BannerState.EXPIRED
         return BannerState.ACTIVE
+
+    def activate_now(self) -> "BannerCampaign":
+        """Show on the site right now, ignoring the schedule (drafts become published)."""
+        return self.revise(status=BannerStatus.PUBLISHED, pinned=True)
+
+    def deactivate_now(self) -> "BannerCampaign":
+        """Drop the manual override: the campaign lives by its schedule again."""
+        return self.revise(pinned=False)
 
     def revise(self, **changes: Any) -> "BannerCampaign":
         """A copy with ``changes`` applied, validated by the same rules as ``create``."""
@@ -201,6 +217,7 @@ class BannerCampaign:
         copy = self.revise(
             name=name,
             status=BannerStatus.DRAFT,
+            pinned=False,
             starts_at=shift_one_year(self.starts_at),
             ends_at=shift_one_year(self.ends_at),
         )

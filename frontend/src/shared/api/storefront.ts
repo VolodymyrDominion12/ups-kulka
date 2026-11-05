@@ -186,15 +186,16 @@ export const catalogApi = {
   },
 };
 
-/** A campaign switch must show up fast, so the banner is cached much shorter than the catalogue. */
-const BANNER_REVALIDATE_SECONDS = 60;
-
 export const bannerApi = {
-  /** Never throws: a banner problem must not take the home page down, so it falls back to the default hero. */
+  /**
+   * Never throws: a banner problem must not take the home page down, so it falls back to the
+   * default hero. Read uncached: the admin's «Показати зараз» must change the hero at once,
+   * and the lookup is a single indexed row.
+   */
   async getHome(): Promise<HomeBannerOut> {
     try {
       const response = await fetch(`${serverBase()}/api/v1/storefront/home-banner`, {
-        next: { revalidate: BANNER_REVALIDATE_SECONDS, tags: ["banner"] },
+        cache: "no-store",
         headers: { Accept: "application/json" },
       });
       if (!response.ok) return DEFAULT_HOME_BANNER;

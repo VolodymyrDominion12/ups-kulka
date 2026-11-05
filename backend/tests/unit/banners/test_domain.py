@@ -33,9 +33,10 @@ def make(**overrides: object) -> BannerCampaign:
     return BannerCampaign.create(**params)  # type: ignore[arg-type]
 
 
-def test_create_defaults_to_draft() -> None:
+def test_create_defaults_to_draft_and_not_pinned() -> None:
     campaign = make()
     assert campaign.status is BannerStatus.DRAFT
+    assert campaign.pinned is False
     assert campaign.priority == 0
 
 
@@ -117,6 +118,31 @@ def test_state_at_covers_the_whole_life() -> None:
     assert published.state_at(START - timedelta(days=1)) is BannerState.SCHEDULED
     assert published.state_at(START) is BannerState.ACTIVE
     assert published.state_at(END) is BannerState.EXPIRED
+
+
+def test_pinned_campaign_is_active_outside_its_dates() -> None:
+    from ups_kulka.modules.banners.domain.entities import BannerState
+
+    pinned = make(status=BannerStatus.PUBLISHED, pinned=True)
+    assert pinned.is_active_at(START - timedelta(days=30))
+    assert pinned.is_active_at(END + timedelta(days=30))
+    assert pinned.state_at(END + timedelta(days=30)) is BannerState.ACTIVE
+    assert not make(pinned=True).is_active_at(START)  # still a draft
+
+
+def test_activate_now_publishes_and_pins() -> None:
+    original = make()
+    activated = original.activate_now()
+
+    assert activated.id == original.id
+    assert activated.pinned is True
+    assert activated.status is BannerStatus.PUBLISHED
+    assert activated.deactivate_now().pinned is False
+
+
+def test_duplicate_drops_the_manual_override() -> None:
+    copy = make(status=BannerStatus.PUBLISHED, pinned=True).duplicate("copy")
+    assert copy.pinned is False
 
 
 def test_revise_keeps_identity_and_revalidates() -> None:

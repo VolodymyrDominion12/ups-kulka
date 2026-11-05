@@ -7,10 +7,14 @@ from ups_kulka.modules.banners.application.use_cases.admin_banners import (
     DuplicateBanner,
     GetBanner,
     ListBanners,
+    SetBannerPinned,
     SetBannerPublished,
     UpdateBanner,
 )
 from ups_kulka.modules.banners.application.use_cases.get_active_banner import GetActiveBanner
+from ups_kulka.modules.banners.application.use_cases.list_banner_presets import (
+    ListBannerPresets,
+)
 from ups_kulka.modules.banners.infrastructure.adapters import (
     BannerAdminAuthAdapter,
     CatalogTagAdapter,
@@ -70,6 +74,21 @@ class BannersContainer(containers.DeclarativeContainer):
         published=False,
         auth=auth_adapter,
     )
+    activate_banner = providers.Factory(
+        SetBannerPinned,
+        uow_factory=uow.provider,
+        media=media_lookup,
+        pinned=True,
+        auth=auth_adapter,
+    )
+    deactivate_banner = providers.Factory(
+        SetBannerPinned,
+        uow_factory=uow.provider,
+        media=media_lookup,
+        pinned=False,
+        auth=auth_adapter,
+    )
+    list_banner_presets = providers.Factory(ListBannerPresets, auth=auth_adapter)
     duplicate_banner = providers.Factory(
         DuplicateBanner, uow_factory=uow.provider, media=media_lookup, auth=auth_adapter
     )

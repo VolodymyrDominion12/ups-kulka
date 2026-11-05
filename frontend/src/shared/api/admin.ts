@@ -89,6 +89,7 @@ export interface AdminBannerOut {
   layout: BannerLayout;
   status: "draft" | "published";
   state: BannerState;
+  pinned: boolean;
   starts_at: string;
   ends_at: string;
   priority: number;
@@ -116,6 +117,27 @@ export interface AdminBannerPageOut {
   total: number;
   limit: number;
   offset: number;
+}
+
+/** A ready holiday campaign: POST it back as a payload to create a real (draft) campaign. */
+export interface BannerPresetOut {
+  key: string;
+  title: string;
+  description: string;
+  name: string;
+  layout: BannerLayout;
+  theme: BannerTheme;
+  headline: string;
+  subtitle: string;
+  starts_at: string;
+  ends_at: string;
+  priority: number;
+  cta_label: string;
+  cta_url: string;
+  cta2_label: string;
+  cta2_url: string;
+  ribbon_text: string;
+  ribbon_url: string;
 }
 
 /** Body of POST/PATCH /api/v1/admin/banners (dates are ISO strings with an offset). */
@@ -418,8 +440,16 @@ export const adminApi = {
       body: JSON.stringify(payload),
     }),
 
+  listBannerPresets: () => apiRequest<BannerPresetOut[]>("/api/v1/admin/banners/presets"),
+
   publishBanner: (id: string) =>
     apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/publish`, { method: "POST" }),
+
+  activateBanner: (id: string) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/activate`, { method: "POST" }),
+
+  deactivateBanner: (id: string) =>
+    apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/deactivate`, { method: "POST" }),
 
   unpublishBanner: (id: string) =>
     apiRequest<AdminBannerOut>(`/api/v1/admin/banners/${id}/unpublish`, { method: "POST" }),

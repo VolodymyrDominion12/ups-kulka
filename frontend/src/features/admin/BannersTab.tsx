@@ -1,7 +1,19 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, Copy, Eye, EyeOff, ImagePlus, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  Copy,
+  Eye,
+  EyeOff,
+  ImagePlus,
+  Loader2,
+  Pause,
+  Pencil,
+  Play,
+  Plus,
+  Trash2,
+} from "lucide-react";
 
 import {
   adminApi,
@@ -9,12 +21,13 @@ import {
   BannerImageOut,
   BannerLayout,
   BannerPayload,
+  BannerPresetOut,
   BannerState,
   BannerTheme,
   TagSummaryOut,
 } from "@/shared/api/admin";
 import { DEFAULT_HOME_BANNER, type HomeBannerOut } from "@/shared/api/storefront";
-import { fromDateTimeLocal, toDateTimeLocal } from "@/shared/lib/banner";
+import { fromDateTimeLocal, presetToPayload, toDateTimeLocal } from "@/shared/lib/banner";
 import { Hero } from "@/widgets/hero";
 
 const STATE_LABELS: Record<BannerState, { text: string; className: string }> = {
@@ -525,6 +538,7 @@ function BannerForm({
 
 export function BannersTab() {
   const [banners, setBanners] = useState<AdminBannerOut[]>([]);
+  const [presets, setPresets] = useState<BannerPresetOut[]>([]);
   const [tags, setTags] = useState<TagSummaryOut[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -534,12 +548,14 @@ export function BannersTab() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const [bannerPage, tagList] = await Promise.all([
+      const [bannerPage, tagList, presetList] = await Promise.all([
         adminApi.listBanners(),
         adminApi.listTags(),
+        adminApi.listBannerPresets(),
       ]);
       setBanners(bannerPage.items);
       setTags(tagList);
+      setPresets(presetList);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не вдалося завантажити банери");
     } finally {
@@ -569,6 +585,21 @@ export function BannersTab() {
     void run(banner.id, () => adminApi.deleteBanner(banner.id));
   };
 
+  const createPreset = async (preset: BannerPresetOut, showNow: boolean) => {
+    const busyKey = `preset:${preset.key}`;
+    setBusyId(busyKey);
+    setError(null);
+    try {
+      const created = await adminApi.createBanner(presetToPayload(preset));
+      if (showNow) await adminApi.activateBanner(created.id);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не вдалося створити банер");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   if (editing) {
     return (
       <BannerForm
@@ -586,7 +617,10 @@ export function BannersTab() {
   return (
     <div className="space-y-3 pb-24">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-muted">Банер головної за святами: створіть наперед, він увімкнеться сам.</p>
+        <p className="text-xs text-muted">
+          Банер увімкнеться сам у свій період. Або натисніть «Показати зараз», щоб поставити
+          будь-який банер на головну незалежно від дат.
+        </p>
         <button
           type="button"
           onClick={() => setEditing("new")}
@@ -598,15 +632,106 @@ export function BannersTab() {
 
       {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">{error}</p>}
 
+      {presets.length > 0 && !loading && (
+        <section className="space-y-2 rounded-2xl border border-line bg-white p-3.5">
+          <div>
+            <h3 className="text-sm font-extrabold text-ink">Готові святкові банери</h3>
+            <p className="mt-0.5 text-[11px] text-muted">
+              Один дотик — і кампанія з&apos;явиться у списку нижче. Дати вже підставлені на
+              найближче свято, їх можна змінити в редагуванні.
+            </p>
+          </div>
+          <div className="space-y-2">
+            {presets.map((preset) => {
+              const existing = banners.find((banner) => banner.name === preset.name) ?? null;
+              const busy =
+                busyId === `preset:${preset.key}` || (existing ? busyId === existing.id : false);
+              return (
+                <article key={preset.key} className="rounded-xl border border-line bg-surface p-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-extrabold text-ink">{preset.title}</p>
+                      <p className="mt-0.5 text-[11px] text-muted">
+                        {formatPeriod(preset.starts_at, preset.ends_at)}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-muted">{preset.description}</p>
+                    </div>
+                    {existing?.pinned && (
+                      <span className="shrink-0 rounded-full bg-rose-deep px-2 py-1 text-[10px] font-bold text-white">
+                        На сайті
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {existing ? (
+                      <>
+                        <span className="inline-flex min-h-[36px] items-center rounded-full bg-white px-3 text-[11px] font-bold text-muted">
+                          Уже створено
+                        </span>
+                        {existing.pinned ? (
+                          <button
+                            type="button"
+                            disabled={busy}
+                            onClick={() =>
+                              void run(existing.id, () => adminApi.deactivateBanner(existing.id))
+                            }
+                            className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-rose-deep px-3 text-xs font-bold text-white"
+                          >
+                            <Pause className="h-3.5 w-3.5" /> Зняти ручний показ
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={busy}
+                            onClick={() =>
+                              void run(existing.id, () => adminApi.activateBanner(existing.id))
+                            }
+                            className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-ink px-3 text-xs font-bold text-white"
+                          >
+                            <Play className="h-3.5 w-3.5" /> Показати зараз
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void createPreset(preset, false)}
+                          className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-white px-3 text-xs font-bold text-ink"
+                        >
+                          Створити
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void createPreset(preset, true)}
+                          className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-ink px-3 text-xs font-bold text-white"
+                        >
+                          <Play className="h-3.5 w-3.5" /> Створити й показати
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {loading ? (
         <Loader2 className="mx-auto mt-8 h-6 w-6 animate-spin text-rose-deep" />
       ) : banners.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-line p-6 text-center text-sm text-muted">
-          Кампаній ще немає. На сайті показується стандартний банер з кульками.
+          Кампаній ще немає. Створіть святковий банер вище або свій власний — на сайті поки
+          показується стандартний банер з кульками.
         </p>
       ) : (
         banners.map((banner) => {
-          const state = STATE_LABELS[banner.state];
+          const state = banner.pinned
+            ? { text: "Показується вручну", className: "bg-rose-deep text-white" }
+            : STATE_LABELS[banner.state];
           const busy = busyId === banner.id;
           return (
             <article key={banner.id} className="rounded-2xl border border-line bg-white p-3.5">
@@ -632,6 +757,25 @@ export function BannersTab() {
                 >
                   <Pencil className="h-3.5 w-3.5" /> Редагувати
                 </button>
+                {banner.pinned ? (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void run(banner.id, () => adminApi.deactivateBanner(banner.id))}
+                    className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-rose-deep px-3 text-xs font-bold text-white"
+                  >
+                    <Pause className="h-3.5 w-3.5" /> Зняти ручний показ
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void run(banner.id, () => adminApi.activateBanner(banner.id))}
+                    className="inline-flex min-h-[36px] items-center gap-1 rounded-full bg-ink px-3 text-xs font-bold text-white"
+                  >
+                    <Play className="h-3.5 w-3.5" /> Показати зараз
+                  </button>
+                )}
                 {banner.status === "draft" ? (
                   <button
                     type="button"

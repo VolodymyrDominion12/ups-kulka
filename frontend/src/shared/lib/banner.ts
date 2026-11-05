@@ -1,4 +1,5 @@
 import { ATTRIBUTION_STORAGE_KEY } from "@/features/marketing/UtmCapture";
+import type { BannerPayload, BannerPresetOut } from "@/shared/api/admin";
 import type { BannerLayout, BannerTheme } from "@/shared/api/storefront";
 import type { MarketingAttribution } from "@/shared/lib/utm";
 
@@ -105,6 +106,30 @@ export function recordBannerClick(
   } catch {
     // Storage unavailable: ignore silently.
   }
+}
+
+/** A holiday preset becomes a create payload; photos and tags are not part of presets. */
+export function presetToPayload(preset: BannerPresetOut): BannerPayload {
+  return {
+    name: preset.name,
+    layout: preset.layout,
+    starts_at: preset.starts_at,
+    ends_at: preset.ends_at,
+    headline: preset.headline,
+    subtitle: preset.subtitle,
+    priority: preset.priority,
+    cta_label: preset.cta_label,
+    cta_url: preset.cta_url,
+    cta2_label: preset.cta2_label,
+    cta2_url: preset.cta2_url,
+    media_id: null,
+    media_mobile_id: null,
+    image_alt: "",
+    theme: preset.theme,
+    tag_slug: null,
+    ribbon_text: preset.ribbon_text,
+    ribbon_url: preset.ribbon_url,
+  };
 }
 
 const pad = (n: number) => String(n).padStart(2, "0");

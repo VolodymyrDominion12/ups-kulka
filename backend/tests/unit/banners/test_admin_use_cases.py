@@ -22,6 +22,7 @@ from ups_kulka.modules.banners.application.use_cases.admin_banners import (
     DuplicateBanner,
     GetBanner,
     ListBanners,
+    SetBannerPinned,
     SetBannerPublished,
     UpdateBanner,
 )
@@ -73,6 +74,9 @@ class Env:
 
     def publish(self, published: bool = True) -> SetBannerPublished:
         return SetBannerPublished(published=published, **self._kw())  # type: ignore[arg-type]
+
+    def pin(self, pinned: bool = True) -> SetBannerPinned:
+        return SetBannerPinned(pinned=pinned, **self._kw())  # type: ignore[arg-type]
 
     def duplicate(self) -> DuplicateBanner:
         return DuplicateBanner(**self._kw())  # type: ignore[arg-type]
@@ -160,6 +164,66 @@ async def test_publish_and_unpublish_change_state(env: Env) -> None:
     published = await env.publish(True)(cmd)
     assert published.state is BannerState.ACTIVE
     assert (await env.publish(False)(cmd)).state is BannerState.DRAFT
+
+
+async def test_activate_publishes_and_pins_a_draft(env: Env) -> None:
+    future = command(
+        starts_at=datetime(2027, 5, 1, tzinfo=UTC),
+        ends_at=datetime(2027, 5, 10, tzinfo=UTC),
+    )
+    created = await env.create()(future)
+
+    activated = await env.pin(True)(BannerIdCommand(created.id, TOKEN))
+
+    assert activated.pinned is True
+    assert activated.status == "published"
+    assert activated.state is BannerState.ACTIVE  # pinned, even though the dates are ahead
+    assert env.store[created.id].pinned is True
+
+
+async def test_activate_unpins_the_previous_campaign(env: Env) -> None:
+    first = await env.create()(command(name="first"))
+    second = await env.create()(command(name="second"))
+    await env.pin(True)(BannerIdCommand(first.id, TOKEN))
+    await env.pin(True)(BannerIdCommand(second.id, TOKEN))
+
+    pinned = [c for c in env.store.values() if c.pinned]
+    assert [c.id for c in pinned] == [second.id]
+
+
+async def test_deactivate_returns_to_the_schedule(env: Env) -> None:
+    future = command(
+        starts_at=datetime(2027, 5, 1, tzinfo=UTC),
+        ends_at=datetime(2027, 5, 10, tzinfo=UTC),
+    )
+    created = await env.create()(future)
+    cmd = BannerIdCommand(created.id, TOKEN)
+    await env.pin(True)(cmd)
+
+    restored = await env.pin(False)(cmd)
+
+    assert restored.pinned is False
+    assert restored.state is BannerState.SCHEDULED
+    assert env.store[created.id].pinned is False
+
+
+async def test_unpublish_clears_the_manual_override(env: Env) -> None:
+    created = await env.create()(command())
+    cmd = BannerIdCommand(created.id, TOKEN)
+    await env.pin(True)(cmd)
+
+    unpublished = await env.publish(False)(cmd)
+
+    assert unpublished.pinned is False
+    assert unpublished.state is BannerState.DRAFT
+
+
+async def test_pin_requires_admin_and_an_existing_campaign(env: Env) -> None:
+    created = await env.create()(command())
+    with pytest.raises(UnauthorizedError):
+        await env.pin(True)(BannerIdCommand(created.id, "bad"))
+    with pytest.raises(BannerNotFound):
+        await env.pin(True)(BannerIdCommand(uuid.uuid4(), TOKEN))
 
 
 async def test_duplicate_makes_next_year_draft(env: Env) -> None:

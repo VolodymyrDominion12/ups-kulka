@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, Index, Integer, String, Uuid
+from sqlalchemy import Boolean, CheckConstraint, DateTime, Index, Integer, String, Uuid, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ups_kulka.shared.infrastructure.db import Base
@@ -19,12 +19,20 @@ class BannerCampaignRow(Base):
         CheckConstraint("ends_at > starts_at", name="period_valid"),
         Index("ix_banners_campaigns_active", "status", "starts_at", "ends_at"),
         Index("ix_banners_campaigns_starts_at", "starts_at"),
+        # Only one campaign may be shown manually at a time (specs/017-home-banners).
+        Index(
+            "uq_banners_campaigns_pinned",
+            "pinned",
+            unique=True,
+            postgresql_where=text("pinned"),
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
     layout: Mapped[str] = mapped_column(String(20))
     status: Mapped[str] = mapped_column(String(12))
+    pinned: Mapped[bool] = mapped_column(Boolean, default=False)
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     priority: Mapped[int] = mapped_column(Integer)

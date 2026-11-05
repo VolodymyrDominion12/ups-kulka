@@ -94,6 +94,10 @@
             "title": "Name",
             "type": "string"
           },
+          "pinned": {
+            "title": "Pinned",
+            "type": "boolean"
+          },
           "priority": {
             "title": "Priority",
             "type": "integer"
@@ -150,6 +154,7 @@
           "layout",
           "status",
           "state",
+          "pinned",
           "starts_at",
           "ends_at",
           "priority",
@@ -769,6 +774,102 @@
           "variants"
         ],
         "title": "BannerImageOut",
+        "type": "object"
+      },
+      "BannerPresetOut": {
+        "description": "A ready holiday campaign: the admin turns it into a real one with POST /admin/banners.",
+        "properties": {
+          "cta2_label": {
+            "title": "Cta2 Label",
+            "type": "string"
+          },
+          "cta2_url": {
+            "title": "Cta2 Url",
+            "type": "string"
+          },
+          "cta_label": {
+            "title": "Cta Label",
+            "type": "string"
+          },
+          "cta_url": {
+            "title": "Cta Url",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "headline": {
+            "title": "Headline",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "layout": {
+            "title": "Layout",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "integer"
+          },
+          "ribbon_text": {
+            "title": "Ribbon Text",
+            "type": "string"
+          },
+          "ribbon_url": {
+            "title": "Ribbon Url",
+            "type": "string"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "subtitle": {
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "theme": {
+            "title": "Theme",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "description",
+          "name",
+          "layout",
+          "theme",
+          "headline",
+          "subtitle",
+          "starts_at",
+          "ends_at",
+          "priority",
+          "cta_label",
+          "cta_url",
+          "cta2_label",
+          "cta2_url",
+          "ribbon_text",
+          "ribbon_url"
+        ],
+        "title": "BannerPresetOut",
         "type": "object"
       },
       "BannerUpdateIn": {
@@ -3538,6 +3639,79 @@
         ]
       }
     },
+    "/api/v1/admin/banners/presets": {
+      "get": {
+        "operationId": "list_banner_presets_api_v1_admin_banners_presets_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BannerPresetOut"
+                  },
+                  "title": "Response List Banner Presets Api V1 Admin Banners Presets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "List Banner Presets",
+        "tags": [
+          "admin-banners"
+        ]
+      }
+    },
     "/api/v1/admin/banners/{campaign_id}": {
       "delete": {
         "operationId": "delete_banner_api_v1_admin_banners__campaign_id__delete",
@@ -3769,6 +3943,166 @@
           }
         },
         "summary": "Update Banner",
+        "tags": [
+          "admin-banners"
+        ]
+      }
+    },
+    "/api/v1/admin/banners/{campaign_id}/activate": {
+      "post": {
+        "description": "Show this campaign now, whatever its dates are.",
+        "operationId": "activate_banner_api_v1_admin_banners__campaign_id__activate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "campaign_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Campaign Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminBannerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Activate Banner",
+        "tags": [
+          "admin-banners"
+        ]
+      }
+    },
+    "/api/v1/admin/banners/{campaign_id}/deactivate": {
+      "post": {
+        "description": "Stop the manual override; the usual schedule applies again.",
+        "operationId": "deactivate_banner_api_v1_admin_banners__campaign_id__deactivate_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "campaign_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Campaign Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminBannerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Deactivate Banner",
         "tags": [
           "admin-banners"
         ]

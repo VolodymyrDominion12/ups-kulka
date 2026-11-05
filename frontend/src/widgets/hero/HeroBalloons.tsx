@@ -6,6 +6,7 @@ import { themeClasses } from "@/shared/lib/banner";
 import { responsiveImage } from "@/shared/lib/images";
 
 import { HeroButton } from "./HeroButton";
+import { HeroDecor } from "./HeroDecor";
 
 /** Balloon positions in the cluster: three photos, two plain balloons. */
 const SLOTS = [
@@ -46,7 +47,8 @@ export function HeroBalloons({
     .slice(0, 3);
 
   return (
-    <section className={theme.section}>
+    <section className={`relative isolate overflow-hidden ${theme.section}`}>
+      {campaign && <HeroDecor theme={campaign.theme} />}
       <div className="mx-auto grid max-w-6xl items-center gap-6 px-4 pb-12 pt-8 sm:px-6 md:min-h-[540px] md:grid-cols-[1.05fr_1fr] md:pb-16">
         <div className="order-2 md:order-1">
           <h1

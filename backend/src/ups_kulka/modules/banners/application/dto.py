@@ -81,6 +81,7 @@ class AdminBannerDTO:
     layout: BannerLayout
     status: str
     state: BannerState
+    pinned: bool
     starts_at: datetime
     ends_at: datetime
     priority: int
@@ -115,6 +116,7 @@ class AdminBannerDTO:
             layout=campaign.layout,
             status=campaign.status.value,
             state=state,
+            pinned=campaign.pinned,
             starts_at=campaign.starts_at,
             ends_at=campaign.ends_at,
             priority=campaign.priority,
@@ -180,3 +182,31 @@ class ListBannersQuery:
     limit: int = 50
     offset: int = 0
     auth_token: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ListBannerPresetsQuery:
+    auth_token: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class BannerPresetDTO:
+    """A ready holiday campaign draft: the admin sends it back to ``POST /admin/banners``."""
+
+    key: str
+    title: str
+    description: str
+    name: str
+    layout: BannerLayout
+    theme: BannerTheme
+    headline: str
+    subtitle: str
+    starts_at: datetime
+    ends_at: datetime
+    priority: int
+    cta_label: str
+    cta_url: str
+    cta2_label: str
+    cta2_url: str
+    ribbon_text: str
+    ribbon_url: str

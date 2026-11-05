@@ -175,8 +175,39 @@ class SetBannerPublished(_AdminUseCase):
 
     async def __call__(self, cmd: BannerIdCommand) -> AdminBannerDTO:
         self._require_admin(cmd.auth_token)
+        publishing = self._status is BannerStatus.PUBLISHED
         async with self._uow_factory() as uow:
-            campaign = (await _load(uow, cmd.campaign_id)).revise(status=self._status)
+            current = await _load(uow, cmd.campaign_id)
+            # Taking a campaign off the site also removes its manual override.
+            campaign = current.revise(status=self._status, pinned=current.pinned and publishing)
+            await uow.banners.update(campaign)
+            await uow.commit()
+        return await self._dto(campaign)
+
+
+class SetBannerPinned(_AdminUseCase):
+    """Show a campaign right now, ignoring its dates, or stop the manual override."""
+
+    def __init__(
+        self,
+        uow_factory: BannerUnitOfWorkFactory,
+        media: MediaLookup,
+        pinned: bool,
+        auth: AdminGuard | None = None,
+        clock: Callable[[], datetime] = utc_now,
+    ) -> None:
+        super().__init__(uow_factory, media, auth, clock)
+        self._pinned = pinned
+
+    async def __call__(self, cmd: BannerIdCommand) -> AdminBannerDTO:
+        self._require_admin(cmd.auth_token)
+        async with self._uow_factory() as uow:
+            current = await _load(uow, cmd.campaign_id)
+            if self._pinned:
+                await uow.banners.clear_pinned(keep_id=current.id)
+                campaign = current.activate_now()
+            else:
+                campaign = current.deactivate_now()
             await uow.banners.update(campaign)
             await uow.commit()
         return await self._dto(campaign)

@@ -27,7 +27,12 @@ class InMemoryBannerRepository:
 
     async def get_active(self, now: datetime) -> BannerCampaign | None:
         active = [c for c in self._store.values() if c.is_active_at(now)]
-        return max(active, key=lambda c: (c.priority, c.starts_at), default=None)
+        return max(active, key=lambda c: (c.pinned, c.priority, c.starts_at), default=None)
+
+    async def clear_pinned(self, keep_id: uuid.UUID) -> None:
+        for campaign_id, campaign in list(self._store.items()):
+            if campaign.pinned and campaign_id != keep_id:
+                self._store[campaign_id] = campaign.revise(pinned=False)
 
     async def list_page(self, page: PageRequest) -> Page[BannerCampaign]:
         ordered = sorted(self._store.values(), key=lambda c: c.starts_at, reverse=True)

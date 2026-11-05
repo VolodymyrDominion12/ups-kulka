@@ -6,6 +6,7 @@ from pydantic import AwareDatetime, BaseModel, ConfigDict
 from ups_kulka.modules.banners.application.dto import (
     AdminBannerDTO,
     BannerImageDTO,
+    BannerPresetDTO,
     CreateBannerCommand,
     HomeBannerDTO,
     UpdateBannerCommand,
@@ -78,6 +79,7 @@ class AdminBannerOut(BaseModel):
     layout: str
     status: str
     state: str
+    pinned: bool
     starts_at: AwareDatetime
     ends_at: AwareDatetime
     priority: int
@@ -107,6 +109,7 @@ class AdminBannerOut(BaseModel):
             layout=dto.layout.value,
             status=dto.status,
             state=dto.state.value,
+            pinned=dto.pinned,
             starts_at=dto.starts_at,
             ends_at=dto.ends_at,
             priority=dto.priority,
@@ -143,6 +146,50 @@ class AdminBannerPageOut(BaseModel):
             total=page.total,
             limit=page.limit,
             offset=page.offset,
+        )
+
+
+class BannerPresetOut(BaseModel):
+    """A ready holiday campaign: the admin turns it into a real one with POST /admin/banners."""
+
+    key: str
+    title: str
+    description: str
+    name: str
+    layout: str
+    theme: str
+    headline: str
+    subtitle: str
+    starts_at: AwareDatetime
+    ends_at: AwareDatetime
+    priority: int
+    cta_label: str
+    cta_url: str
+    cta2_label: str
+    cta2_url: str
+    ribbon_text: str
+    ribbon_url: str
+
+    @classmethod
+    def from_dto(cls, dto: BannerPresetDTO) -> "BannerPresetOut":
+        return cls(
+            key=dto.key,
+            title=dto.title,
+            description=dto.description,
+            name=dto.name,
+            layout=dto.layout.value,
+            theme=dto.theme.value,
+            headline=dto.headline,
+            subtitle=dto.subtitle,
+            starts_at=dto.starts_at,
+            ends_at=dto.ends_at,
+            priority=dto.priority,
+            cta_label=dto.cta_label,
+            cta_url=dto.cta_url,
+            cta2_label=dto.cta2_label,
+            cta2_url=dto.cta2_url,
+            ribbon_text=dto.ribbon_text,
+            ribbon_url=dto.ribbon_url,
         )
 
 

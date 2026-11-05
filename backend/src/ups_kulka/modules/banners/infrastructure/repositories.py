@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import and_, delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ups_kulka.modules.banners.domain.entities import (
@@ -21,6 +21,7 @@ def campaign_to_domain(row: BannerCampaignRow) -> BannerCampaign:
         name=row.name,
         layout=BannerLayout(row.layout),
         status=BannerStatus(row.status),
+        pinned=row.pinned,
         starts_at=row.starts_at,
         ends_at=row.ends_at,
         priority=row.priority,
@@ -46,6 +47,7 @@ def _apply(row: BannerCampaignRow, campaign: BannerCampaign) -> None:
     row.name = campaign.name
     row.layout = campaign.layout.value
     row.status = campaign.status.value
+    row.pinned = campaign.pinned
     row.starts_at = campaign.starts_at
     row.ends_at = campaign.ends_at
     row.priority = campaign.priority
@@ -108,15 +110,32 @@ class SqlAlchemyBannerRepository:
         )
         return bool(result.rowcount)  # type: ignore[attr-defined]  # CursorResult has rowcount
 
+    async def clear_pinned(self, keep_id: uuid.UUID) -> None:
+        await self._session.execute(
+            update(BannerCampaignRow)
+            .where(BannerCampaignRow.pinned.is_(True), BannerCampaignRow.id != keep_id)
+            .values(pinned=False)
+        )
+
     async def get_active(self, now: datetime) -> BannerCampaign | None:
+        """A manually pinned campaign always wins; otherwise the schedule decides (ONE query)."""
         row = await self._session.scalar(
             select(BannerCampaignRow)
             .where(
                 BannerCampaignRow.status == BannerStatus.PUBLISHED.value,
-                BannerCampaignRow.starts_at <= now,
-                BannerCampaignRow.ends_at > now,
+                or_(
+                    BannerCampaignRow.pinned.is_(True),
+                    and_(
+                        BannerCampaignRow.starts_at <= now,
+                        BannerCampaignRow.ends_at > now,
+                    ),
+                ),
             )
-            .order_by(BannerCampaignRow.priority.desc(), BannerCampaignRow.starts_at.desc())
+            .order_by(
+                BannerCampaignRow.pinned.desc(),
+                BannerCampaignRow.priority.desc(),
+                BannerCampaignRow.starts_at.desc(),
+            )
             .limit(1)
         )
         return campaign_to_domain(row) if row else None

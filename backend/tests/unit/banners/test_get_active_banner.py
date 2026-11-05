@@ -54,6 +54,19 @@ async def test_higher_priority_wins() -> None:
     assert banner.headline == "high"
 
 
+async def test_pinned_campaign_wins_ignoring_dates_and_priority() -> None:
+    scheduled = campaign(headline="scheduled", priority=9)
+    pinned = campaign(
+        headline="pinned",
+        priority=-1,
+        pinned=True,
+        starts_at=datetime(2027, 5, 1, tzinfo=UTC),
+        ends_at=datetime(2027, 5, 10, tzinfo=UTC),
+    )
+    banner = await build([scheduled, pinned])()
+    assert banner.headline == "pinned"
+
+
 async def test_image_campaign_includes_images() -> None:
     media_id, mobile_id = uuid.uuid4(), uuid.uuid4()
     known = {media_id: IMAGE, mobile_id: IMAGE}

@@ -23,10 +23,14 @@ class BannerRepository(Protocol):
     async def add(self, campaign: BannerCampaign) -> None: ...
 
     async def get_active(self, now: datetime) -> BannerCampaign | None:
-        """Published campaign covering ``now`` with the highest priority, in ONE query."""
+        """Published and pinned first, then the campaign covering ``now``, in ONE query."""
         ...
 
     async def get(self, campaign_id: uuid.UUID) -> BannerCampaign | None: ...
+
+    async def clear_pinned(self, keep_id: uuid.UUID) -> None:
+        """Drop the manual override from every campaign except ``keep_id`` (one UPDATE)."""
+        ...
 
     async def list_page(self, page: PageRequest) -> Page[BannerCampaign]:
         """Newest period first; ``total`` plus one page query."""

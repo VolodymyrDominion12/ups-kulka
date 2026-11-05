@@ -7,21 +7,30 @@ from typing import Annotated, Any
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Header, Query, Response, status
 
-from ups_kulka.modules.banners.application.dto import BannerIdCommand, ListBannersQuery
+from ups_kulka.modules.banners.application.dto import (
+    BannerIdCommand,
+    ListBannerPresetsQuery,
+    ListBannersQuery,
+)
 from ups_kulka.modules.banners.application.use_cases.admin_banners import (
     CreateBanner,
     DeleteBanner,
     DuplicateBanner,
     GetBanner,
     ListBanners,
+    SetBannerPinned,
     SetBannerPublished,
     UpdateBanner,
 )
 from ups_kulka.modules.banners.application.use_cases.get_active_banner import GetActiveBanner
+from ups_kulka.modules.banners.application.use_cases.list_banner_presets import (
+    ListBannerPresets,
+)
 from ups_kulka.modules.banners.presentation.schemas import (
     AdminBannerOut,
     AdminBannerPageOut,
     BannerCreateIn,
+    BannerPresetOut,
     BannerUpdateIn,
     HomeBannerOut,
 )
@@ -38,8 +47,8 @@ _ERRORS: dict[int | str, dict[str, Any]] = {
 _ADMIN = "/admin/banners"
 _ADMIN_TAGS: list[str | Enum] = ["admin-banners"]
 
-# Short shared cache: a campaign switch shows up within a minute without a deploy.
-HOME_BANNER_CACHE = "public, s-maxage=60, stale-while-revalidate=120"
+# No shared cache: the admin switches the hero manually, so it must change on the next request.
+HOME_BANNER_CACHE = "no-store"
 
 
 @router.get("/storefront/home-banner", tags=["storefront-banners"])
@@ -72,6 +81,16 @@ async def create_banner(
     use_case: CreateBanner = Depends(Provide["banners.create_banner"]),
 ) -> AdminBannerOut:
     return AdminBannerOut.from_dto(await use_case(body.to_command(authorization)))
+
+
+@router.get(_ADMIN + "/presets", responses=_ERRORS, tags=_ADMIN_TAGS)
+@inject
+async def list_banner_presets(
+    authorization: Annotated[str | None, Header()] = None,
+    use_case: ListBannerPresets = Depends(Provide["banners.list_banner_presets"]),
+) -> list[BannerPresetOut]:
+    presets = await use_case(ListBannerPresetsQuery(auth_token=authorization))
+    return [BannerPresetOut.from_dto(preset) for preset in presets]
 
 
 @router.get(_ADMIN + "/{campaign_id}", responses=_ERRORS, tags=_ADMIN_TAGS)
@@ -112,6 +131,28 @@ async def unpublish_banner(
     authorization: Annotated[str | None, Header()] = None,
     use_case: SetBannerPublished = Depends(Provide["banners.unpublish_banner"]),
 ) -> AdminBannerOut:
+    return AdminBannerOut.from_dto(await use_case(BannerIdCommand(campaign_id, authorization)))
+
+
+@router.post(_ADMIN + "/{campaign_id}/activate", responses=_ERRORS, tags=_ADMIN_TAGS)
+@inject
+async def activate_banner(
+    campaign_id: uuid.UUID,
+    authorization: Annotated[str | None, Header()] = None,
+    use_case: SetBannerPinned = Depends(Provide["banners.activate_banner"]),
+) -> AdminBannerOut:
+    """Show this campaign now, whatever its dates are."""
+    return AdminBannerOut.from_dto(await use_case(BannerIdCommand(campaign_id, authorization)))
+
+
+@router.post(_ADMIN + "/{campaign_id}/deactivate", responses=_ERRORS, tags=_ADMIN_TAGS)
+@inject
+async def deactivate_banner(
+    campaign_id: uuid.UUID,
+    authorization: Annotated[str | None, Header()] = None,
+    use_case: SetBannerPinned = Depends(Provide["banners.deactivate_banner"]),
+) -> AdminBannerOut:
+    """Stop the manual override; the usual schedule applies again."""
     return AdminBannerOut.from_dto(await use_case(BannerIdCommand(campaign_id, authorization)))
 
 
