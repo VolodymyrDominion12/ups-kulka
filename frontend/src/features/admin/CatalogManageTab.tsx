@@ -52,6 +52,7 @@ export function CatalogManageTab({
   const [editPriceUah, setEditPriceUah] = useState("");
   const [editOldPriceUah, setEditOldPriceUah] = useState("");
   const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
   const [editTagSlugs, setEditTagSlugs] = useState<string[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
@@ -63,6 +64,7 @@ export function CatalogManageTab({
     return (
       p.name.toLowerCase().includes(q) ||
       p.slug.toLowerCase().includes(q) ||
+      (p.description && p.description.toLowerCase().includes(q)) ||
       p.tags.some((t) => t.name.toLowerCase().includes(q))
     );
   });
@@ -82,6 +84,7 @@ export function CatalogManageTab({
   const startEditing = (product: ProductOut) => {
     setEditingId(product.id);
     setEditName(product.name);
+    setEditDescription(product.description || "");
     setEditPriceUah(String(Math.round(product.price_kopecks / 100)));
     setEditOldPriceUah(
       product.old_price_kopecks
@@ -108,6 +111,7 @@ export function CatalogManageTab({
     try {
       const updated = await adminApi.updateProduct(product.id, {
         name: editName.trim() || product.name,
+        description: editDescription.trim(),
         price_kopecks: newPrice * 100,
         old_price_kopecks:
           newOldPrice && newOldPrice > newPrice ? newOldPrice * 100 : null,
@@ -255,6 +259,12 @@ export function CatalogManageTab({
                     </button>
                   </div>
 
+                  {product.description && (
+                    <p className="mt-1.5 line-clamp-2 text-xs text-neutral-600">
+                      {product.description}
+                    </p>
+                  )}
+
                   {product.tags.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
                       {product.tags.slice(0, 5).map((tag) => (
@@ -271,32 +281,50 @@ export function CatalogManageTab({
               </div>
 
               {isEditing && (
-                <div className="mt-3 space-y-2 border-t border-line pt-3">
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="min-h-[40px] w-full rounded-xl border border-line bg-surface px-3 text-xs font-semibold"
-                  />
+                <div className="mt-3 space-y-2.5 border-t border-line pt-3">
+                  <div>
+                    <label className="mb-1 block text-[11px] font-semibold text-muted">
+                      Назва товару чи послуги
+                    </label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="Назва товару чи послуги"
+                      className="min-h-[40px] w-full rounded-xl border border-line bg-surface px-3 text-xs font-semibold text-ink focus:border-rose focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-[11px] font-semibold text-muted">
+                      Опис товару чи послуги
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Опис композиції, наповнення кульок або деталей послуги..."
+                      value={editDescription}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      className="w-full rounded-xl border border-line bg-surface p-2.5 text-xs text-ink focus:border-rose focus:outline-none"
+                    />
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
                     <input
                       type="number"
                       placeholder="Ціна (грн)"
                       value={editPriceUah}
                       onChange={(e) => setEditPriceUah(e.target.value)}
-                      className="min-h-[40px] rounded-xl border border-line bg-surface px-3 text-xs font-bold"
+                      className="min-h-[40px] rounded-xl border border-line bg-surface px-3 text-xs font-bold text-ink focus:border-rose focus:outline-none"
                     />
                     <input
                       type="number"
                       placeholder="Стара ціна"
                       value={editOldPriceUah}
                       onChange={(e) => setEditOldPriceUah(e.target.value)}
-                      className="min-h-[40px] rounded-xl border border-line bg-surface px-3 text-xs"
+                      className="min-h-[40px] rounded-xl border border-line bg-surface px-3 text-xs text-ink focus:border-rose focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => saveEdit(product)}
-                      className="inline-flex min-h-[40px] items-center justify-center gap-1 rounded-xl bg-ink text-xs font-bold text-white"
+                      className="inline-flex min-h-[40px] items-center justify-center gap-1 rounded-xl bg-ink text-xs font-bold text-white hover:bg-neutral-800 transition"
                     >
                       <Check className="h-3.5 w-3.5" /> Зберегти
                     </button>

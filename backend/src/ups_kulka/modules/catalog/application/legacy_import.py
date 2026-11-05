@@ -40,6 +40,7 @@ class LegacyProduct(TypedDict):
     image_url: str
     tag: str
     tags: NotRequired[list[str]]
+    description: NotRequired[str]
 
 
 class LegacyCatalog(TypedDict):
@@ -104,7 +105,7 @@ def plan_legacy_import(catalog: LegacyCatalog) -> LegacyImportPlan:
             CreateProductCommand(
                 slug=slug,
                 name=product["name"],
-                description="",
+                description=product.get("description", ""),
                 price_kopecks=price,
                 tag_slugs=_resolve_product_tags(product),
                 # Only a real discount becomes a crossed-out price on the storefront.

@@ -40,7 +40,7 @@ export function CatalogControls({ q, sort, onSale }: Props) {
   }
 
   return (
-    <div className="mb-6 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+    <div className="mb-3 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
       <form onSubmit={submit} className="relative">
         <Search className="pointer-events-none absolute left-3.5 top-3 h-4 w-4 text-muted" />
         <input
