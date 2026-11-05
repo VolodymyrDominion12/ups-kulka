@@ -135,6 +135,9 @@ export interface BannerPayload {
   media_mobile_id: string | null;
   image_alt: string;
   theme: BannerTheme;
+  tag_slug: string | null;
+  ribbon_text: string;
+  ribbon_url: string;
 }
 
 export type OrderStatus =

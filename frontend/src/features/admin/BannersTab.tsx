@@ -11,6 +11,7 @@ import {
   BannerPayload,
   BannerState,
   BannerTheme,
+  TagSummaryOut,
 } from "@/shared/api/admin";
 import { DEFAULT_HOME_BANNER, type HomeBannerOut } from "@/shared/api/storefront";
 import { fromDateTimeLocal, toDateTimeLocal } from "@/shared/lib/banner";
@@ -26,8 +27,8 @@ const STATE_LABELS: Record<BannerState, { text: string; className: string }> = {
 const LAYOUT_LABELS: Record<BannerLayout, string> = {
   balloons: "Кульки (стандартний)",
   image: "Фонове фото",
-  split: "Текст + фото (скоро)",
-  collection: "Підбірка (скоро)",
+  split: "Текст + фото поруч",
+  collection: "Підбірка за тегом",
 };
 
 const THEME_LABELS: Record<BannerTheme, string> = {
@@ -37,7 +38,7 @@ const THEME_LABELS: Record<BannerTheme, string> = {
   dark: "Темна",
 };
 
-const SELECTABLE_LAYOUTS: BannerLayout[] = ["balloons", "image"];
+const SELECTABLE_LAYOUTS: BannerLayout[] = ["balloons", "image", "split", "collection"];
 
 interface PickedImage {
   id: string;
@@ -60,6 +61,9 @@ interface Draft {
   imageAlt: string;
   photo: PickedImage | null;
   photoMobile: PickedImage | null;
+  tagSlug: string;
+  ribbonText: string;
+  ribbonUrl: string;
 }
 
 function newDraft(): Draft {
@@ -82,6 +86,9 @@ function newDraft(): Draft {
     imageAlt: "",
     photo: null,
     photoMobile: null,
+    tagSlug: "",
+    ribbonText: "",
+    ribbonUrl: "",
   };
 }
 
@@ -105,6 +112,9 @@ function draftFromBanner(banner: AdminBannerOut): Draft {
       banner.media_mobile_id && banner.image_mobile
         ? { id: banner.media_mobile_id, image: banner.image_mobile }
         : null,
+    tagSlug: banner.tag_slug ?? "",
+    ribbonText: banner.ribbon_text,
+    ribbonUrl: banner.ribbon_url,
   };
 }
 
@@ -125,6 +135,9 @@ function toPayload(draft: Draft): BannerPayload {
     media_mobile_id: draft.photoMobile?.id ?? null,
     image_alt: draft.imageAlt.trim(),
     theme: draft.theme,
+    tag_slug: draft.layout === "collection" && draft.tagSlug ? draft.tagSlug : null,
+    ribbon_text: draft.ribbonText.trim(),
+    ribbon_url: draft.ribbonUrl.trim(),
   };
 }
 
@@ -143,6 +156,9 @@ function previewBanner(draft: Draft): HomeBannerOut {
     image: draft.photo?.image ?? null,
     image_mobile: draft.photoMobile?.image ?? null,
     image_alt: draft.imageAlt,
+    tag_slug: draft.tagSlug || null,
+    ribbon_text: draft.ribbonText,
+    ribbon_url: draft.ribbonUrl,
   };
 }
 
@@ -271,10 +287,12 @@ function PhotoPicker({
 
 function BannerForm({
   banner,
+  tags,
   onBack,
   onSaved,
 }: {
   banner: AdminBannerOut | null;
+  tags: TagSummaryOut[];
   onBack: () => void;
   onSaved: () => void;
 }) {
@@ -288,6 +306,8 @@ function BannerForm({
   const layouts = SELECTABLE_LAYOUTS.includes(draft.layout)
     ? SELECTABLE_LAYOUTS
     : [...SELECTABLE_LAYOUTS, draft.layout];
+
+  const needsPhoto = draft.layout === "image" || draft.layout === "split";
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -320,7 +340,7 @@ function BannerForm({
         <div className="overflow-hidden rounded-2xl border border-line">
           <Hero banner={previewBanner(draft)} showcase={[]} />
         </div>
-        {draft.layout === "image" && !draft.photo && (
+        {needsPhoto && !draft.photo && (
           <p className="text-[11px] font-semibold text-amber-700">
             Додайте фото, інакше на сайті буде стандартний банер.
           </p>
@@ -400,7 +420,30 @@ function BannerForm({
         </p>
       </div>
 
-      {draft.layout === "image" && (
+      {draft.layout === "collection" && (
+        <div className="space-y-2 rounded-2xl border border-line bg-white p-3.5">
+          <label className="block">
+            <span className="text-xs font-semibold text-muted">Підбірка (тег каталогу)</span>
+            <select
+              value={draft.tagSlug}
+              onChange={(e) => set("tagSlug", e.target.value)}
+              className={INPUT}
+            >
+              <option value="">Оберіть тег…</option>
+              {tags.map((tag) => (
+                <option key={tag.id} value={tag.slug}>
+                  {tag.name} ({tag.slug})
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="text-[11px] text-muted">
+            Кульки в банері заповняться фотографіями товарів з обраного тегу, а основна кнопка вестиме на цю підбірку.
+          </p>
+        </div>
+      )}
+
+      {needsPhoto && (
         <div className="space-y-3 rounded-2xl border border-line bg-white p-3.5">
           <PhotoPicker
             label="Фото (комп’ютер)"
@@ -424,6 +467,21 @@ function BannerForm({
           />
         </div>
       )}
+
+      <div className="space-y-3 rounded-2xl border border-line bg-white p-3.5">
+        <Field
+          label="Промо-стрічка над банером (необов’язково)"
+          value={draft.ribbonText}
+          onChange={(v) => set("ribbonText", v)}
+          placeholder="До 8 Березня — приймаємо замовлення на доставку 7–8 березня"
+        />
+        <Field
+          label="Посилання промо-стрічки (необов’язково)"
+          value={draft.ribbonUrl}
+          onChange={(v) => set("ribbonUrl", v)}
+          placeholder="/kulky/8-bereznia"
+        />
+      </div>
 
       <div className="space-y-3 rounded-2xl border border-line bg-white p-3.5">
         <div className="grid grid-cols-2 gap-3">
@@ -467,6 +525,7 @@ function BannerForm({
 
 export function BannersTab() {
   const [banners, setBanners] = useState<AdminBannerOut[]>([]);
+  const [tags, setTags] = useState<TagSummaryOut[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -475,7 +534,12 @@ export function BannersTab() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      setBanners((await adminApi.listBanners()).items);
+      const [bannerPage, tagList] = await Promise.all([
+        adminApi.listBanners(),
+        adminApi.listTags(),
+      ]);
+      setBanners(bannerPage.items);
+      setTags(tagList);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не вдалося завантажити банери");
     } finally {
@@ -509,6 +573,7 @@ export function BannersTab() {
     return (
       <BannerForm
         banner={editing === "new" ? null : editing}
+        tags={tags}
         onBack={() => setEditing(null)}
         onSaved={() => {
           setEditing(null);

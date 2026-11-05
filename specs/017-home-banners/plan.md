@@ -14,7 +14,8 @@
 ## Індекси
 | Індекс | Запит |
 | --- | --- |
-| `ix_banner_campaigns_active (status, starts_at, ends_at, priority DESC)` | активна кампанія на головній |
+| `ix_banners_campaigns_active (status, starts_at, ends_at)` | активна кампанія на головній |
+| `ix_banners_campaigns_starts_at (starts_at)` | список кампаній в адмінці (`ORDER BY starts_at DESC`) |
 
 FK немає. Запит: `status='published' AND starts_at<=now AND ends_at>now ORDER BY priority DESC, starts_at DESC LIMIT 1`.
 

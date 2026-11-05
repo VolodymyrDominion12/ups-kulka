@@ -35,6 +35,10 @@ export function HeroBalloons({
   const theme = themeClasses(campaign?.theme ?? "rose");
   const title = campaign?.headline || null;
   const text = campaign?.subtitle || DEFAULT_TEXT;
+  const defaultCollectionHref =
+    campaign?.layout === "collection" && campaign.tag_slug
+      ? `/kulky/${campaign.tag_slug}`
+      : "/kulky";
 
   const photos = showcase
     .map((p) => (p.images[0] ? responsiveImage(p.images[0], 320) : null))
@@ -58,20 +62,40 @@ export function HeroBalloons({
           <p className={`mt-5 max-w-[46ch] text-lg ${theme.body}`}>{text}</p>
           <div className="mt-7 flex flex-wrap gap-3">
             {campaign?.cta_label ? (
-              <HeroButton href={campaign.cta_url} className={theme.primaryButton}>
+              <HeroButton
+                href={campaign.cta_url}
+                campaignId={campaign.campaign_id}
+                layout={campaign.layout}
+                className={theme.primaryButton}
+              >
                 {campaign.cta_label}
               </HeroButton>
             ) : (
-              <HeroButton href="/kulky" className={theme.primaryButton}>
+              <HeroButton
+                href={defaultCollectionHref}
+                campaignId={campaign?.campaign_id}
+                layout={campaign?.layout}
+                className={theme.primaryButton}
+              >
                 Обрати кульки
               </HeroButton>
             )}
             {campaign?.cta2_label ? (
-              <HeroButton href={campaign.cta2_url} className={theme.secondaryButton}>
+              <HeroButton
+                href={campaign.cta2_url}
+                campaignId={campaign.campaign_id}
+                layout={campaign.layout}
+                className={theme.secondaryButton}
+              >
                 {campaign.cta2_label}
               </HeroButton>
             ) : (
-              <HeroButton href={SHOP.instagramUrl} className={theme.secondaryButton}>
+              <HeroButton
+                href={SHOP.instagramUrl}
+                campaignId={campaign?.campaign_id}
+                layout={campaign?.layout}
+                className={theme.secondaryButton}
+              >
                 Більше робіт в Instagram
               </HeroButton>
             )}

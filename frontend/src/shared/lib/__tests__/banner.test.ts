@@ -8,6 +8,7 @@ import {
   isExternalLink,
   themeClasses,
   toDateTimeLocal,
+  withBannerAttribution,
 } from "../banner";
 
 describe("banner helpers", () => {
@@ -15,6 +16,7 @@ describe("banner helpers", () => {
     const themes: BannerTheme[] = ["rose", "red", "gold", "dark"];
     for (const theme of themes) {
       expect(themeClasses(theme).section).toBeTruthy();
+      expect(themeClasses(theme).ribbon).toBeTruthy();
     }
   });
 
@@ -32,5 +34,15 @@ describe("banner helpers", () => {
     const iso = fromDateTimeLocal(local);
     expect(iso).toMatch(/Z$/);
     expect(toDateTimeLocal(iso)).toBe(local);
+  });
+
+  it("appends campaign attribution to internal links and leaves external or preview links untouched", () => {
+    expect(withBannerAttribution("/kulky/8-bereznia", "camp-1", "image")).toBe(
+      "/kulky/8-bereznia?utm_source=home_banner&utm_medium=image&utm_campaign=camp-1",
+    );
+    expect(withBannerAttribution("/kulky", "preview", "image")).toBe("/kulky");
+    expect(withBannerAttribution("https://instagram.com/x", "camp-1", "image")).toBe(
+      "https://instagram.com/x",
+    );
   });
 });

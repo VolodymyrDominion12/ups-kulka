@@ -9,6 +9,7 @@ import {
   Lock,
   LogOut,
   ShoppingBag,
+  Sparkles,
   Tags,
 } from "lucide-react";
 import {
@@ -23,8 +24,9 @@ import { OrdersSalonTab } from "@/features/admin/OrdersSalonTab";
 import { CatalogManageTab } from "@/features/admin/CatalogManageTab";
 import { AnalyticsMarketingTab } from "@/features/admin/AnalyticsMarketingTab";
 import { TagSeoTab } from "@/features/admin/TagSeoTab";
+import { BannersTab } from "@/features/admin/BannersTab";
 
-type AdminTab = "orders" | "publish" | "catalog" | "analytics" | "tags";
+type AdminTab = "orders" | "publish" | "catalog" | "analytics" | "tags" | "banners";
 
 export default function AdminMobilePage() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
@@ -166,6 +168,7 @@ export default function AdminMobilePage() {
               {activeTab === "catalog" && `Каталог (${products.length})`}
               {activeTab === "analytics" && "Аналітика та маркетинг"}
               {activeTab === "tags" && "SEO підбірки"}
+              {activeTab === "banners" && "Святкові банери головної"}
             </p>
           </div>
         </div>
@@ -222,11 +225,13 @@ export default function AdminMobilePage() {
         {activeTab === "analytics" && <AnalyticsMarketingTab />}
 
         {activeTab === "tags" && <TagSeoTab />}
+
+        {activeTab === "banners" && <BannersTab />}
       </main>
 
       {/* Sticky Bottom Thumb Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 mx-auto max-w-xl border-t border-line bg-white/95 px-2 py-1.5 backdrop-blur">
-        <div className="grid grid-cols-5 gap-1">
+        <div className="grid grid-cols-6 gap-1">
           <button
             type="button"
             onClick={() => setActiveTab("orders")}
@@ -290,6 +295,19 @@ export default function AdminMobilePage() {
           >
             <Tags className="h-4 w-4" />
             <span className="mt-0.5">Теги</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("banners")}
+            className={`flex min-h-[48px] flex-col items-center justify-center rounded-2xl text-[11px] font-bold transition ${
+              activeTab === "banners"
+                ? "bg-accent-soft/70 text-rose-deep"
+                : "text-muted"
+            }`}
+          >
+            <Sparkles className="h-4 w-4" />
+            <span className="mt-0.5">Банери</span>
           </button>
         </div>
       </nav>

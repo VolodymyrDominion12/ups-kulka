@@ -56,12 +56,22 @@ export function HeroImage({ banner }: { banner: HomeBannerOut }) {
         {(banner.cta_label || banner.cta2_label) && (
           <div className="mt-7 flex flex-wrap gap-3">
             {banner.cta_label && (
-              <HeroButton href={banner.cta_url} className="bg-white text-ink hover:bg-accent">
+              <HeroButton
+                href={banner.cta_url}
+                campaignId={banner.campaign_id}
+                layout={banner.layout}
+                className="bg-white text-ink hover:bg-accent"
+              >
                 {banner.cta_label}
               </HeroButton>
             )}
             {banner.cta2_label && (
-              <HeroButton href={banner.cta2_url} className="bg-white/20 text-white hover:bg-white/30">
+              <HeroButton
+                href={banner.cta2_url}
+                campaignId={banner.campaign_id}
+                layout={banner.layout}
+                className="bg-white/20 text-white hover:bg-white/30"
+              >
                 {banner.cta2_label}
               </HeroButton>
             )}

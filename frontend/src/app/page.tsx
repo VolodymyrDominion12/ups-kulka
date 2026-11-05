@@ -18,7 +18,19 @@ export default async function HomePage() {
     catalogApi.listProducts({ limit: PAGE_SIZE, offset: 0 }),
     bannerApi.getHome(),
   ]);
-  const showcase = page.items.filter((p) => p.images.length > 0);
+  const defaultShowcase = page.items.filter((p) => p.images.length > 0);
+  let showcase = defaultShowcase;
+  if (banner.layout === "collection" && banner.tag_slug) {
+    const tagPage = await catalogApi.listProducts({
+      tag: banner.tag_slug,
+      limit: 6,
+      offset: 0,
+    });
+    const tagWithPhotos = tagPage.items.filter((p) => p.images.length > 0);
+    if (tagWithPhotos.length > 0) {
+      showcase = tagWithPhotos;
+    }
+  }
 
   return (
     <ShopShell>

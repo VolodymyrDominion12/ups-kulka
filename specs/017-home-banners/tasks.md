@@ -10,11 +10,11 @@
 - [x] `make openapi`, `make check`.
 
 ## Етап 2 — адмінка
-- [ ] Use cases create/update/publish/duplicate/delete/list + admin API.
-- [ ] `BannersTab.tsx`: список, форма, завантаження фото, превʼю, дублювання.
+- [x] Use cases create/update/publish/unpublish/duplicate/delete/list + admin API.
+- [x] `BannersTab.tsx`: список, форма, завантаження фото, живе превʼю, дублювання.
 
 ## Етап 3 — макети
-- [ ] `split`, `collection`, промо-стрічка.
+- [x] `split`, `collection`, промо-стрічка (`HeroSplit`, `HeroRibbon`, підбірка за `tag_slug`).
 
 ## Етап 4 — аналітика
-- [ ] Подія кліку CTA з `campaign_id`.
+- [x] Атрибуція кліку CTA та промо-стрічки (`utm_source=home_banner`, `utm_campaign=<campaign_id>`).
