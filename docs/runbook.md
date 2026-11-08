@@ -6,6 +6,7 @@
 ## 1. Що потрібно заздалегідь
 
 - VPS: 2 vCPU, 4 ГБ RAM, 40+ ГБ диска, Ubuntu 24.04.
+  Де брати й за скільки — дослідження [`vps-hosting.md`](vps-hosting.md).
 - Домен. У DNS — записи `A` на IP сервера для `example.ua`, `www.example.ua`
   і `staging.example.ua`.
 - Доступ адміністратора до репозиторію на GitHub.
